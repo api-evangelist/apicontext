@@ -4,8 +4,7 @@ url: >-
 apis:
   - aid: apicontext:apicontext
     name: APIContext
-    tags:
-      - API
+    tags: []
     humanURL: https://apicontext.com/
     properties:
       - url: https://apicontext.com/
@@ -15,12 +14,12 @@ apis:
       API performance, SLOs and conformance for your critical APIs.
 name: APIContext
 tags:
-  - Testing
-  - Synthetics
   - Monitoring
   - Performance
-  - SLO
   - Platform
+  - SLO
+  - Synthetics
+  - Testing
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 access: 3rd-Party
