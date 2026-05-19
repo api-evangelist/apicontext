@@ -43,6 +43,10 @@ apis:
       - type: Pricing
         url: https://apicontext.com/pricing/
 common:
+  - type: GitHubOrganization
+    url: https://github.com/apimetrics
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/apicontext
   - type: Website
     url: https://apicontext.com/
   - type: Blog
