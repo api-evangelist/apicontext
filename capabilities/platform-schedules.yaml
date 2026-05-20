@@ -1,0 +1,277 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: APIContext Platform API — Schedules
+  description: 'APIContext Platform API — Schedules. 6 operations. Lead operation: List schedules. Self-contained Naftiko capability covering one business surface.'
+  tags:
+  - APIContext
+  - Schedules
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: platform-schedules
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext Platform API — Schedules business capability. Self-contained, no shared references.
+    resources:
+    - name: schedules
+      path: /schedules/
+      operations:
+      - name: listschedules
+        method: GET
+        description: List schedules
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+      - name: createschedule
+        method: POST
+        description: Create a schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: schedules-schedule-id
+      path: /schedules/{schedule_id}
+      operations:
+      - name: getschedule
+        method: GET
+        description: Get a schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: schedule_id
+          in: path
+          type: string
+          description: path parameter schedule_id.
+          required: true
+      - name: deleteschedule
+        method: DELETE
+        description: Delete a schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: schedule_id
+          in: path
+          type: string
+          description: path parameter schedule_id.
+          required: true
+    - name: schedules-schedule-id-call-call-id
+      path: /schedules/{schedule_id}/call/{call_id}
+      operations:
+      - name: addcalltoschedule
+        method: PUT
+        description: Add an API call to a schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: schedule_id
+          in: path
+          type: string
+          description: path parameter schedule_id.
+          required: true
+        - name: call_id
+          in: path
+          type: string
+          description: path parameter call_id.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: removecallfromschedule
+        method: DELETE
+        description: Remove an API call from a schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: schedule_id
+          in: path
+          type: string
+          description: path parameter schedule_id.
+          required: true
+        - name: call_id
+          in: path
+          type: string
+          description: path parameter call_id.
+          required: true
+  exposes:
+  - type: rest
+    namespace: platform-schedules-rest
+    port: 8080
+    description: REST adapter for APIContext Platform API — Schedules. One resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/schedules/
+      name: schedules
+      description: REST surface for schedules.
+      operations:
+      - method: GET
+        name: listschedules
+        description: List schedules
+        call: platform-schedules.listschedules
+        with: {}
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createschedule
+        description: Create a schedule
+        call: platform-schedules.createschedule
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/schedules/{schedule_id}
+      name: schedules-schedule-id
+      description: REST surface for schedules-schedule-id.
+      operations:
+      - method: GET
+        name: getschedule
+        description: Get a schedule
+        call: platform-schedules.getschedule
+        with:
+          schedule_id: rest.schedule_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteschedule
+        description: Delete a schedule
+        call: platform-schedules.deleteschedule
+        with:
+          schedule_id: rest.schedule_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/schedules/{schedule_id}/call/{call_id}
+      name: schedules-schedule-id-call-call-id
+      description: REST surface for schedules-schedule-id-call-call-id.
+      operations:
+      - method: PUT
+        name: addcalltoschedule
+        description: Add an API call to a schedule
+        call: platform-schedules.addcalltoschedule
+        with:
+          schedule_id: rest.schedule_id
+          call_id: rest.call_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: removecallfromschedule
+        description: Remove an API call from a schedule
+        call: platform-schedules.removecallfromschedule
+        with:
+          schedule_id: rest.schedule_id
+          call_id: rest.call_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: platform-schedules-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for APIContext Platform API — Schedules. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: apicontext-listschedules
+      description: List schedules
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: platform-schedules.listschedules
+      with: {}
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apicontext-createschedule
+      description: Create a schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: platform-schedules.createschedule
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apicontext-getschedule
+      description: Get a schedule
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: platform-schedules.getschedule
+      with:
+        schedule_id: tools.schedule_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apicontext-deleteschedule
+      description: Delete a schedule
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: platform-schedules.deleteschedule
+      with:
+        schedule_id: tools.schedule_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apicontext-addcalltoschedule
+      description: Add an API call to a schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: platform-schedules.addcalltoschedule
+      with:
+        schedule_id: tools.schedule_id
+        call_id: tools.call_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apicontext-removecallfromschedule
+      description: Remove an API call from a schedule
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: platform-schedules.removecallfromschedule
+      with:
+        schedule_id: tools.schedule_id
+        call_id: tools.call_id
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,86 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: APIContext Platform API — Statistics
+  description: 'APIContext Platform API — Statistics. 1 operations. Lead operation: Get statistics for an API call. Self-contained Naftiko capability covering one business surface.'
+  tags:
+  - APIContext
+  - Statistics
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: platform-statistics
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext Platform API — Statistics business capability. Self-contained, no shared references.
+    resources:
+    - name: calls-call-id-stats
+      path: /calls/{call_id}/stats/
+      operations:
+      - name: getcallstats
+        method: GET
+        description: Get statistics for an API call
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: path parameter call_id.
+          required: true
+        - name: kind
+          in: query
+          type: string
+          description: Aggregation granularity.
+        - name: type
+          in: query
+          type: string
+          description: Statistic type filter (e.g. ALL).
+  exposes:
+  - type: rest
+    namespace: platform-statistics-rest
+    port: 8080
+    description: REST adapter for APIContext Platform API — Statistics. One resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/calls/{call_id}/stats/
+      name: calls-call-id-stats
+      description: REST surface for calls-call-id-stats.
+      operations:
+      - method: GET
+        name: getcallstats
+        description: Get statistics for an API call
+        call: platform-statistics.getcallstats
+        with:
+          call_id: rest.call_id
+          kind: rest.kind
+          type: rest.type
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: platform-statistics-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for APIContext Platform API — Statistics. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: apicontext-getcallstats
+      description: Get statistics for an API call
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: platform-statistics.getcallstats
+      with:
+        call_id: tools.call_id
+        kind: tools.kind
+        type: tools.type
+      outputParameters:
+      - type: object
+        mapping: $.

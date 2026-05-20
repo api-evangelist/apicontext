@@ -1,0 +1,74 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: APIContext Platform API — Insights
+  description: 'APIContext Platform API — Insights. 1 operations. Lead operation: Get insights report for an API call. Self-contained Naftiko capability covering one business surface.'
+  tags:
+  - APIContext
+  - Insights
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: platform-insights
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext Platform API — Insights business capability. Self-contained, no shared references.
+    resources:
+    - name: insights-call-call-id
+      path: /insights/call/{call_id}/
+      operations:
+      - name: getcallinsights
+        method: GET
+        description: Get insights report for an API call
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: path parameter call_id.
+          required: true
+  exposes:
+  - type: rest
+    namespace: platform-insights-rest
+    port: 8080
+    description: REST adapter for APIContext Platform API — Insights. One resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/insights/call/{call_id}/
+      name: insights-call-call-id
+      description: REST surface for insights-call-call-id.
+      operations:
+      - method: GET
+        name: getcallinsights
+        description: Get insights report for an API call
+        call: platform-insights.getcallinsights
+        with:
+          call_id: rest.call_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: platform-insights-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for APIContext Platform API — Insights. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: apicontext-getcallinsights
+      description: Get insights report for an API call
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: platform-insights.getcallinsights
+      with:
+        call_id: tools.call_id
+      outputParameters:
+      - type: object
+        mapping: $.

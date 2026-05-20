@@ -1,0 +1,112 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Summarize APIContext incidents with Claude
+  description: When APIContext fires a critical alert, send the recent insights report and raw results to Claude and produce a one-paragraph incident summary, suspected root cause, and recommended next action that can be posted into the on-call channel or attached to the incident ticket.
+  tags:
+  - APIContext
+  - Integration
+  - AI
+  - anthropic
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+    ANTHROPIC_API_KEY: ANTHROPIC_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apicontext
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext API operations consumed by this integration.
+    resources:
+    - name: insights-call-call-id
+      path: /insights/call/{call_id}/
+      operations:
+      - name: getcallinsights
+        method: GET
+        description: Get the insights report for the failing call.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: Path parameter call_id.
+          required: true
+    - name: results-call-call-id
+      path: /results/call/{call_id}/
+      operations:
+      - name: getcallresults
+        method: GET
+        description: Get raw recent results for incident context.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: Path parameter call_id.
+          required: true
+  - type: http
+    namespace: anthropic
+    baseUri: https://api.anthropic.com
+    description: Anthropic Messages API operations consumed by this integration.
+    resources:
+    - name: v1-messages
+      path: /v1/messages
+      operations:
+      - name: createmessage
+        method: POST
+        description: 'Anthropic Messages API: createMessage'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  exposes:
+  - type: mcp
+    namespace: apicontext-anthropic-mcp
+    description: MCP adapter for the apicontext-anthropic integration.
+    tools:
+    - name: apicontext_anthropic
+      description: Execute the apicontext anthropic integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: apicontext-anthropic-rest
+    port: 8080
+    description: REST adapter for the apicontext-anthropic integration.
+    resources:
+    - path: /apicontext-anthropic
+      name: apicontext-anthropic
+      description: REST surface for the apicontext-anthropic integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the apicontext-anthropic integration.
+        call: apicontext_anthropic
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

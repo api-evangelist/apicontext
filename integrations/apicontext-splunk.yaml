@@ -1,0 +1,112 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Stream APIContext results into Splunk
+  description: Forward raw APIContext synthetic test results (latency, status codes, validation outcomes) into Splunk via HEC so SREs can correlate API-level signal with logs and incidents in their existing Splunk dashboards.
+  tags:
+  - APIContext
+  - Integration
+  - Observability
+  - splunk
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+    SPLUNK_API_KEY: SPLUNK_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apicontext
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext API operations consumed by this integration.
+    resources:
+    - name: results-call-call-id
+      path: /results/call/{call_id}/
+      operations:
+      - name: getcallresults
+        method: GET
+        description: Get raw per-execution APIContext result records.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: Path parameter call_id.
+          required: true
+    - name: calls-call-id-stats
+      path: /calls/{call_id}/stats/
+      operations:
+      - name: getcallstats
+        method: GET
+        description: Get aggregated performance stats.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: Path parameter call_id.
+          required: true
+  - type: http
+    namespace: splunk
+    baseUri: https://yourorg.splunkcloud.com
+    description: Splunk HTTP Event Collector operations consumed by this integration.
+    resources:
+    - name: services-collector-event
+      path: /services/collector/event
+      operations:
+      - name: postevent
+        method: POST
+        description: 'Splunk HTTP Event Collector: postEvent'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  exposes:
+  - type: mcp
+    namespace: apicontext-splunk-mcp
+    description: MCP adapter for the apicontext-splunk integration.
+    tools:
+    - name: apicontext_splunk
+      description: Execute the apicontext splunk integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: apicontext-splunk-rest
+    port: 8080
+    description: REST adapter for the apicontext-splunk integration.
+    resources:
+    - path: /apicontext-splunk
+      name: apicontext-splunk
+      description: REST surface for the apicontext-splunk integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the apicontext-splunk integration.
+        call: apicontext_splunk
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

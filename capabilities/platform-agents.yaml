@@ -1,0 +1,102 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: APIContext Platform API — Agents
+  description: 'APIContext Platform API — Agents. 2 operations. Lead operation: Get agent info. Self-contained Naftiko capability covering one business surface.'
+  tags:
+  - APIContext
+  - Agents
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: platform-agents
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext Platform API — Agents business capability. Self-contained, no shared references.
+    resources:
+    - name: agents-info
+      path: /agents/info
+      operations:
+      - name: getagentinfo
+        method: GET
+        description: Get agent info
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: agents
+      path: /agents/
+      operations:
+      - name: listagents
+        method: GET
+        description: List agents
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  exposes:
+  - type: rest
+    namespace: platform-agents-rest
+    port: 8080
+    description: REST adapter for APIContext Platform API — Agents. One resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/agents/info
+      name: agents-info
+      description: REST surface for agents-info.
+      operations:
+      - method: GET
+        name: getagentinfo
+        description: Get agent info
+        call: platform-agents.getagentinfo
+        with: {}
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/agents/
+      name: agents
+      description: REST surface for agents.
+      operations:
+      - method: GET
+        name: listagents
+        description: List agents
+        call: platform-agents.listagents
+        with: {}
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: platform-agents-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for APIContext Platform API — Agents. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: apicontext-getagentinfo
+      description: Get agent info
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: platform-agents.getagentinfo
+      with: {}
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apicontext-listagents
+      description: List agents
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: platform-agents.listagents
+      with: {}
+      outputParameters:
+      - type: object
+        mapping: $.

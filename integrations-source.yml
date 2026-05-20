@@ -1,0 +1,259 @@
+# Curated top APIContext integrations grouped by category.
+# Each entry becomes one Naftiko capability YAML in integrations/.
+# Categories reflect the systems that API monitoring + SLO teams routinely pair with APIContext.
+# APIContext base URI: https://client.apimetrics.io/api/2
+
+# Observability (2)
+- partner: datadog
+  name: Forward APIContext SLO breaches into Datadog
+  category: Observability
+  use_case: When APIContext detects an SLO breach or regression for a monitored API, push it into Datadog as a custom event and tagged metric so SRE dashboards and alerting policies treat synthetic signal as first-class telemetry alongside in-process metrics.
+  partner_baseUri: https://api.datadoghq.com
+  partner_api: Datadog API
+  provider_ops:
+    - method: GET
+      path: /insights/call/{call_id}/
+      name: getCallInsights
+      description: Get the APIContext insights report (SLO compliance, regressions, anomalies) for an API call.
+    - method: GET
+      path: /calls/{call_id}/stats/
+      name: getCallStats
+      description: Get aggregated performance stats for an API call.
+  partner_ops:
+    - method: POST
+      path: /api/v1/events
+      name: createEvent
+    - method: POST
+      path: /api/v2/series
+      name: submitMetric
+
+- partner: splunk
+  name: Stream APIContext results into Splunk
+  category: Observability
+  use_case: Forward raw APIContext synthetic test results (latency, status codes, validation outcomes) into Splunk via HEC so SREs can correlate API-level signal with logs and incidents in their existing Splunk dashboards.
+  partner_baseUri: https://yourorg.splunkcloud.com
+  partner_api: Splunk HTTP Event Collector
+  provider_ops:
+    - method: GET
+      path: /results/call/{call_id}/
+      name: getCallResults
+      description: Get raw per-execution APIContext result records.
+    - method: GET
+      path: /calls/{call_id}/stats/
+      name: getCallStats
+      description: Get aggregated performance stats.
+  partner_ops:
+    - method: POST
+      path: /services/collector/event
+      name: postEvent
+
+# Incident response (2)
+- partner: pagerduty
+  name: Page on-call from APIContext SLO breaches
+  category: Incident response
+  use_case: When APIContext detects an SLO breach or sustained availability drop for a critical API, fire a PagerDuty incident so the right on-call engineer is paged with the offending endpoint, region, and recent error pattern.
+  partner_baseUri: https://events.pagerduty.com
+  partner_api: PagerDuty Events API v2
+  provider_ops:
+    - method: GET
+      path: /insights/call/{call_id}/
+      name: getCallInsights
+      description: Get the APIContext insights report for an API call.
+    - method: GET
+      path: /alerts/
+      name: listAlerts
+      description: List alert rules to enrich the incident with rule context.
+  partner_ops:
+    - method: POST
+      path: /v2/enqueue
+      name: triggerIncident
+
+- partner: servicenow
+  name: Open ServiceNow incidents from APIContext alerts
+  category: Incident response
+  use_case: When APIContext fires an alert against a monitored API, open a ServiceNow incident with the failure details, agent location, and last good run so ITSM workflows and SLAs are driven by real API behavior, not user reports.
+  partner_baseUri: https://yourorg.service-now.com
+  partner_api: ServiceNow Table API
+  provider_ops:
+    - method: GET
+      path: /alerts/{alert_id}
+      name: getAlert
+      description: Get the APIContext alert that fired.
+    - method: GET
+      path: /results/call/{call_id}/
+      name: getCallResults
+      description: Get the most recent results for context.
+  partner_ops:
+    - method: POST
+      path: /api/now/table/incident
+      name: createIncident
+
+# Collaboration (2)
+- partner: slack
+  name: Post APIContext alerts to Slack
+  category: Collaboration
+  use_case: When APIContext fires an alert (latency regression, SLO breach, conformance failure) post a formatted message to the right Slack channel so the API team sees the issue in real time alongside the offending endpoint and recent stats.
+  partner_baseUri: https://slack.com
+  partner_api: Slack Web API
+  provider_ops:
+    - method: GET
+      path: /alerts/{alert_id}
+      name: getAlert
+      description: Get the alert that fired.
+    - method: GET
+      path: /calls/{call_id}/stats/
+      name: getCallStats
+      description: Get recent performance stats for the offending call.
+  partner_ops:
+    - method: POST
+      path: /api/chat.postMessage
+      name: postMessage
+
+- partner: microsoft-teams
+  name: Notify Microsoft Teams of APIContext SLO status
+  category: Collaboration
+  use_case: When APIContext SLO status changes (breach, recovery, warning) post an adaptive card to the right Microsoft Teams channel so the API and platform teams have a shared timeline of API health inside the tool they already live in.
+  partner_baseUri: https://graph.microsoft.com
+  partner_api: Microsoft Graph API
+  provider_ops:
+    - method: GET
+      path: /insights/call/{call_id}/
+      name: getCallInsights
+      description: Get the APIContext insights report for the call.
+    - method: GET
+      path: /alerts/
+      name: listAlerts
+      description: List active APIContext alerts for context.
+  partner_ops:
+    - method: POST
+      path: /v1.0/teams/{team-id}/channels/{channel-id}/messages
+      name: postChannelMessage
+
+# CI / CD (1)
+- partner: github-actions
+  name: Run APIContext checks from GitHub Actions
+  category: CI/CD
+  use_case: On pull request or pre-deploy, trigger the relevant APIContext API calls and workflows against the staging environment so a synthetic contract-and-performance check gates the deploy. Status flows back via Actions check runs.
+  partner_baseUri: https://api.github.com
+  partner_api: GitHub REST API
+  provider_ops:
+    - method: POST
+      path: /calls/{call_id}/run
+      name: runApiCall
+      description: Trigger an immediate APIContext synthetic execution.
+    - method: POST
+      path: /workflows/{workflow_id}/run
+      name: runWorkflow
+      description: Run a multi-step APIContext workflow on demand.
+    - method: GET
+      path: /results/call/{call_id}/
+      name: getCallResults
+      description: Pull the resulting raw results for the check.
+  partner_ops:
+    - method: POST
+      path: /repos/{owner}/{repo}/check-runs
+      name: createCheckRun
+
+# API tooling (2)
+- partner: postman
+  name: Promote Postman collections into APIContext monitors
+  category: API tooling
+  use_case: When a Postman collection is updated for a critical API, mirror the relevant requests into APIContext as monitored API calls so what is tested in Postman is what is continuously monitored in production from multiple regions.
+  partner_baseUri: https://api.getpostman.com
+  partner_api: Postman API
+  provider_ops:
+    - method: POST
+      path: /calls/
+      name: createApiCall
+      description: Create an APIContext API call from a Postman request.
+    - method: PUT
+      path: /calls/{call_id}
+      name: updateApiCall
+      description: Update an APIContext API call when the Postman request changes.
+  partner_ops:
+    - method: GET
+      path: /collections/{collection_uid}
+      name: getCollection
+
+- partner: spectral
+  name: Block APIContext monitor creation on Spectral lint failures
+  category: API tooling
+  use_case: Before creating or updating an APIContext monitor for an OpenAPI-described endpoint, run the spec through Spectral. If governance rules fail, refuse to create the monitor and surface the violations so APIContext only monitors APIs that meet design-time standards.
+  partner_baseUri: https://api.stoplight.io
+  partner_api: Spectral / Stoplight API
+  provider_ops:
+    - method: POST
+      path: /calls/
+      name: createApiCall
+      description: Create the APIContext monitor once the spec passes Spectral.
+    - method: PUT
+      path: /calls/{call_id}
+      name: updateApiCall
+      description: Update the APIContext monitor when the spec passes Spectral.
+  partner_ops:
+    - method: POST
+      path: /v1/lint
+      name: lintSpec
+
+# AI (1)
+- partner: anthropic
+  name: Summarize APIContext incidents with Claude
+  category: AI
+  use_case: When APIContext fires a critical alert, send the recent insights report and raw results to Claude and produce a one-paragraph incident summary, suspected root cause, and recommended next action that can be posted into the on-call channel or attached to the incident ticket.
+  partner_baseUri: https://api.anthropic.com
+  partner_api: Anthropic Messages API
+  provider_ops:
+    - method: GET
+      path: /insights/call/{call_id}/
+      name: getCallInsights
+      description: Get the insights report for the failing call.
+    - method: GET
+      path: /results/call/{call_id}/
+      name: getCallResults
+      description: Get raw recent results for incident context.
+  partner_ops:
+    - method: POST
+      path: /v1/messages
+      name: createMessage
+
+# Project tracking (1)
+- partner: jira
+  name: File Jira issues from APIContext regressions
+  category: Project tracking
+  use_case: When APIContext detects a conformance failure or repeating regression on a monitored API, automatically file a Jira issue in the owning team's project with the failing endpoint, the diff against last-good behavior, and a link back to APIContext insights.
+  partner_baseUri: https://yourorg.atlassian.net
+  partner_api: Jira Cloud REST API
+  provider_ops:
+    - method: GET
+      path: /insights/call/{call_id}/
+      name: getCallInsights
+      description: Get the APIContext insights report describing the regression.
+    - method: GET
+      path: /calls/{call_id}
+      name: getApiCall
+      description: Get the API call configuration to enrich the issue.
+  partner_ops:
+    - method: POST
+      path: /rest/api/3/issue
+      name: createIssue
+
+# Telemetry (1)
+- partner: opentelemetry
+  name: Emit APIContext synthetic spans as OpenTelemetry traces
+  category: Telemetry
+  use_case: Convert APIContext synthetic call executions into OpenTelemetry spans (one root span per call, child spans per stage) and ship them to any OTLP-compatible backend so synthetic monitoring data lives next to in-process traces in the same trace store.
+  partner_baseUri: https://otel-collector.yourorg.com
+  partner_api: OpenTelemetry OTLP HTTP
+  provider_ops:
+    - method: GET
+      path: /results/call/{call_id}/
+      name: getCallResults
+      description: Pull raw APIContext result records to translate into spans.
+    - method: GET
+      path: /calls/{call_id}/stats/
+      name: getCallStats
+      description: Get summary stats for the span attributes.
+  partner_ops:
+    - method: POST
+      path: /v1/traces
+      name: exportTraces

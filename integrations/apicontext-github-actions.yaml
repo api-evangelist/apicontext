@@ -1,0 +1,149 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Run APIContext checks from GitHub Actions
+  description: On pull request or pre-deploy, trigger the relevant APIContext API calls and workflows against the staging environment so a synthetic contract-and-performance check gates the deploy. Status flows back via Actions check runs.
+  tags:
+  - APIContext
+  - Integration
+  - CI/CD
+  - github-actions
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+    GITHUB_ACTIONS_API_KEY: GITHUB_ACTIONS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apicontext
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext API operations consumed by this integration.
+    resources:
+    - name: calls-call-id-run
+      path: /calls/{call_id}/run
+      operations:
+      - name: runapicall
+        method: POST
+        description: Trigger an immediate APIContext synthetic execution.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: Path parameter call_id.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: workflows-workflow-id-run
+      path: /workflows/{workflow_id}/run
+      operations:
+      - name: runworkflow
+        method: POST
+        description: Run a multi-step APIContext workflow on demand.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_id
+          in: path
+          type: string
+          description: Path parameter workflow_id.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: results-call-call-id
+      path: /results/call/{call_id}/
+      operations:
+      - name: getcallresults
+        method: GET
+        description: Pull the resulting raw results for the check.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: Path parameter call_id.
+          required: true
+  - type: http
+    namespace: github-actions
+    baseUri: https://api.github.com
+    description: GitHub REST API operations consumed by this integration.
+    resources:
+    - name: repos-owner-repo-check-runs
+      path: /repos/{owner}/{repo}/check-runs
+      operations:
+      - name: createcheckrun
+        method: POST
+        description: 'GitHub REST API: createCheckRun'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: owner
+          in: path
+          type: string
+          description: Path parameter owner.
+          required: true
+        - name: repo
+          in: path
+          type: string
+          description: Path parameter repo.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  exposes:
+  - type: mcp
+    namespace: apicontext-github-actions-mcp
+    description: MCP adapter for the apicontext-github-actions integration.
+    tools:
+    - name: apicontext_github_actions
+      description: Execute the apicontext github actions integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: apicontext-github-actions-rest
+    port: 8080
+    description: REST adapter for the apicontext-github-actions integration.
+    resources:
+    - path: /apicontext-github-actions
+      name: apicontext-github-actions
+      description: REST surface for the apicontext-github-actions integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the apicontext-github-actions integration.
+        call: apicontext_github_actions
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

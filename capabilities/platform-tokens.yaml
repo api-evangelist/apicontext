@@ -1,0 +1,144 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: APIContext Platform API — Tokens
+  description: 'APIContext Platform API — Tokens. 3 operations. Lead operation: List API tokens. Self-contained Naftiko capability covering one business surface.'
+  tags:
+  - APIContext
+  - Tokens
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: platform-tokens
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext Platform API — Tokens business capability. Self-contained, no shared references.
+    resources:
+    - name: tokens
+      path: /tokens/
+      operations:
+      - name: listtokens
+        method: GET
+        description: List API tokens
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+      - name: createtoken
+        method: POST
+        description: Create an API token
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: tokens-token-id
+      path: /tokens/{token_id}
+      operations:
+      - name: deletetoken
+        method: DELETE
+        description: Revoke an API token
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: token_id
+          in: path
+          type: string
+          description: path parameter token_id.
+          required: true
+  exposes:
+  - type: rest
+    namespace: platform-tokens-rest
+    port: 8080
+    description: REST adapter for APIContext Platform API — Tokens. One resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/tokens/
+      name: tokens
+      description: REST surface for tokens.
+      operations:
+      - method: GET
+        name: listtokens
+        description: List API tokens
+        call: platform-tokens.listtokens
+        with: {}
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createtoken
+        description: Create an API token
+        call: platform-tokens.createtoken
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/tokens/{token_id}
+      name: tokens-token-id
+      description: REST surface for tokens-token-id.
+      operations:
+      - method: DELETE
+        name: deletetoken
+        description: Revoke an API token
+        call: platform-tokens.deletetoken
+        with:
+          token_id: rest.token_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: platform-tokens-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for APIContext Platform API — Tokens. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: apicontext-listtokens
+      description: List API tokens
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: platform-tokens.listtokens
+      with: {}
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apicontext-createtoken
+      description: Create an API token
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: platform-tokens.createtoken
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apicontext-deletetoken
+      description: Revoke an API token
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: platform-tokens.deletetoken
+      with:
+        token_id: tools.token_id
+      outputParameters:
+      - type: object
+        mapping: $.

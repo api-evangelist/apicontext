@@ -1,0 +1,112 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Open ServiceNow incidents from APIContext alerts
+  description: When APIContext fires an alert against a monitored API, open a ServiceNow incident with the failure details, agent location, and last good run so ITSM workflows and SLAs are driven by real API behavior, not user reports.
+  tags:
+  - APIContext
+  - Integration
+  - Incident response
+  - servicenow
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+    SERVICENOW_API_KEY: SERVICENOW_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apicontext
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext API operations consumed by this integration.
+    resources:
+    - name: alerts-alert-id
+      path: /alerts/{alert_id}
+      operations:
+      - name: getalert
+        method: GET
+        description: Get the APIContext alert that fired.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: alert_id
+          in: path
+          type: string
+          description: Path parameter alert_id.
+          required: true
+    - name: results-call-call-id
+      path: /results/call/{call_id}/
+      operations:
+      - name: getcallresults
+        method: GET
+        description: Get the most recent results for context.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: Path parameter call_id.
+          required: true
+  - type: http
+    namespace: servicenow
+    baseUri: https://yourorg.service-now.com
+    description: ServiceNow Table API operations consumed by this integration.
+    resources:
+    - name: api-now-table-incident
+      path: /api/now/table/incident
+      operations:
+      - name: createincident
+        method: POST
+        description: 'ServiceNow Table API: createIncident'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  exposes:
+  - type: mcp
+    namespace: apicontext-servicenow-mcp
+    description: MCP adapter for the apicontext-servicenow integration.
+    tools:
+    - name: apicontext_servicenow
+      description: Execute the apicontext servicenow integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: apicontext-servicenow-rest
+    port: 8080
+    description: REST adapter for the apicontext-servicenow integration.
+    resources:
+    - path: /apicontext-servicenow
+      name: apicontext-servicenow
+      description: REST surface for the apicontext-servicenow integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the apicontext-servicenow integration.
+        call: apicontext_servicenow
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

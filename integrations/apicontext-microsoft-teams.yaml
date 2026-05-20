@@ -1,0 +1,117 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Notify Microsoft Teams of APIContext SLO status
+  description: When APIContext SLO status changes (breach, recovery, warning) post an adaptive card to the right Microsoft Teams channel so the API and platform teams have a shared timeline of API health inside the tool they already live in.
+  tags:
+  - APIContext
+  - Integration
+  - Collaboration
+  - microsoft-teams
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+    MICROSOFT_TEAMS_API_KEY: MICROSOFT_TEAMS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apicontext
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext API operations consumed by this integration.
+    resources:
+    - name: insights-call-call-id
+      path: /insights/call/{call_id}/
+      operations:
+      - name: getcallinsights
+        method: GET
+        description: Get the APIContext insights report for the call.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: Path parameter call_id.
+          required: true
+    - name: alerts
+      path: /alerts/
+      operations:
+      - name: listalerts
+        method: GET
+        description: List active APIContext alerts for context.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  - type: http
+    namespace: microsoft-teams
+    baseUri: https://graph.microsoft.com
+    description: Microsoft Graph API operations consumed by this integration.
+    resources:
+    - name: v1-0-teams-team-id-channels-channel-id-messages
+      path: /v1.0/teams/{team-id}/channels/{channel-id}/messages
+      operations:
+      - name: postchannelmessage
+        method: POST
+        description: 'Microsoft Graph API: postChannelMessage'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: team-id
+          in: path
+          type: string
+          description: Path parameter team-id.
+          required: true
+        - name: channel-id
+          in: path
+          type: string
+          description: Path parameter channel-id.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  exposes:
+  - type: mcp
+    namespace: apicontext-microsoft-teams-mcp
+    description: MCP adapter for the apicontext-microsoft-teams integration.
+    tools:
+    - name: apicontext_microsoft_teams
+      description: Execute the apicontext microsoft teams integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: apicontext-microsoft-teams-rest
+    port: 8080
+    description: REST adapter for the apicontext-microsoft-teams integration.
+    resources:
+    - path: /apicontext-microsoft-teams
+      name: apicontext-microsoft-teams
+      description: REST surface for the apicontext-microsoft-teams integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the apicontext-microsoft-teams integration.
+        call: apicontext_microsoft_teams
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

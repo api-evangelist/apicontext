@@ -1,0 +1,117 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Promote Postman collections into APIContext monitors
+  description: When a Postman collection is updated for a critical API, mirror the relevant requests into APIContext as monitored API calls so what is tested in Postman is what is continuously monitored in production from multiple regions.
+  tags:
+  - APIContext
+  - Integration
+  - API tooling
+  - postman
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    APICONTEXT_API_KEY: APICONTEXT_API_KEY
+    POSTMAN_API_KEY: POSTMAN_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apicontext
+    baseUri: https://client.apimetrics.io/api/2
+    description: APIContext API operations consumed by this integration.
+    resources:
+    - name: calls
+      path: /calls/
+      operations:
+      - name: createapicall
+        method: POST
+        description: Create an APIContext API call from a Postman request.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: calls-call-id
+      path: /calls/{call_id}
+      operations:
+      - name: updateapicall
+        method: PUT
+        description: Update an APIContext API call when the Postman request changes.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          description: Path parameter call_id.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  - type: http
+    namespace: postman
+    baseUri: https://api.getpostman.com
+    description: Postman API operations consumed by this integration.
+    resources:
+    - name: collections-collection-uid
+      path: /collections/{collection_uid}
+      operations:
+      - name: getcollection
+        method: GET
+        description: 'Postman API: getCollection'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: collection_uid
+          in: path
+          type: string
+          description: Path parameter collection_uid.
+          required: true
+  exposes:
+  - type: mcp
+    namespace: apicontext-postman-mcp
+    description: MCP adapter for the apicontext-postman integration.
+    tools:
+    - name: apicontext_postman
+      description: Execute the apicontext postman integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: apicontext-postman-rest
+    port: 8080
+    description: REST adapter for the apicontext-postman integration.
+    resources:
+    - path: /apicontext-postman
+      name: apicontext-postman
+      description: REST surface for the apicontext-postman integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the apicontext-postman integration.
+        call: apicontext_postman
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
