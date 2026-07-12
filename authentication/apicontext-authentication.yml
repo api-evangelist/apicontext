@@ -1,0 +1,15 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/apicontext-platform-openapi.yaml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - query
+schemes:
+- name: ApiTokenAuth
+  type: apiKey
+  in: query
+  parameter: _token
+  sources:
+  - openapi/apicontext-platform-openapi.yaml

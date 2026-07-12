@@ -43,6 +43,10 @@ apis:
       - type: Pricing
         url: https://apicontext.com/pricing/
 common:
+  - type: DomainSecurity
+    url: security/apicontext-domain-security.yml
+  - type: Authentication
+    url: authentication/apicontext-authentication.yml
   - type: GitHubOrganization
     url: https://github.com/apimetrics
   - type: LinkedIn
