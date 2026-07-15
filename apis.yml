@@ -43,6 +43,8 @@ apis:
       - type: Pricing
         url: https://apicontext.com/pricing/
 common:
+  - type: AgenticAccess
+    url: agentic-access/apicontext-agentic-access.yml
   - type: DomainSecurity
     url: security/apicontext-domain-security.yml
   - type: Authentication
