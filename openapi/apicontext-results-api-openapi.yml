@@ -1,0 +1,38 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Results API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Results
+paths:
+  /results/call/{call_id}/:
+    get:
+      tags:
+      - Results
+      operationId: getCallResults
+      summary: Get raw performance results
+      description: Return raw per-execution result records for an API call, including timing breakdowns, status codes, response bodies, and validation outcomes.
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Result records.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

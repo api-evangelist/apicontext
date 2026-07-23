@@ -1,0 +1,78 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Alerts API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Alerts
+paths:
+  /alerts/:
+    get:
+      tags:
+      - Alerts
+      operationId: listAlerts
+      summary: List alerts
+      description: List alert rules configured against API calls and SLOs.
+      responses:
+        '200':
+          description: Alerts.
+    post:
+      tags:
+      - Alerts
+      operationId: createAlert
+      summary: Create an alert
+      description: Create a new alert rule (thresholds for latency, availability, SLO breach, response validation failure) and target channels.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Created.
+  /alerts/{alert_id}:
+    get:
+      tags:
+      - Alerts
+      operationId: getAlert
+      summary: Get an alert
+      description: Retrieve an alert rule by id.
+      parameters:
+      - name: alert_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Alert.
+    delete:
+      tags:
+      - Alerts
+      operationId: deleteAlert
+      summary: Delete an alert
+      description: Delete an alert rule.
+      parameters:
+      - name: alert_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deleted.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

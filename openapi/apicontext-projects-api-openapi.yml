@@ -1,0 +1,84 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Projects API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Projects
+paths:
+  /projects/:
+    get:
+      tags:
+      - Projects
+      operationId: listProjects
+      summary: List projects
+      description: List APIContext projects that group API calls, schedules, alerts, and tokens.
+      responses:
+        '200':
+          description: Projects.
+    post:
+      tags:
+      - Projects
+      operationId: createProject
+      summary: Create a project
+      description: Create a new APIContext project to group related API calls and monitors.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Created.
+  /projects/{project_id}:
+    get:
+      tags:
+      - Projects
+      operationId: getProject
+      summary: Get a project
+      description: Retrieve a project by id.
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Project.
+    put:
+      tags:
+      - Projects
+      operationId: updateProject
+      summary: Update a project
+      description: Update project metadata or configuration.
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Updated.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

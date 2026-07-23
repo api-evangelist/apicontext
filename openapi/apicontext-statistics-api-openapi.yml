@@ -1,0 +1,53 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Statistics API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Statistics
+paths:
+  /calls/{call_id}/stats/:
+    get:
+      tags:
+      - Statistics
+      operationId: getCallStats
+      summary: Get statistics for an API call
+      description: Return aggregated performance statistics (latency, availability, SLO compliance) for an API call over a time window.
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: kind
+        in: query
+        schema:
+          type: string
+          enum:
+          - HOUR
+          - DAY
+          - WEEK
+          - MONTH
+        description: Aggregation granularity.
+      - name: type
+        in: query
+        schema:
+          type: string
+        description: Statistic type filter (e.g. ALL).
+      responses:
+        '200':
+          description: Statistics payload.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

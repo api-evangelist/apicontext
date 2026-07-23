@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents API Calls API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: API Calls
+paths:
+  /calls/:
+    get:
+      tags:
+      - API Calls
+      operationId: listApiCalls
+      summary: List API calls
+      description: List all API calls configured in the account. API calls define the synthetic transactions APIContext executes against monitored APIs.
+      responses:
+        '200':
+          description: List of API calls.
+    post:
+      tags:
+      - API Calls
+      operationId: createApiCall
+      summary: Create an API call
+      description: Create a new API call (synthetic transaction definition) including target URL, method, headers, and validation rules.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Created.
+  /calls/{call_id}:
+    get:
+      tags:
+      - API Calls
+      operationId: getApiCall
+      summary: Get an API call
+      description: Retrieve the configuration for a single API call by id.
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: API call id.
+      responses:
+        '200':
+          description: API call.
+    put:
+      tags:
+      - API Calls
+      operationId: updateApiCall
+      summary: Update an API call
+      description: Update the definition of an existing API call.
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Updated.
+    delete:
+      tags:
+      - API Calls
+      operationId: deleteApiCall
+      summary: Delete an API call
+      description: Delete an API call definition.
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deleted.
+  /calls/{call_id}/run:
+    post:
+      tags:
+      - API Calls
+      operationId: runApiCall
+      summary: Trigger an API call
+      description: Trigger an immediate synthetic execution of an API call from a chosen monitoring location.
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                location_id:
+                  type: string
+                  description: Monitoring agent location id (e.g. apimetrics_awsafsouth1).
+                run_delay:
+                  type: integer
+                  description: Delay in seconds before executing the call.
+      responses:
+        '202':
+          description: Run accepted.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

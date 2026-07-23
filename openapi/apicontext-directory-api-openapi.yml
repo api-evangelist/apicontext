@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Directory API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Directory
+paths:
+  /directory/providers:
+    get:
+      tags:
+      - Directory
+      operationId: listDirectoryProviders
+      summary: List API directory providers
+      description: List API providers tracked in the APIContext public API directory (300+ top providers) with current performance data for benchmarking.
+      responses:
+        '200':
+          description: Directory providers.
+  /directory/providers/{provider_id}:
+    get:
+      tags:
+      - Directory
+      operationId: getDirectoryProvider
+      summary: Get an API directory provider
+      description: Retrieve performance data and metadata for a single provider in the APIContext API directory.
+      parameters:
+      - name: provider_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Provider record.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

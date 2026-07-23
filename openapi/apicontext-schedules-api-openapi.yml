@@ -1,0 +1,137 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Schedules API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Schedules
+paths:
+  /schedules/:
+    get:
+      tags:
+      - Schedules
+      operationId: listSchedules
+      summary: List schedules
+      description: List monitoring schedules that control how often API calls are executed and from which regions.
+      responses:
+        '200':
+          description: Schedules.
+    post:
+      tags:
+      - Schedules
+      operationId: createSchedule
+      summary: Create a schedule
+      description: Create a monitoring schedule (frequency + regions) that can be attached to API calls.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                meta:
+                  type: object
+                schedule:
+                  type: object
+                  properties:
+                    regions:
+                      type: array
+                      items:
+                        type: string
+                    frequency:
+                      type: integer
+      responses:
+        '201':
+          description: Created.
+  /schedules/{schedule_id}:
+    get:
+      tags:
+      - Schedules
+      operationId: getSchedule
+      summary: Get a schedule
+      description: Retrieve a monitoring schedule by id.
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Schedule.
+    delete:
+      tags:
+      - Schedules
+      operationId: deleteSchedule
+      summary: Delete a schedule
+      description: Delete a monitoring schedule.
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deleted.
+  /schedules/{schedule_id}/call/{call_id}:
+    put:
+      tags:
+      - Schedules
+      operationId: addCallToSchedule
+      summary: Add an API call to a schedule
+      description: Attach an API call to a monitoring schedule so it executes on that cadence and across the schedule's configured regions.
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Linked.
+    delete:
+      tags:
+      - Schedules
+      operationId: removeCallFromSchedule
+      summary: Remove an API call from a schedule
+      description: Detach an API call from a monitoring schedule.
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Detached.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

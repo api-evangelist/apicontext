@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Workflows API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Workflows
+paths:
+  /workflows/:
+    get:
+      tags:
+      - Workflows
+      operationId: listWorkflows
+      summary: List workflows
+      description: List multi-step API workflows that chain calls together to exercise end-to-end business transactions.
+      responses:
+        '200':
+          description: Workflows.
+    post:
+      tags:
+      - Workflows
+      operationId: createWorkflow
+      summary: Create a workflow
+      description: Create a multi-step API workflow combining several API calls into one synthetic transaction.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Created.
+  /workflows/{workflow_id}:
+    get:
+      tags:
+      - Workflows
+      operationId: getWorkflow
+      summary: Get a workflow
+      description: Retrieve a workflow definition by id.
+      parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Workflow.
+    put:
+      tags:
+      - Workflows
+      operationId: updateWorkflow
+      summary: Update a workflow
+      description: Update a multi-step API workflow.
+      parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Updated.
+  /workflows/{workflow_id}/run:
+    post:
+      tags:
+      - Workflows
+      operationId: runWorkflow
+      summary: Run a workflow
+      description: Execute a multi-step API workflow on demand from a chosen monitoring location.
+      parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '202':
+          description: Accepted.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

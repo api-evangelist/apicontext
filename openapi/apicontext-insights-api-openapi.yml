@@ -1,0 +1,38 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Insights API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Insights
+paths:
+  /insights/call/{call_id}/:
+    get:
+      tags:
+      - Insights
+      operationId: getCallInsights
+      summary: Get insights report for an API call
+      description: Return the APIContext insights report for an API call - SLO compliance, regressions, anomalies, and recommended actions.
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Insights report.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

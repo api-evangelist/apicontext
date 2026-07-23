@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Reports API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Reports
+paths:
+  /reports/:
+    get:
+      tags:
+      - Reports
+      operationId: listReports
+      summary: List reports
+      description: List generated SLO and performance reports.
+      responses:
+        '200':
+          description: Reports.
+  /reports/{report_id}:
+    get:
+      tags:
+      - Reports
+      operationId: getReport
+      summary: Get a report
+      description: Retrieve a generated SLO or performance report by id.
+      parameters:
+      - name: report_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Report.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

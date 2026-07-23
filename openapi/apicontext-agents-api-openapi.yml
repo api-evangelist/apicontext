@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Agents
+paths:
+  /agents/info:
+    get:
+      tags:
+      - Agents
+      operationId: getAgentInfo
+      summary: Get agent info
+      description: Return the catalog of APIContext monitoring agents (regions, providers, capabilities) available for synthetic testing.
+      responses:
+        '200':
+          description: Agent info.
+  /agents/:
+    get:
+      tags:
+      - Agents
+      operationId: listAgents
+      summary: List agents
+      description: List available monitoring agents (regions, providers) that can execute synthetic API calls.
+      responses:
+        '200':
+          description: Agents.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token

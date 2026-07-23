@@ -1,0 +1,63 @@
+openapi: 3.0.3
+info:
+  title: APIContext Platform Agents Tokens API
+  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
+  version: 2.0.0
+  contact:
+    name: APIContext
+    url: https://apicontext.com/
+servers:
+- url: https://client.apimetrics.io/api/2
+  description: APIContext production API
+security:
+- ApiTokenAuth: []
+tags:
+- name: Tokens
+paths:
+  /tokens/:
+    get:
+      tags:
+      - Tokens
+      operationId: listTokens
+      summary: List API tokens
+      description: List API tokens issued for the current account.
+      responses:
+        '200':
+          description: Tokens.
+    post:
+      tags:
+      - Tokens
+      operationId: createToken
+      summary: Create an API token
+      description: Issue a new API token scoped to the requesting account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Created.
+  /tokens/{token_id}:
+    delete:
+      tags:
+      - Tokens
+      operationId: deleteToken
+      summary: Revoke an API token
+      description: Revoke an issued API token.
+      parameters:
+      - name: token_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Revoked.
+components:
+  securitySchemes:
+    ApiTokenAuth:
+      type: apiKey
+      in: query
+      name: _token
