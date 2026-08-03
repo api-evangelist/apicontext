@@ -1,0 +1,36 @@
+{
+  "provider": "apicontext",
+  "sources": [
+    "apicontext-agents-api-openapi.yml",
+    "apicontext-alerts-api-openapi.yml",
+    "apicontext-api-calls-api-openapi.yml",
+    "apicontext-directory-api-openapi.yml",
+    "apicontext-insights-api-openapi.yml",
+    "apicontext-projects-api-openapi.yml",
+    "apicontext-reports-api-openapi.yml",
+    "apicontext-results-api-openapi.yml",
+    "apicontext-schedules-api-openapi.yml",
+    "apicontext-statistics-api-openapi.yml",
+    "apicontext-tokens-api-openapi.yml",
+    "apicontext-workflows-api-openapi.yml"
+  ],
+  "outputs": [
+    "apicontext-agents-api-openapi.yml",
+    "apicontext-alerts-api-openapi.yml",
+    "apicontext-api-calls-api-openapi.yml",
+    "apicontext-directory-api-openapi.yml",
+    "apicontext-insights-api-openapi.yml",
+    "apicontext-projects-api-openapi.yml",
+    "apicontext-reports-api-openapi.yml",
+    "apicontext-results-api-openapi.yml",
+    "apicontext-schedules-api-openapi.yml",
+    "apicontext-statistics-api-openapi.yml",
+    "apicontext-tokens-api-openapi.yml",
+    "apicontext-workflows-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
