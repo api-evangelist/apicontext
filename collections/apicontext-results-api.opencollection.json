@@ -1,0 +1,44 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "APIContext Platform Agents Results API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "_token",
+      "value": "{{_token}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Results",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get raw performance results",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/results/call/:call_id/",
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Return raw per-execution result records for an API call, including timing breakdowns, status codes, response bodies, and validation outcomes."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

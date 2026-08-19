@@ -1,0 +1,179 @@
+{
+  "item": [
+    {
+      "id": "99b5ed06-3a17-4196-ad7d-b1b70e39de90",
+      "name": "Agents",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "53528368-544f-492e-9a35-2c55dd298d65",
+          "name": "Get agent info",
+          "request": {
+            "name": "Get agent info",
+            "description": {
+              "content": "Return the catalog of APIContext monitoring agents (regions, providers, capabilities) available for synthetic testing.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "agents",
+                "info"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b1076d4a-37fa-4e2c-9f76-915e5453ce99",
+              "name": "Agent info.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "agents",
+                    "info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_token",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e256731d-8bc8-4774-b139-32e9f26c61cb",
+          "name": "List agents",
+          "request": {
+            "name": "List agents",
+            "description": {
+              "content": "List available monitoring agents (regions, providers) that can execute synthetic API calls.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "agents",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9c9506c6-8633-4e96-81a4-50e10458f110",
+              "name": "Agents.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "agents",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_token",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://client.apimetrics.io/api/2",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "_token"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "query"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "7de69f79-99b2-429e-b5d4-18ef81ab6c41",
+    "name": "APIContext Platform Agents API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.\n\nContact Support:\n Name: APIContext",
+      "type": "text/plain"
+    }
+  }
+}

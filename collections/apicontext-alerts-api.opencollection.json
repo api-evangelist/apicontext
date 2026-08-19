@@ -1,0 +1,88 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "APIContext Platform Agents Alerts API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "_token",
+      "value": "{{_token}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Alerts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List alerts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/alerts/"
+          },
+          "docs": "List alert rules configured against API calls and SLOs."
+        },
+        {
+          "info": {
+            "name": "Create an alert",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/alerts/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new alert rule (thresholds for latency, availability, SLO breach, response validation failure) and target channels."
+        },
+        {
+          "info": {
+            "name": "Get an alert",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/alerts/:alert_id",
+            "params": [
+              {
+                "name": "alert_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve an alert rule by id."
+        },
+        {
+          "info": {
+            "name": "Delete an alert",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/2/alerts/:alert_id",
+            "params": [
+              {
+                "name": "alert_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete an alert rule."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

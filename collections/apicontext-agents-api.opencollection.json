@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "APIContext Platform Agents API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "_token",
+      "value": "{{_token}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Agents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get agent info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/agents/info"
+          },
+          "docs": "Return the catalog of APIContext monitoring agents (regions, providers, capabilities) available for synthetic testing."
+        },
+        {
+          "info": {
+            "name": "List agents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/agents/"
+          },
+          "docs": "List available monitoring agents (regions, providers) that can execute synthetic API calls."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

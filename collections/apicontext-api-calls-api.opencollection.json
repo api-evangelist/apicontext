@@ -1,0 +1,133 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "APIContext Platform Agents API Calls API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "_token",
+      "value": "{{_token}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "API Calls",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List API calls",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/"
+          },
+          "docs": "List all API calls configured in the account. API calls define the synthetic transactions APIContext executes against monitored APIs."
+        },
+        {
+          "info": {
+            "name": "Create an API call",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/calls/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new API call (synthetic transaction definition) including target URL, method, headers, and validation rules."
+        },
+        {
+          "info": {
+            "name": "Get an API call",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id",
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path",
+                "description": "API call id."
+              }
+            ]
+          },
+          "docs": "Retrieve the configuration for a single API call by id."
+        },
+        {
+          "info": {
+            "name": "Update an API call",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id",
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the definition of an existing API call."
+        },
+        {
+          "info": {
+            "name": "Delete an API call",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id",
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete an API call definition."
+        },
+        {
+          "info": {
+            "name": "Trigger an API call",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/run",
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Trigger an immediate synthetic execution of an API call from a chosen monitoring location."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,195 @@
+{
+  "item": [
+    {
+      "id": "574e90b7-8a01-4c4a-b3d4-449ac9b0a619",
+      "name": "Reports",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1d118c83-3e74-4fa3-8921-04b19d74971b",
+          "name": "List reports",
+          "request": {
+            "name": "List reports",
+            "description": {
+              "content": "List generated SLO and performance reports.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "reports",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "147ca6ae-b11f-4ae3-b118-1ad5de3e3b97",
+              "name": "Reports.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "reports",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_token",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0f4c1951-2fee-462d-a515-3f27394268cf",
+          "name": "Get a report",
+          "request": {
+            "name": "Get a report",
+            "description": {
+              "content": "Retrieve a generated SLO or performance report by id.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "reports",
+                ":report_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "report_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f9535024-e9be-4902-9230-0971fb86b02f",
+              "name": "Report.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "reports",
+                    ":report_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_token",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "report_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://client.apimetrics.io/api/2",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "_token"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "query"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "4bf2d445-a84f-4781-bc0e-41d268ca5c6d",
+    "name": "APIContext Platform Agents Reports API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.\n\nContact Support:\n Name: APIContext",
+      "type": "text/plain"
+    }
+  }
+}

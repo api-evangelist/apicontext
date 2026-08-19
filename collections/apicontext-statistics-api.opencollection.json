@@ -1,0 +1,56 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "APIContext Platform Agents Statistics API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "_token",
+      "value": "{{_token}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Statistics",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get statistics for an API call",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/",
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Aggregation granularity."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Statistic type filter (e.g. ALL)."
+              }
+            ]
+          },
+          "docs": "Return aggregated performance statistics (latency, availability, SLO compliance) for an API call over a time window."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

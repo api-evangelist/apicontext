@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "APIContext Platform Agents Tokens API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "_token",
+      "value": "{{_token}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tokens",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List API tokens",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/tokens/"
+          },
+          "docs": "List API tokens issued for the current account."
+        },
+        {
+          "info": {
+            "name": "Create an API token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/tokens/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Issue a new API token scoped to the requesting account."
+        },
+        {
+          "info": {
+            "name": "Revoke an API token",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/2/tokens/:token_id",
+            "params": [
+              {
+                "name": "token_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Revoke an issued API token."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

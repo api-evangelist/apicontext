@@ -1,0 +1,134 @@
+{
+  "item": [
+    {
+      "id": "b5dbb6ad-c639-496f-bc1b-8681c7907b7b",
+      "name": "Results",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "cf18782a-44d2-4dd3-8443-34840f344126",
+          "name": "Get raw performance results",
+          "request": {
+            "name": "Get raw performance results",
+            "description": {
+              "content": "Return raw per-execution result records for an API call, including timing breakdowns, status codes, response bodies, and validation outcomes.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "results",
+                "call",
+                ":call_id",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "call_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4575cc5b-4b58-48b6-a2c6-ee1f322aa16f",
+              "name": "Result records.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "results",
+                    "call",
+                    ":call_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "_token",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "call_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://client.apimetrics.io/api/2",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "_token"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "query"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "101a256e-b035-462d-98a5-3aa99c054c3c",
+    "name": "APIContext Platform Agents Results API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.\n\nContact Support:\n Name: APIContext",
+      "type": "text/plain"
+    }
+  }
+}

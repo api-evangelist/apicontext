@@ -1,0 +1,114 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "APIContext Platform Agents Workflows API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "_token",
+      "value": "{{_token}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workflows",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List workflows",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/workflows/"
+          },
+          "docs": "List multi-step API workflows that chain calls together to exercise end-to-end business transactions."
+        },
+        {
+          "info": {
+            "name": "Create a workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/workflows/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a multi-step API workflow combining several API calls into one synthetic transaction."
+        },
+        {
+          "info": {
+            "name": "Get a workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/workflows/:workflow_id",
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a workflow definition by id."
+        },
+        {
+          "info": {
+            "name": "Update a workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://client.apimetrics.io/api/2/workflows/:workflow_id",
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a multi-step API workflow."
+        },
+        {
+          "info": {
+            "name": "Run a workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/workflows/:workflow_id/run",
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Execute a multi-step API workflow on demand from a chosen monitoring location."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,138 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "APIContext Platform Agents Schedules API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "_token",
+      "value": "{{_token}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Schedules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List schedules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/schedules/"
+          },
+          "docs": "List monitoring schedules that control how often API calls are executed and from which regions."
+        },
+        {
+          "info": {
+            "name": "Create a schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/schedules/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a monitoring schedule (frequency + regions) that can be attached to API calls."
+        },
+        {
+          "info": {
+            "name": "Get a schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/schedules/:schedule_id",
+            "params": [
+              {
+                "name": "schedule_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a monitoring schedule by id."
+        },
+        {
+          "info": {
+            "name": "Delete a schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/2/schedules/:schedule_id",
+            "params": [
+              {
+                "name": "schedule_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a monitoring schedule."
+        },
+        {
+          "info": {
+            "name": "Add an API call to a schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://client.apimetrics.io/api/2/schedules/:schedule_id/call/:call_id",
+            "params": [
+              {
+                "name": "schedule_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Attach an API call to a monitoring schedule so it executes on that cadence and across the schedule's configured regions."
+        },
+        {
+          "info": {
+            "name": "Remove an API call from a schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/2/schedules/:schedule_id/call/:call_id",
+            "params": [
+              {
+                "name": "schedule_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Detach an API call from a monitoring schedule."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
