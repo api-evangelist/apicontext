@@ -104,6 +104,8 @@ apis:
   description: The Projects API from APIContext — 2 operation(s) for projects.
   humanURL: https://apicontext.com/
   tags:
+  - Project
+  tags_raw:
   - Projects
   properties:
   - type: OpenAPI
