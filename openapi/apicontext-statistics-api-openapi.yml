@@ -1,53 +1,1679 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: APIContext Platform Agents Statistics API
-  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
-  version: 2.0.0
+  title: APIContext Stats API
+  description: API for the APImetrics platform This document is the 'Stats' slice of the APIContext (APImetrics)
+    platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
   contact:
-    name: APIContext
-    url: https://apicontext.com/
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
 servers:
-- url: https://client.apimetrics.io/api/2
-  description: APIContext production API
-security:
-- ApiTokenAuth: []
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
 tags:
-- name: Statistics
+- name: Stats
+  description: Per-call performance and pass/fail statistics
 paths:
-  /calls/{call_id}/stats/:
+  /api/2/calls/{call_id}/stats/:
     get:
       tags:
-      - Statistics
-      operationId: getCallStats
-      summary: Get statistics for an API call
-      description: Return aggregated performance statistics (latency, availability, SLO compliance) for an API call over a time window.
+      - Stats
+      summary: Get-Call-Stats
+      description: Aggregated performance stats for a single period.
+      operationId: get-call-stats
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
       - name: call_id
         in: path
         required: true
         schema:
           type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
       - name: kind
         in: query
+        required: false
         schema:
-          type: string
-          enum:
-          - HOUR
-          - DAY
-          - WEEK
-          - MONTH
-        description: Aggregation granularity.
+          $ref: '#/components/schemas/StatsKind'
+          description: Aggregation period.
+          default: DAY
+        description: Aggregation period.
       - name: type
         in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/StatsType'
+          description: Result-code filter; `ALL` counts every result.
+          default: ALL
+        description: Result-code filter; `ALL` counts every result.
+      - name: metric
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/StatsMetric'
+          description: Latency metric to aggregate.
+          default: total_time
+        description: Latency metric to aggregate.
+      - name: location_id
+        in: query
+        required: false
         schema:
           type: string
-        description: Statistic type filter (e.g. ALL).
+          description: Agent location id to filter to, or `__ALL__` for all locations.
+          examples:
+          - __ALL__
+          default: __ALL__
+          title: Location Id
+        description: Agent location id to filter to, or `__ALL__` for all locations.
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+            Defaults to now.
+          examples:
+          - '2024-01-01T12:00:00Z'
+          title: Time
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+          Defaults to now.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Statistics payload.
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/since:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Stats-Since
+      description: Performance buckets from a start time forwards.
+      operationId: get-call-stats-since
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: kind
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ListStatsKind'
+          description: Aggregation period (`RAW` for per-result rows).
+          default: DAY
+        description: Aggregation period (`RAW` for per-result rows).
+      - name: type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/StatsType'
+          description: Result-code filter; `ALL` counts every result.
+          default: ALL
+        description: Result-code filter; `ALL` counts every result.
+      - name: metric
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/StatsMetric'
+          description: Latency metric to aggregate.
+          default: total_time
+        description: Latency metric to aggregate.
+      - name: location_id
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Agent location id to filter to, or `__ALL__` for all locations.
+          examples:
+          - __ALL__
+          default: __ALL__
+          title: Location Id
+        description: Agent location id to filter to, or `__ALL__` for all locations.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          description: Maximum number of rows to return (default 1000 aggregated, 5000 for RAW).
+          examples:
+          - 1000
+          title: Limit
+        description: Maximum number of rows to return (default 1000 aggregated, 5000 for RAW).
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+            Defaults to now.
+          examples:
+          - '2024-01-01T12:00:00Z'
+          title: Time
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+          Defaults to now.
+      - name: start
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+          examples:
+          - '2024-01-01T00:00:00Z'
+          title: Start
+        description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+      - name: end
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: End of the reporting window (ISO 8601). Clamped to now.
+          examples:
+          - '2024-01-02T00:00:00Z'
+          title: End
+        description: End of the reporting window (ISO 8601). Clamped to now.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/before:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Stats-Before
+      description: Performance buckets up to an end time.
+      operationId: get-call-stats-before
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: kind
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ListStatsKind'
+          description: Aggregation period (`RAW` for per-result rows).
+          default: DAY
+        description: Aggregation period (`RAW` for per-result rows).
+      - name: type
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/StatsType'
+          description: Result-code filter; `ALL` counts every result.
+          default: ALL
+        description: Result-code filter; `ALL` counts every result.
+      - name: metric
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/StatsMetric'
+          description: Latency metric to aggregate.
+          default: total_time
+        description: Latency metric to aggregate.
+      - name: location_id
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Agent location id to filter to, or `__ALL__` for all locations.
+          examples:
+          - __ALL__
+          default: __ALL__
+          title: Location Id
+        description: Agent location id to filter to, or `__ALL__` for all locations.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          description: Maximum number of rows to return (default 1000 aggregated, 5000 for RAW).
+          examples:
+          - 1000
+          title: Limit
+        description: Maximum number of rows to return (default 1000 aggregated, 5000 for RAW).
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+            Defaults to now.
+          examples:
+          - '2024-01-01T12:00:00Z'
+          title: Time
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+          Defaults to now.
+      - name: start
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+          examples:
+          - '2024-01-01T00:00:00Z'
+          title: Start
+        description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+      - name: end
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: End of the reporting window (ISO 8601). Clamped to now.
+          examples:
+          - '2024-01-02T00:00:00Z'
+          title: End
+        description: End of the reporting window (ISO 8601). Clamped to now.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/http_codes:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Http-Codes
+      description: HTTP status-code breakdown for a single period.
+      operationId: get-call-http-codes
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: kind
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/BreakdownKind'
+          description: Aggregation period.
+          default: MONTH
+        description: Aggregation period.
+      - name: location_id
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Agent location id to filter to, or `__ALL__` for all locations.
+          examples:
+          - __ALL__
+          default: __ALL__
+          title: Location Id
+        description: Agent location id to filter to, or `__ALL__` for all locations.
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+            Defaults to now.
+          examples:
+          - '2024-01-01T12:00:00Z'
+          title: Time
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+          Defaults to now.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpBreakdownResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/failures:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Failures
+      description: 'Deprecated: use the breakdown endpoint instead.'
+      operationId: get-call-failures
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/passfail:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Passfail
+      description: Pass/warning/failure counts for a single period.
+      operationId: get-call-passfail
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: kind
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/PassFailKind'
+          description: Aggregation period.
+          default: MONTH
+        description: Aggregation period.
+      - name: location_id
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Agent location id to filter to, or `__ALL__` for all locations.
+          examples:
+          - __ALL__
+          default: __ALL__
+          title: Location Id
+        description: Agent location id to filter to, or `__ALL__` for all locations.
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+            Defaults to now.
+          examples:
+          - '2024-01-01T12:00:00Z'
+          title: Time
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+          Defaults to now.
+      - name: format
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Any non-empty value returns the raw combined stats map instead of the reshaped
+            pass/warning/failure counts.
+          title: Format
+        description: Any non-empty value returns the raw combined stats map instead of the reshaped pass/warning/failure
+          counts.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/PassFailResponse'
+                - $ref: '#/components/schemas/PassFailTotalResponse'
+                title: Response Get-Call-Passfail
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/passfail_total:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Passfail-Total
+      description: Overall pass/fail totals over the call's most recent hour range.
+      operationId: get-call-passfail-total
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: start
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+          examples:
+          - '2024-01-01T00:00:00Z'
+          title: Start
+        description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+      - name: end
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: End of the reporting window (ISO 8601). Clamped to now.
+          examples:
+          - '2024-01-02T00:00:00Z'
+          title: End
+        description: End of the reporting window (ISO 8601). Clamped to now.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PassFailTotalResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/passfail_range:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Passfail-Range
+      description: Pass/fail counts grouped by period over a range.
+      operationId: get-call-passfail-range
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: kind
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/PassFailKind'
+          description: Grouping period.
+          default: MONTH
+        description: Grouping period.
+      - name: location_id
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Agent location id to filter to, or `__ALL__` for all locations.
+          examples:
+          - __ALL__
+          default: __ALL__
+          title: Location Id
+        description: Agent location id to filter to, or `__ALL__` for all locations.
+      - name: start
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+          examples:
+          - '2024-01-01T00:00:00Z'
+          title: Start
+        description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+      - name: end
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: End of the reporting window (ISO 8601). Clamped to now.
+          examples:
+          - '2024-01-02T00:00:00Z'
+          title: End
+        description: End of the reporting window (ISO 8601). Clamped to now.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PassFailRangeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/legacy/passfail:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Legacy-Passfail
+      description: Pass/fail counts for a single period (legacy synopsis endpoint).
+      operationId: get-call-legacy-passfail
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: kind
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/BreakdownKind'
+          description: Aggregation period.
+          default: MONTH
+        description: Aggregation period.
+      - name: location_id
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Agent location id to filter to, or `__ALL__` for all locations.
+          examples:
+          - __ALL__
+          default: __ALL__
+          title: Location Id
+        description: Agent location id to filter to, or `__ALL__` for all locations.
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+            Defaults to now.
+          examples:
+          - '2024-01-01T12:00:00Z'
+          title: Time
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+          Defaults to now.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyPassFailResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/legacy/passfail_range:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Legacy-Passfail-Range
+      description: Pass/fail counts grouped by period (legacy synopsis endpoint).
+      operationId: get-call-legacy-passfail-range
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: kind
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/BreakdownKind'
+          description: Grouping period.
+          default: MONTH
+        description: Grouping period.
+      - name: location_id
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Agent location id to filter to, or `__ALL__` for all locations.
+          examples:
+          - __ALL__
+          default: __ALL__
+          title: Location Id
+        description: Agent location id to filter to, or `__ALL__` for all locations.
+      - name: start
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+          examples:
+          - '2024-01-01T00:00:00Z'
+          title: Start
+        description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+      - name: end
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: End of the reporting window (ISO 8601). Clamped to now.
+          examples:
+          - '2024-01-02T00:00:00Z'
+          title: End
+        description: End of the reporting window (ISO 8601). Clamped to now.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyPassFailRangeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/stats/metrics/{location_id}/:
+    get:
+      tags:
+      - Stats
+      summary: Get-Call-Metrics
+      description: Quantile statistics for one or more metrics, grouped by domain.
+      operationId: get-call-metrics
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: location_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agent location id, or `__ALL__` for all locations.
+          title: Location Id
+        description: Agent location id, or `__ALL__` for all locations.
+      - name: kind
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/StatsKind'
+          description: Aggregation period.
+          default: DAY
+        description: Aggregation period.
+      - name: quantile
+        in: query
+        required: false
+        schema:
+          type: number
+          maximum: 100
+          minimum: 0
+          description: Percentile to compute (0–100).
+          default: 50.0
+          title: Quantile
+        description: Percentile to compute (0–100).
+      - name: metric
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/StatsMetric'
+          description: Latency metric to aggregate.
+          default: total_time_no_dns
+        description: Latency metric to aggregate.
+      - name: metric[]
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              $ref: '#/components/schemas/StatsMetric'
+          - type: 'null'
+          description: Repeatable; one output column per metric. Overrides `metric`.
+          title: Metric[]
+        description: Repeatable; one output column per metric. Overrides `metric`.
+      - name: category
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/StatsCategory'
+          - type: 'null'
+          description: Restrict the quantile to a single result category.
+          title: Category
+        description: Restrict the quantile to a single result category.
+      - name: dest_ip
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Group results by destination IP as well as domain/location when truthy (`1`/`t`/`true`).
+          examples:
+          - t
+          default: t
+          title: Dest Ip
+        description: Group results by destination IP as well as domain/location when truthy (`1`/`t`/`true`).
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+            Defaults to now.
+          examples:
+          - '2024-01-01T12:00:00Z'
+          title: Time
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
+          Defaults to now.
+      - name: start
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+          examples:
+          - '2024-01-01T00:00:00Z'
+          title: Start
+        description: Start of the reporting window (ISO 8601). Clamped to the call's creation time.
+      - name: end
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: End of the reporting window (ISO 8601). Clamped to now.
+          examples:
+          - '2024-01-02T00:00:00Z'
+          title: End
+        description: End of the reporting window (ISO 8601). Clamped to now.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuantileResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   securitySchemes:
-    ApiTokenAuth:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
       type: apiKey
-      in: query
-      name: _token
+      in: header
+      name: X-Api-Key
+  schemas:
+    BreakdownKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      title: BreakdownKind
+      description: '``http_codes`` / ``legacy/passfail*`` — no YEAR.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HttpBreakdownResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_HttpBreakdownMeta'
+        stat:
+          $ref: '#/components/schemas/_HttpBreakdownStat'
+      type: object
+      required:
+      - meta
+      - stat
+      title: HttpBreakdownResponse
+    LegacyPassFailRangeResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_LegacyPassFailMeta'
+        results:
+          additionalProperties:
+            $ref: '#/components/schemas/_PassFailCounts'
+          type: object
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: LegacyPassFailRangeResponse
+    LegacyPassFailResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_LegacyPassFailMeta'
+        stat:
+          $ref: '#/components/schemas/_PassFailCounts'
+      type: object
+      required:
+      - meta
+      - stat
+      title: LegacyPassFailResponse
+    ListStatsKind:
+      type: string
+      enum:
+      - RAW
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      - YEAR
+      title: ListStatsKind
+      description: As ``StatsKind`` plus ``RAW`` (per-result rows) for ``since``/``before``.
+    PassFailKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - MONTH
+      - YEAR
+      title: PassFailKind
+      description: '``passfail`` / ``passfail_range`` (KIND_CLASS_MAP) — no WEEK.'
+    PassFailRangeResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailRangeMeta'
+        results:
+          additionalProperties:
+            $ref: '#/components/schemas/_PassFailCounts'
+          type: object
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: PassFailRangeResponse
+    PassFailResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailMeta'
+        stat:
+          $ref: '#/components/schemas/_PassFailCounts'
+      type: object
+      required:
+      - meta
+      - stat
+      title: PassFailResponse
+    PassFailTotalResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailTotalMeta'
+        stat:
+          additionalProperties: true
+          type: object
+          title: Stat
+      type: object
+      required:
+      - meta
+      - stat
+      title: PassFailTotalResponse
+    QuantileResponse:
+      properties:
+        columns:
+          items:
+            type: string
+          type: array
+          title: Columns
+        index:
+          items:
+            items: {}
+            type: array
+          type: array
+          title: Index
+        data:
+          items:
+            items:
+              type: number
+            type: array
+          type: array
+          title: Data
+      type: object
+      required:
+      - columns
+      - index
+      - data
+      title: QuantileResponse
+      description: pandas-``to_dict('split')``-style payload (columns / index / data).
+    StatListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_StatListMeta'
+        stats:
+          items:
+            $ref: '#/components/schemas/_StatItem'
+          type: array
+          title: Stats
+      type: object
+      required:
+      - meta
+      - stats
+      title: StatListResponse
+    StatResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_StatMeta'
+        stat:
+          anyOf:
+          - $ref: '#/components/schemas/_StatValues'
+          - type: 'null'
+        adv_stat:
+          anyOf:
+          - $ref: '#/components/schemas/_StatValues'
+          - type: 'null'
+      type: object
+      required:
+      - meta
+      title: StatResponse
+    StatsCategory:
+      type: string
+      enum:
+      - PASS
+      - SLOW
+      - WARNING
+      - FAIL
+      title: StatsCategory
+      description: Result category filter for the quantile ``metrics/`` endpoint.
+    StatsKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      - YEAR
+      title: StatsKind
+      description: Aggregation period for ``stats/`` and ``metrics/`` (StatsApiHandler.VALID_KINDS).
+    StatsMetric:
+      type: string
+      enum:
+      - namelookup_time
+      - time_to_connect
+      - time_to_handshake
+      - time_to_tx_request
+      - time_to_first_byte
+      - time_to_response
+      - total_time
+      - total_time_no_dns
+      - server_time
+      - starttransfer_time
+      - starttransfer_time_no_dns
+      - network_time
+      - network_time_no_dns
+      - time_to_last_byte
+      title: StatsMetric
+    StatsType:
+      type: string
+      enum:
+      - ALL
+      - UNABLE_TO_RUN
+      - STARTED
+      - ENDED
+      - QUEUED
+      - PROCESSING
+      - SKIPPED
+      - AGENT_ERROR
+      - CONNECTION_WARNING
+      - HTTP_REDIRECT_ERROR
+      - HTTP_CLIENT_ERROR
+      - CONTENT_WARNING
+      - SLA_WARNING
+      - HTTP_SERVER_ERROR
+      - CONNECTION_ERROR
+      - HEADER_ERROR
+      - CONTENT_ERROR
+      - SLA_ERROR
+      - COMPLETE
+      - SLOW_COMPLETE
+      title: StatsType
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    _CategoryBreakdown:
+      properties:
+        totals:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Totals
+        totals_grouped:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Totals Grouped
+      type: object
+      title: _CategoryBreakdown
+    _HttpBreakdownMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+      type: object
+      required:
+      - call_id
+      - kind
+      - location_id
+      title: _HttpBreakdownMeta
+    _HttpBreakdownOverall:
+      properties:
+        pass:
+          type: integer
+          title: Pass
+          default: 0
+        warning:
+          type: integer
+          title: Warning
+          default: 0
+        failure:
+          type: integer
+          title: Failure
+          default: 0
+      type: object
+      title: _HttpBreakdownOverall
+    _HttpBreakdownStat:
+      properties:
+        overall:
+          $ref: '#/components/schemas/_HttpBreakdownOverall'
+        pass:
+          $ref: '#/components/schemas/_CategoryBreakdown'
+        warning:
+          $ref: '#/components/schemas/_CategoryBreakdown'
+        failure:
+          $ref: '#/components/schemas/_CategoryBreakdown'
+      type: object
+      required:
+      - overall
+      title: _HttpBreakdownStat
+    _LegacyPassFailMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+      type: object
+      required:
+      - call_id
+      - kind
+      - location_id
+      title: _LegacyPassFailMeta
+    _PassFailCounts:
+      properties:
+        pass:
+          type: integer
+          title: Pass
+          default: 0
+        warning:
+          type: integer
+          title: Warning
+          default: 0
+        failure:
+          type: integer
+          title: Failure
+          default: 0
+      type: object
+      title: _PassFailCounts
+    _PassFailMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+        kind:
+          type: string
+          title: Kind
+      type: object
+      required:
+      - call_id
+      - location_id
+      - kind
+      title: _PassFailMeta
+    _PassFailRangeMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+      type: object
+      required:
+      - call_id
+      - kind
+      - location_id
+      title: _PassFailRangeMeta
+    _PassFailTotalMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+      type: object
+      required:
+      - call_id
+      title: _PassFailTotalMeta
+    _StatItem:
+      properties:
+        time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Time
+        min_latency:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Min Latency
+        max_latency:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Max Latency
+        avg_latency:
+          type: number
+          title: Avg Latency
+        standard_deviation:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Standard Deviation
+        count:
+          type: integer
+          title: Count
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        http_code:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Http Code
+        result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result
+        content_length:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Content Length
+      type: object
+      required:
+      - avg_latency
+      - count
+      title: _StatItem
+      description: One bucket (aggregated) or one result (RAW).
+    _StatListMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        type:
+          type: string
+          title: Type
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+      type: object
+      required:
+      - call_id
+      - type
+      - kind
+      - location_id
+      title: _StatListMeta
+    _StatMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        type:
+          type: string
+          title: Type
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Time
+      type: object
+      required:
+      - call_id
+      - type
+      - kind
+      - location_id
+      title: _StatMeta
+    _StatValues:
+      properties:
+        min_latency:
+          type: number
+          title: Min Latency
+        max_latency:
+          type: number
+          title: Max Latency
+        avg_latency:
+          type: number
+          title: Avg Latency
+        standard_deviation:
+          type: number
+          title: Standard Deviation
+        count:
+          type: integer
+          title: Count
+        time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Time
+      type: object
+      required:
+      - min_latency
+      - max_latency
+      - avg_latency
+      - standard_deviation
+      - count
+      title: _StatValues

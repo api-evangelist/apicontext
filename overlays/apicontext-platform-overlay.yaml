@@ -1,0 +1,38 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the APIContext (APImetrics) platform API
+  version: 1.0.0
+extends: openapi/_original/apicontext-apimetrics-openapi.json
+x-generated: '2026-09-04'
+x-method: generated
+x-source: >-
+  Captures every change API Evangelist makes on top of the verbatim harvest of
+  https://client.apimetrics.io/openapi.json (info.version v2026-09-02). The harvested document in
+  openapi/_original/ is never mutated, with one mandated exception: 0-working/sanitize-secrets.py
+  replaced three Slack incoming-webhook example URLs inside SlackWebHookParameters.url descriptions
+  ("https://hooks.slack.com/services/T.../B.../...") with REDACTED, because GitHub push protection
+  blocks on the token SHAPE alone. No structural element of the contract was altered.
+actions:
+- target: $.info
+  description: >-
+    The published document declares no servers[] block, so a client reading it has no base URL. Every
+    path is absolute from the host it is served on.
+  update:
+    x-apievangelist-harvested-from: https://client.apimetrics.io/openapi.json
+    x-apievangelist-harvested-on: '2026-09-04'
+- target: $
+  description: Add the base URL the document is served from and whose paths it describes.
+  update:
+    servers:
+    - url: https://client.apimetrics.io
+      description: APIContext (APImetrics) platform API
+- target: $.info
+  description: Record the conventions API Evangelist derived from the contract, for agent consumers.
+  update:
+    x-apievangelist-conventions:
+      pagination: cursor + limit query parameters
+      idempotency: none
+      reversibility: none
+      error_envelope: HTTPValidationError (422) / ErrorResponse / flat error_msg
+      rate_limit_headers: none declared
+      versions_served: [/api/2, /api/3]

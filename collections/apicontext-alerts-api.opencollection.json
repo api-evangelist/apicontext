@@ -1,85 +1,170 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "APIContext Platform Agents Alerts API",
-    "version": "2.0.0"
-  },
-  "request": {
-    "auth": {
-      "type": "apikey",
-      "key": "_token",
-      "value": "{{_token}}",
-      "placement": "query"
-    }
+    "name": "APIContext Notifications (Alerts) API",
+    "version": "v2026-09-02"
   },
   "items": [
     {
       "info": {
-        "name": "Alerts",
+        "name": "Notifications",
         "type": "folder"
       },
       "items": [
         {
           "info": {
-            "name": "List alerts",
+            "name": "List-Notifications",
             "type": "http"
           },
           "http": {
             "method": "GET",
-            "url": "https://client.apimetrics.io/api/2/alerts/"
+            "url": "https://client.apimetrics.io/api/2/notifications/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
           },
-          "docs": "List alert rules configured against API calls and SLOs."
+          "docs": "List notifications owned by the project, newest first."
         },
         {
           "info": {
-            "name": "Create an alert",
+            "name": "List-Notifications-By-Call",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/notifications/call/:test_key_str/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "test_key_str",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List notifications referencing a specific call, newest first."
+        },
+        {
+          "info": {
+            "name": "Get-Notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/notifications/:key_str/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Return the representation of a single notification."
+        },
+        {
+          "info": {
+            "name": "Update-Notification",
             "type": "http"
           },
           "http": {
             "method": "POST",
-            "url": "https://client.apimetrics.io/api/2/alerts/",
+            "url": "https://client.apimetrics.io/api/2/notifications/:key_str/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
             "body": {
               "type": "json",
               "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
             }
           },
-          "docs": "Create a new alert rule (thresholds for latency, availability, SLO breach, response validation failure) and target channels."
-        },
-        {
-          "info": {
-            "name": "Get an alert",
-            "type": "http"
-          },
-          "http": {
-            "method": "GET",
-            "url": "https://client.apimetrics.io/api/2/alerts/:alert_id",
-            "params": [
-              {
-                "name": "alert_id",
-                "value": "",
-                "type": "path"
-              }
-            ]
-          },
-          "docs": "Retrieve an alert rule by id."
-        },
-        {
-          "info": {
-            "name": "Delete an alert",
-            "type": "http"
-          },
-          "http": {
-            "method": "DELETE",
-            "url": "https://client.apimetrics.io/api/2/alerts/:alert_id",
-            "params": [
-              {
-                "name": "alert_id",
-                "value": "",
-                "type": "path"
-              }
-            ]
-          },
-          "docs": "Delete an alert rule."
+          "docs": "Update the ``viewed`` flag for the requesting project. No other field is writable."
         }
       ]
     }

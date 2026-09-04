@@ -1,24 +1,641 @@
 {
   "item": [
     {
-      "id": "b669ed3e-0fe3-4f34-ae5e-98203b795876",
+      "id": "bad71365-a9e3-4a72-8baf-208ebe1090a4",
       "name": "Insights",
       "description": {
-        "content": "",
+        "content": "Pre-computed API insights reports, rankings and outlier detail.",
         "type": "text/plain"
       },
       "item": [
         {
-          "id": "4021e982-6f11-4e5f-8660-754a59204b13",
-          "name": "Get insights report for an API call",
+          "id": "6726fd6c-f93c-40f5-affa-4ba1880ed50c",
+          "name": "List-Insights",
           "request": {
-            "name": "Get insights report for an API call",
+            "name": "List-Insights",
             "description": {
-              "content": "Return the APIContext insights report for an API call - SLO compliance, regressions, anomalies, and recommended actions.",
+              "content": "List pre-computed insights reports for the project.",
               "type": "text/plain"
             },
             "url": {
               "path": [
+                "api",
+                "2",
+                "insights",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "607ab3a0-a6ef-4a51-8b9d-617febb9c0cf",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"next_cursor\": \"string\",\n    \"more\": false,\n    \"project_id\": \"string\"\n  },\n  \"results\": [\n    {\n      \"id\": \"string\",\n      \"project_id\": \"string\",\n      \"call_id\": \"string\",\n      \"version\": \"string\",\n      \"report_type\": 371,\n      \"score\": 5822,\n      \"rank\": 624,\n      \"name\": \"string\",\n      \"domain\": \"string\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"owner\": \"string\",\n      \"pass_percent\": 8246.366268970265,\n      \"outlier_percent\": 3295.7998176279148,\n      \"mean_test_length\": 3867.0962391549556,\n      \"sd_test_length\": 1708.4758229928298,\n      \"start_date\": \"1998-05-11T15:03:54.986Z\",\n      \"end_date\": \"1953-02-28T06:18:44.720Z\",\n      \"last_update\": \"1948-10-21T10:18:25.333Z\",\n      \"created\": \"2014-10-19T23:09:14.809Z\"\n    },\n    {\n      \"id\": \"string\",\n      \"project_id\": \"string\",\n      \"call_id\": \"string\",\n      \"version\": \"string\",\n      \"report_type\": 3688,\n      \"score\": 6769,\n      \"rank\": 4614,\n      \"name\": \"string\",\n      \"domain\": \"string\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"owner\": \"string\",\n      \"pass_percent\": 5532.3420836956,\n      \"outlier_percent\": 5538.816873001248,\n      \"mean_test_length\": 3432.8723756503578,\n      \"sd_test_length\": 2943.1576768947975,\n      \"start_date\": \"1963-04-16T13:59:07.557Z\",\n      \"end_date\": \"1998-10-05T15:10:48.254Z\",\n      \"last_update\": \"1991-05-07T14:25:25.540Z\",\n      \"created\": \"1992-02-17T04:14:33.236Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7a28737b-7bb8-4b78-8ec9-854fa8804cec",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4c6442c2-6bf0-4d8e-89bc-c01fde78b1b2",
+          "name": "List-Insights-Rank",
+          "request": {
+            "name": "List-Insights-Rank",
+            "description": {
+              "content": "Score-ranked most-recent reports plus a short score history per monitor.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "insights",
+                "rank",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "weekly",
+                  "value": "<string>",
+                  "description": "Set true/t/1 for weekly instead of monthly."
+                },
+                {
+                  "disabled": false,
+                  "key": "reverse",
+                  "value": "<string>",
+                  "description": "Set true/t/1 to sort best-first instead of worst-first."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f7d35000-4680-4262-ae45-47367928f2f8",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    "rank",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "weekly",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reverse",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "null",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "32be7c7f-49b2-4d9f-aea6-eeefbdb8ee19",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    "rank",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "weekly",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reverse",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8cec86fa-2af7-4128-9a5e-21993fa2dfd1",
+          "name": "List-Insights-Rank-History",
+          "request": {
+            "name": "List-Insights-Rank-History",
+            "description": {
+              "content": "good/ok/bad score-band counts per period bucket across a date window.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "insights",
+                "rank",
+                "history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_date",
+                  "value": "<string>",
+                  "description": "Window start (YYYY-MM-DD). Defaults to ~6 months ago."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_date",
+                  "value": "<string>",
+                  "description": "Window end (YYYY-MM-DD). Defaults to ~now."
+                },
+                {
+                  "disabled": false,
+                  "key": "weekly",
+                  "value": "<string>",
+                  "description": "Set true/t/1 for weekly instead of monthly."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "d6bb3c92-fce3-41c1-b833-105bdf5b58ce",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    "rank",
+                    "history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "weekly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"weekly\": false,\n    \"start_date\": \"1995-06-10T05:49:17.042Z\",\n    \"end_date\": \"1990-06-13T21:49:12.974Z\"\n  },\n  \"results\": [\n    {\n      \"start\": \"1958-11-13T03:43:53.922Z\",\n      \"good\": 503,\n      \"ok\": 9438,\n      \"bad\": 8422\n    },\n    {\n      \"start\": \"2000-09-23T21:38:17.410Z\",\n      \"good\": 9240,\n      \"ok\": 5079,\n      \"bad\": 5535\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fb18bad9-bde8-4ec8-836b-8fd5cc57858d",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    "rank",
+                    "history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "weekly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "90818e71-23c9-413e-aebc-74b6b820963e",
+          "name": "Get-Call-Insights",
+          "request": {
+            "name": "Get-Call-Insights",
+            "description": {
+              "content": "Latest insights report for a single monitor (empty object if none).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
                 "insights",
                 "call",
                 ":call_id",
@@ -27,7 +644,14 @@
               "host": [
                 "{{baseUrl}}"
               ],
-              "query": [],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "weekly",
+                  "value": "<string>",
+                  "description": "Set true/t/1 for the latest weekly report."
+                }
+              ],
               "variable": [
                 {
                   "disabled": false,
@@ -38,16 +662,50 @@
                 }
               ]
             },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "method": "GET",
-            "auth": null
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
           },
           "response": [
             {
-              "id": "5c1a1edc-756f-4af4-9970-1ce8e0da19a2",
-              "name": "Insights report.",
+              "id": "4e98690d-8bf4-4050-803a-a0fd903dcd85",
+              "name": "Successful Response",
               "originalRequest": {
                 "url": {
                   "path": [
+                    "api",
+                    "2",
                     "insights",
                     "call",
                     ":call_id",
@@ -58,8 +716,8 @@
                   ],
                   "query": [
                     {
-                      "key": "_token",
-                      "value": "<API Key>"
+                      "key": "weekly",
+                      "value": "<string>"
                     }
                   ],
                   "variable": [
@@ -72,6 +730,26 @@
                     }
                   ]
                 },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
                 "body": {}
               },
@@ -80,12 +758,469 @@
               "header": [
                 {
                   "key": "Content-Type",
-                  "value": "text/plain"
+                  "value": "application/json"
                 }
               ],
-              "body": "",
+              "body": "{\n  \"id\": \"string\",\n  \"project_id\": \"string\",\n  \"call_id\": \"string\",\n  \"version\": \"string\",\n  \"report_type\": 4251,\n  \"score\": 5122,\n  \"rank\": 141,\n  \"name\": \"string\",\n  \"domain\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"owner\": \"string\",\n  \"pass_percent\": 6926.346785963216,\n  \"outlier_percent\": 2009.500092526162,\n  \"mean_test_length\": 4788.213087938952,\n  \"sd_test_length\": 2524.630633726893,\n  \"start_date\": \"1982-10-31T22:39:26.486Z\",\n  \"end_date\": \"1994-03-04T22:39:40.687Z\",\n  \"last_update\": \"2018-04-16T09:55:54.600Z\",\n  \"created\": \"1983-03-16T07:30:52.097Z\"\n}",
               "cookie": [],
-              "_postman_previewlanguage": "text"
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "80a853ba-9437-4c27-9971-ed45692a4b75",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    "call",
+                    ":call_id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "weekly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "call_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a23a33ab-d4fe-429a-8719-d8c561bf6b07",
+          "name": "Get-Insights-Outliers",
+          "request": {
+            "name": "Get-Insights-Outliers",
+            "description": {
+              "content": "Download an outliers blob, rewriting numeric result ids to urlsafe keys.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "insights",
+                ":filename",
+                "outliers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "filename",
+                  "description": "(Required) Report key of the form ``{call_id}__{start_date}__{end_date}``."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "168774f0-eeb3-4ebe-842c-712890ac7094",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    ":filename",
+                    "outliers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filename",
+                      "description": "(Required) Report key of the form ``{call_id}__{start_date}__{end_date}``."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": 84.82731548313582\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0da272f2-57db-4c7d-994e-87eadf72db46",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    ":filename",
+                    "outliers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filename",
+                      "description": "(Required) Report key of the form ``{call_id}__{start_date}__{end_date}``."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "55bdce21-b432-4abf-828c-2b237c8f7b26",
+          "name": "Get-Insights",
+          "request": {
+            "name": "Get-Insights",
+            "description": {
+              "content": "Download a pre-computed insights report blob from cloud storage.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "insights",
+                ":filename",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "filename",
+                  "description": "(Required) Report key of the form ``{call_id}__{start_date}__{end_date}``."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6735e7bf-e487-41ce-b104-83e5ddc91d46",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    ":filename",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filename",
+                      "description": "(Required) Report key of the form ``{call_id}__{start_date}__{end_date}``."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": 6115.890428903772,\n  \"key_1\": 6733\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "513cef1d-bfaf-4798-868c-c1d6876825eb",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "insights",
+                    ":filename",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filename",
+                      "description": "(Required) Report key of the form ``{call_id}__{start_date}__{end_date}``."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
             }
           ],
           "event": [],
@@ -101,33 +1236,16 @@
   "variable": [
     {
       "type": "string",
-      "value": "https://client.apimetrics.io/api/2",
+      "value": "https://client.apimetrics.io",
       "key": "baseUrl"
     }
   ],
-  "auth": {
-    "type": "apikey",
-    "apikey": [
-      {
-        "key": "key",
-        "value": "_token"
-      },
-      {
-        "key": "value",
-        "value": "{{apiKey}}"
-      },
-      {
-        "key": "in",
-        "value": "query"
-      }
-    ]
-  },
   "info": {
-    "_postman_id": "0d1f84bb-fb85-42ff-86cd-ac700ed7db44",
-    "name": "APIContext Platform Agents Insights API",
+    "_postman_id": "fb2a7957-36ed-499d-811b-7456779661fc",
+    "name": "APIContext Insights API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
-      "content": "APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.\n\nContact Support:\n Name: APIContext",
+      "content": "API for the APImetrics platform This document is the 'Insights' slice of the APIContext (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.\n\nContact Support:\n Name: APIContext Support\n Email: support@apicontext.com",
       "type": "text/plain"
     }
   }

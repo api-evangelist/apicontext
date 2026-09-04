@@ -1,16 +1,8 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "APIContext Platform Agents Projects API",
-    "version": "2.0.0"
-  },
-  "request": {
-    "auth": {
-      "type": "apikey",
-      "key": "_token",
-      "value": "{{_token}}",
-      "placement": "query"
-    }
+    "name": "APIContext Projects API",
+    "version": "v2026-09-02"
   },
   "items": [
     {
@@ -21,59 +13,122 @@
       "items": [
         {
           "info": {
-            "name": "List projects",
+            "name": "List-Security-Profiles-For-Project",
             "type": "http"
           },
           "http": {
             "method": "GET",
-            "url": "https://client.apimetrics.io/api/2/projects/"
+            "url": "https://client.apimetrics.io/api/3/project/security-profiles",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
           },
-          "docs": "List APIContext projects that group API calls, schedules, alerts, and tokens."
+          "docs": "List-Security-Profiles-For-Project"
         },
         {
           "info": {
-            "name": "Create a project",
+            "name": "List-Agents-For-Project",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/3/project/agents",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List all agents accessible to a project.\nReturns the project's agent list (its organization's ``agents:<name>``\nsystem tag, or the public list) plus agents owned by the project's\norganization or by the project itself.\nPersonal projects (no org) only get public and project-owned agents."
+        },
+        {
+          "info": {
+            "name": "List-Projects-In-Org",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/organizations/:org_id/projects/",
+            "params": [
+              {
+                "name": "org_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "include_quota",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "system_tag",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List projects in an organization."
+        },
+        {
+          "info": {
+            "name": "Create-Project-In-Org",
             "type": "http"
           },
           "http": {
             "method": "POST",
-            "url": "https://client.apimetrics.io/api/2/projects/",
-            "body": {
-              "type": "json",
-              "data": "{}"
-            }
-          },
-          "docs": "Create a new APIContext project to group related API calls and monitors."
-        },
-        {
-          "info": {
-            "name": "Get a project",
-            "type": "http"
-          },
-          "http": {
-            "method": "GET",
-            "url": "https://client.apimetrics.io/api/2/projects/:project_id",
+            "url": "https://client.apimetrics.io/api/2/organizations/:org_id/projects/",
             "params": [
               {
-                "name": "project_id",
-                "value": "",
-                "type": "path"
-              }
-            ]
-          },
-          "docs": "Retrieve a project by id."
-        },
-        {
-          "info": {
-            "name": "Update a project",
-            "type": "http"
-          },
-          "http": {
-            "method": "PUT",
-            "url": "https://client.apimetrics.io/api/2/projects/:project_id",
-            "params": [
-              {
-                "name": "project_id",
+                "name": "org_id",
                 "value": "",
                 "type": "path"
               }
@@ -81,9 +136,112 @@
             "body": {
               "type": "json",
               "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
             }
           },
-          "docs": "Update project metadata or configuration."
+          "docs": "Create a new project in an organization."
+        },
+        {
+          "info": {
+            "name": "Delete-Project-From-Org",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/2/organizations/:org_id/projects/:project_key_str/",
+            "params": [
+              {
+                "name": "project_key_str",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "org_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Remove a project from an organization (re-homes it to community)."
+        },
+        {
+          "info": {
+            "name": "Get-Project",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/projects/:project_key_str/",
+            "params": [
+              {
+                "name": "project_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get a project by key."
+        },
+        {
+          "info": {
+            "name": "Update-Project",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/projects/:project_key_str/",
+            "params": [
+              {
+                "name": "project_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Update a project's name, tags, email, or security profile."
         }
       ]
     }

@@ -1,32 +1,30 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "APIContext Platform Agents Statistics API",
-    "version": "2.0.0"
-  },
-  "request": {
-    "auth": {
-      "type": "apikey",
-      "key": "_token",
-      "value": "{{_token}}",
-      "placement": "query"
-    }
+    "name": "APIContext Stats API",
+    "version": "v2026-09-02"
   },
   "items": [
     {
       "info": {
-        "name": "Statistics",
+        "name": "Stats",
         "type": "folder"
       },
       "items": [
         {
           "info": {
-            "name": "Get statistics for an API call",
+            "name": "Get-Call-Stats",
             "type": "http"
           },
           "http": {
             "method": "GET",
             "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
             "params": [
               {
                 "name": "call_id",
@@ -37,17 +35,661 @@
                 "name": "kind",
                 "value": "",
                 "type": "query",
-                "description": "Aggregation granularity."
+                "description": "Aggregation period."
               },
               {
                 "name": "type",
                 "value": "",
                 "type": "query",
-                "description": "Statistic type filter (e.g. ALL)."
+                "description": "Result-code filter; `ALL` counts every result."
+              },
+              {
+                "name": "metric",
+                "value": "",
+                "type": "query",
+                "description": "Latency metric to aggregate."
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "query",
+                "description": "Agent location id to filter to, or `__ALL__` for all locations."
+              },
+              {
+                "name": "time",
+                "value": "",
+                "type": "query",
+                "description": "Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now."
               }
-            ]
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
           },
-          "docs": "Return aggregated performance statistics (latency, availability, SLO compliance) for an API call over a time window."
+          "docs": "Aggregated performance stats for a single period."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Stats-Since",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/since",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Aggregation period (`RAW` for per-result rows)."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Result-code filter; `ALL` counts every result."
+              },
+              {
+                "name": "metric",
+                "value": "",
+                "type": "query",
+                "description": "Latency metric to aggregate."
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "query",
+                "description": "Agent location id to filter to, or `__ALL__` for all locations."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of rows to return (default 1000 aggregated, 5000 for RAW)."
+              },
+              {
+                "name": "time",
+                "value": "",
+                "type": "query",
+                "description": "Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now."
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Start of the reporting window (ISO 8601). Clamped to the call's creation time."
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "End of the reporting window (ISO 8601). Clamped to now."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Performance buckets from a start time forwards."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Stats-Before",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/before",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Aggregation period (`RAW` for per-result rows)."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Result-code filter; `ALL` counts every result."
+              },
+              {
+                "name": "metric",
+                "value": "",
+                "type": "query",
+                "description": "Latency metric to aggregate."
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "query",
+                "description": "Agent location id to filter to, or `__ALL__` for all locations."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of rows to return (default 1000 aggregated, 5000 for RAW)."
+              },
+              {
+                "name": "time",
+                "value": "",
+                "type": "query",
+                "description": "Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now."
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Start of the reporting window (ISO 8601). Clamped to the call's creation time."
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "End of the reporting window (ISO 8601). Clamped to now."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Performance buckets up to an end time."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Http-Codes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/http_codes",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Aggregation period."
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "query",
+                "description": "Agent location id to filter to, or `__ALL__` for all locations."
+              },
+              {
+                "name": "time",
+                "value": "",
+                "type": "query",
+                "description": "Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "HTTP status-code breakdown for a single period."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Failures",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/failures",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Deprecated: use the breakdown endpoint instead."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Passfail",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/passfail",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Aggregation period."
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "query",
+                "description": "Agent location id to filter to, or `__ALL__` for all locations."
+              },
+              {
+                "name": "time",
+                "value": "",
+                "type": "query",
+                "description": "Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now."
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query",
+                "description": "Any non-empty value returns the raw combined stats map instead of the reshaped pass/warning/failure counts."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Pass/warning/failure counts for a single period."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Passfail-Total",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/passfail_total",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Start of the reporting window (ISO 8601). Clamped to the call's creation time."
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "End of the reporting window (ISO 8601). Clamped to now."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Overall pass/fail totals over the call's most recent hour range."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Passfail-Range",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/passfail_range",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Grouping period."
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "query",
+                "description": "Agent location id to filter to, or `__ALL__` for all locations."
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Start of the reporting window (ISO 8601). Clamped to the call's creation time."
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "End of the reporting window (ISO 8601). Clamped to now."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Pass/fail counts grouped by period over a range."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Legacy-Passfail",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/legacy/passfail",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Aggregation period."
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "query",
+                "description": "Agent location id to filter to, or `__ALL__` for all locations."
+              },
+              {
+                "name": "time",
+                "value": "",
+                "type": "query",
+                "description": "Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Pass/fail counts for a single period (legacy synopsis endpoint)."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Legacy-Passfail-Range",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/legacy/passfail_range",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Grouping period."
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "query",
+                "description": "Agent location id to filter to, or `__ALL__` for all locations."
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Start of the reporting window (ISO 8601). Clamped to the call's creation time."
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "End of the reporting window (ISO 8601). Clamped to now."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Pass/fail counts grouped by period (legacy synopsis endpoint)."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:call_id/stats/metrics/:location_id/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "call_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "path",
+                "description": "Agent location id, or `__ALL__` for all locations."
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Aggregation period."
+              },
+              {
+                "name": "quantile",
+                "value": "",
+                "type": "query",
+                "description": "Percentile to compute (0–100)."
+              },
+              {
+                "name": "metric",
+                "value": "",
+                "type": "query",
+                "description": "Latency metric to aggregate."
+              },
+              {
+                "name": "metric[]",
+                "value": "",
+                "type": "query",
+                "description": "Repeatable; one output column per metric. Overrides `metric`."
+              },
+              {
+                "name": "category",
+                "value": "",
+                "type": "query",
+                "description": "Restrict the quantile to a single result category."
+              },
+              {
+                "name": "dest_ip",
+                "value": "",
+                "type": "query",
+                "description": "Group results by destination IP as well as domain/location when truthy (`1`/`t`/`true`)."
+              },
+              {
+                "name": "time",
+                "value": "",
+                "type": "query",
+                "description": "Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now."
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Start of the reporting window (ISO 8601). Clamped to the call's creation time."
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "End of the reporting window (ISO 8601). Clamped to now."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Quantile statistics for one or more metrics, grouped by domain."
         }
       ]
     }

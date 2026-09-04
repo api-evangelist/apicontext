@@ -1,129 +1,1183 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: APIContext Platform Agents API Calls API
-  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
-  version: 2.0.0
+  title: APIContext Calls API
+  description: API for the APImetrics platform This document is the 'Calls' slice of the APIContext (APImetrics)
+    platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
   contact:
-    name: APIContext
-    url: https://apicontext.com/
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
 servers:
-- url: https://client.apimetrics.io/api/2
-  description: APIContext production API
-security:
-- ApiTokenAuth: []
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
 tags:
-- name: API Calls
+- name: Calls
+  description: API call (test) definitions
 paths:
-  /calls/:
-    get:
-      tags:
-      - API Calls
-      operationId: listApiCalls
-      summary: List API calls
-      description: List all API calls configured in the account. API calls define the synthetic transactions APIContext executes against monitored APIs.
-      responses:
-        '200':
-          description: List of API calls.
+  /api/3/calls/{call_id}/update-kms-helper:
     post:
       tags:
-      - API Calls
-      operationId: createApiCall
-      summary: Create an API call
-      description: Create a new API call (synthetic transaction definition) including target URL, method, headers, and validation rules.
+      - Calls
+      summary: Update-Kms-Helper
+      description: Create a new KMS helper API call based on an existing old helper API call.
+      operationId: update-kms-helper
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+                title: Response Update-Kms-Helper
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/:
+    get:
+      tags:
+      - Calls
+      summary: List-Calls
+      description: List API calls for the authenticated project.
+      operationId: list-calls
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: api_url
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Url
+      - name: domain
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Domain
+      - name: organization
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Organization
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Calls
+      summary: Create-Call
+      description: Create a new API call.
+      operationId: create-call
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CallCreateBody'
       responses:
         '201':
-          description: Created.
-  /calls/{call_id}:
-    get:
-      tags:
-      - API Calls
-      operationId: getApiCall
-      summary: Get an API call
-      description: Retrieve the configuration for a single API call by id.
-      parameters:
-      - name: call_id
-        in: path
-        required: true
-        schema:
-          type: string
-        description: API call id.
-      responses:
-        '200':
-          description: API call.
-    put:
-      tags:
-      - API Calls
-      operationId: updateApiCall
-      summary: Update an API call
-      description: Update the definition of an existing API call.
-      parameters:
-      - name: call_id
-        in: path
-        required: true
-        schema:
-          type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Updated.
-    delete:
-      tags:
-      - API Calls
-      operationId: deleteApiCall
-      summary: Delete an API call
-      description: Delete an API call definition.
-      parameters:
-      - name: call_id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '204':
-          description: Deleted.
-  /calls/{call_id}/run:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/build/curl:
     post:
       tags:
-      - API Calls
-      operationId: runApiCall
-      summary: Trigger an API call
-      description: Trigger an immediate synthetic execution of an API call from a chosen monitoring location.
+      - Calls
+      summary: Build-Call-From-Curl
+      description: Parse a curl command into an (unsaved) API call representation.
+      operationId: build-call-from-curl
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildFromCurlBody'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/auth/{sc_key_str}/:
+    get:
+      tags:
+      - Calls
+      summary: List-Calls-By-Auth
+      description: List API calls that use a given auth (ServiceConfig).
+      operationId: list-calls-by-auth
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: sc_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Sc Key Str
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/:
+    get:
+      tags:
+      - Calls
+      summary: Get-Call
+      description: Get a single API call by id.
+      operationId: get-call
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
       - name: call_id
         in: path
         required: true
         schema:
           type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Calls
+      summary: Update-Call
+      description: Partially update an API call (only supplied fields change).
+      operationId: update-call
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                location_id:
-                  type: string
-                  description: Monitoring agent location id (e.g. apimetrics_awsafsouth1).
-                run_delay:
-                  type: integer
-                  description: Delay in seconds before executing the call.
+              $ref: '#/components/schemas/CallUpdateBody'
       responses:
-        '202':
-          description: Run accepted.
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Calls
+      summary: Delete-Call
+      description: Delete an API call and return its last representation.
+      operationId: delete-call
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/run:
+    post:
+      tags:
+      - Calls
+      summary: Run-Call-V2
+      description: 'Trigger an on-demand run of an API call.
+
+
+        Deprecated: use ``POST /api/3/monitors/{id}/run``.'
+      operationId: run-call-v2
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CallRunBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallRunPayload'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/variables/used:
+    get:
+      tags:
+      - Calls
+      summary: Get-Call-Variables-Used
+      description: 'List variable names referenced by a monitor''s request.
+
+
+        Scans the target url plus, where present, an API call''s
+
+        parameters/headers/body and an MCP monitor''s step tool names and
+
+        arguments. Works for api, browser and mcp monitors.'
+      operationId: get-call-variables-used
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                title: Response Get-Call-Variables-Used
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/variables/set:
+    get:
+      tags:
+      - Calls
+      summary: Get-Call-Variables-Set
+      description: 'List variable names set by a monitor''s post-test conditions.
+
+
+        Works for api, browser and mcp monitors.'
+      operationId: get-call-variables-set
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                title: Response Get-Call-Variables-Set
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{call_id}/conditions/:
+    get:
+      tags:
+      - Calls
+      summary: Get-Call-Conditions
+      description: Get the post-test conditions for an API call.
+      operationId: get-call-conditions
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Call Id
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConditionsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Calls
+      summary: Set-Call-Conditions
+      description: Replace the post-test conditions for an API call.
+      operationId: set-call-conditions
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Call Id
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostConditionsRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConditionsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   securitySchemes:
-    ApiTokenAuth:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
       type: apiKey
-      in: query
-      name: _token
+      in: header
+      name: X-Api-Key
+  schemas:
+    BuildFromCurlBody:
+      properties:
+        request:
+          type: string
+          title: Request
+      additionalProperties: false
+      type: object
+      required:
+      - request
+      title: BuildFromCurlBody
+    CallCreateBody:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_CallCreateMeta'
+        request:
+          $ref: '#/components/schemas/_CallCreateRequest'
+        access:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access
+      additionalProperties: false
+      type: object
+      required:
+      - meta
+      - request
+      title: CallCreateBody
+    CallListMetaResponse:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: CallListMetaResponse
+    CallListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/CallListMetaResponse'
+        results:
+          items:
+            $ref: '#/components/schemas/CallResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: CallListResponse
+    CallMetaResponse:
+      properties:
+        monitor_type:
+          type: string
+          const: api
+          title: Monitor Type
+          default: api
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          default: []
+        domain:
+          type: string
+          title: Domain
+        content_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content Type
+        accept:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Accept
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        owner:
+          type: string
+          title: Owner
+        project_id:
+          type: string
+          title: Project Id
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+      type: object
+      required:
+      - name
+      - domain
+      - owner
+      - project_id
+      title: CallMetaResponse
+    CallParameterResponse:
+      properties:
+        key:
+          type: string
+          title: Key
+        value:
+          type: string
+          title: Value
+      type: object
+      required:
+      - key
+      - value
+      title: CallParameterResponse
+    CallRequestResponse:
+      properties:
+        method:
+          type: string
+          title: Method
+        url:
+          type: string
+          title: Url
+        parameters:
+          items:
+            $ref: '#/components/schemas/CallParameterResponse'
+          type: array
+          title: Parameters
+          default: []
+        headers:
+          items:
+            $ref: '#/components/schemas/CallParameterResponse'
+          type: array
+          title: Headers
+          default: []
+        body:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Body
+        auth_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Id
+        token_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Token Id
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
+      type: object
+      required:
+      - method
+      - url
+      title: CallRequestResponse
+    CallResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/CallMetaResponse'
+        request:
+          $ref: '#/components/schemas/CallRequestResponse'
+      type: object
+      required:
+      - id
+      - meta
+      - request
+      title: CallResponse
+    CallRunBody:
+      properties:
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        run_delay:
+          anyOf:
+          - type: integer
+            maximum: 86400.0
+            minimum: 0.0
+          - type: 'null'
+          title: Run Delay
+        context:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Context
+      additionalProperties: false
+      type: object
+      title: CallRunBody
+      description: 'Body for ``POST/PUT /api/2/calls/{call_id}/run``. Matches the legacy
+
+        ``action_run`` JSON Schema (``additionalProperties=false``).'
+      examples:
+      - context:
+          ACCESS_TOKEN: mytoken
+        location_id: us-west-2
+        run_delay: 0
+    CallRunPayload:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        location_id:
+          type: string
+          title: Location Id
+        result_id:
+          type: string
+          title: Result Id
+        context:
+          additionalProperties: true
+          type: object
+          title: Context
+        user:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: User
+      type: object
+      required:
+      - call_id
+      - location_id
+      - result_id
+      - context
+      title: CallRunPayload
+    CallUpdateBody:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/_CallUpdateMeta'
+          - type: 'null'
+        request:
+          anyOf:
+          - $ref: '#/components/schemas/_CallUpdateRequest'
+          - type: 'null'
+        access:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access
+      additionalProperties: false
+      type: object
+      title: CallUpdateBody
+    ConditionalModel:
+      properties:
+        source:
+          type: string
+          title: Source
+        source_index:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Source Index
+        variable_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Variable Name
+        variable_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Variable Path
+        condition:
+          type: string
+          title: Condition
+        val:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Val
+        test_result_on_true:
+          title: Test Result On True
+        test_result_on_false:
+          title: Test Result On False
+      type: object
+      required:
+      - source
+      - condition
+      title: ConditionalModel
+    ConditionsMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        call_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Call Id
+        break_on_fail:
+          type: boolean
+          title: Break On Fail
+          default: false
+      type: object
+      title: ConditionsMeta
+    ConditionsResponse:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+        conditions_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Conditions Id
+        meta:
+          $ref: '#/components/schemas/ConditionsMeta'
+      type: object
+      required:
+      - conditions
+      title: ConditionsResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PostConditionsRequest:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/ConditionsMeta'
+          - type: 'null'
+      type: object
+      required:
+      - conditions
+      title: PostConditionsRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    _CallCreateMeta:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      title: _CallCreateMeta
+    _CallCreateRequest:
+      properties:
+        method:
+          type: string
+          title: Method
+        url:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Url
+        parameters:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CallParameterResponse'
+            type: array
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Parameters
+        headers:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CallParameterResponse'
+            type: array
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Headers
+        body:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Body
+        auth_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Id
+        token_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Token Id
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
+      additionalProperties: false
+      type: object
+      required:
+      - method
+      - url
+      title: _CallCreateRequest
+    _CallUpdateMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+      additionalProperties: false
+      type: object
+      title: _CallUpdateMeta
+    _CallUpdateRequest:
+      properties:
+        method:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Method
+        url:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Url
+        parameters:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CallParameterResponse'
+            type: array
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Parameters
+        headers:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CallParameterResponse'
+            type: array
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Headers
+        body:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Body
+        auth_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Id
+        token_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Token Id
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
+      additionalProperties: false
+      type: object
+      title: _CallUpdateRequest

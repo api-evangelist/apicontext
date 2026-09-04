@@ -1,0 +1,115 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://client.apimetrics.io/openapi.json (platform OpenAPI, version v2026-09-02),
+  https://docs.apimetrics.io/docs/device-code-authorization-flow,
+  https://github.com/APImetrics/APImetrics-cli README, and a live unauthenticated request to
+  https://client.apimetrics.io/api/2/calls/ (HTTP 401).
+base_url: https://client.apimetrics.io
+authentication:
+  styles:
+  - {type: apiKey, in: header, name: X-Api-Key}
+  - {type: oauth2, flow: authorizationCode, authorization_url: "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io", token_url: https://auth.apimetrics.io/oauth/token}
+  - {type: oauth2, flow: deviceCode, token_url: https://auth.apimetrics.io/oauth/token, docs: https://docs.apimetrics.io/docs/device-code-authorization-flow}
+  - {type: oauth2, flow: clientCredentials, note: "service accounts, used by the CLI in CI; audience https://client.apimetrics.io"}
+  bearer_header: "Authorization: Bearer <access_token>"
+  identity_provider: Auth0 tenant at auth.apimetrics.io
+  token_lifetime: 1 hour (per the CLI README); client_credentials issues no refresh token (RFC 6749 4.4.3)
+  note: >-
+    Every operation in the published spec declares `security: [{OAuth2: []}, {ApiKey: []}]`, so both
+    mechanisms are accepted everywhere. The /api/2 surface historically also accepted a `_token`
+    query parameter; the current published contract does not declare it.
+versioning:
+  scheme: uri-path
+  versions_live: [/api/2, /api/3]
+  current: /api/3
+  spec_version: v2026-09-02
+  spec_version_scheme: date
+  note: >-
+    Both major versions are served from one host and one OpenAPI document — 144 of 217 paths are
+    /api/2 and 73 are /api/3. A `Legacy (proxied)` tag marks nine /api/2 operations that are proxied
+    onto v3. The document's own info.version is a date (v2026-09-02), so the spec is versioned by
+    publication date rather than by API version.
+pagination:
+  style: cursor
+  params: [cursor, limit]
+  param_location: query
+  coverage: "50 operations take `cursor`, 52 take `limit`"
+  note: >-
+    Cursor pagination on the /api/3 surface. The CLI paginates automatically and exposes
+    `--rsh-no-paginate` to turn it off.
+idempotency:
+  supported: false
+  coverage: none
+  header: null
+  note: >-
+    No idempotency-key header, parameter or schema field appears anywhere in the published OpenAPI
+    (searched for `Idempotency`, `idempotency`, `Idempotency-Key`), and the docs describe no replay
+    protection. Retries are handled client-side only — the CLI defaults to `--rsh-retry 2` — so a
+    retried POST creates a second monitor, schedule or workflow.
+dry_run:
+  supported: partial
+  scope: [copy-resources]
+  note: >-
+    A `dry_run` flag exists on exactly one operation, POST /api/2/manage/copy (copy-resources, schemas
+    CopyMoveRequest / CopyMoveResponse). No other mutating operation offers a rehearsal mode.
+reversibility:
+  grade: none
+  write_surface: true
+  note: >-
+    Searched every operationId in the published contract for restore / undo / revert / rollback /
+    cancel / archive semantics. There is no reversal operation and the docs state no restore window.
+    Deletes (delete-call, delete-schedule, delete-workflow, delete-auth-token, delete-browser-monitor,
+    delete-mcp-monitor, delete-org-downtime, …) are terminal as far as the published contract goes.
+    Scheduled and organization-level Downtimes suspend monitoring and can be deleted again, which
+    makes monitoring pauses reversible, but that is a scheduling control rather than an undo for a
+    write. NO WINDOW IS ASSERTED HERE because the provider states none.
+  reversal_operations: []
+  compensating_controls:
+  - operation: create-schedule-downtime
+    effect: Suspends a schedule's monitoring for a window; deleting the downtime resumes it.
+  - operation: copy-resources
+    effect: >-
+      POST /api/2/manage/copy duplicates resources between projects and supports dry_run, which lets
+      a destructive re-organisation be rehearsed before it is committed.
+error_envelope:
+  formats:
+  - shape: fastapi-validation
+    status: 422
+    media_type: application/json
+    schema: HTTPValidationError
+    body: '{"detail": [{"loc": [...], "msg": "...", "type": "..."}]}'
+    coverage: 310 of 325 operations declare a 422 "Validation Error"
+  - shape: error-object
+    schema: ErrorResponse
+    body: '{"error": {"message": "...", "code": 0, "details": ["..."]}}'
+  - shape: flat-message
+    status: 401
+    body: '{"error_msg": "Unauthorized"}'
+    observed: live GET https://client.apimetrics.io/api/2/calls/ with no credentials, 2026-09-04
+  rfc9457: false
+  note: >-
+    Three different error shapes coexist and none is RFC 9457 problem+json — `application/problem+json`
+    does not appear in the contract. 400/403/404/409 responses carry a description but no schema.
+rate_limit_signaling:
+  headers: []
+  status_on_exhaustion: null
+  note: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After header appears in the contract, no operation declares
+    a 429, and none was returned on a live unauthenticated request. See rate-limits/.
+request_tracing:
+  header: x-cloud-trace-context
+  note: >-
+    Observed on a live response from client.apimetrics.io (Google Frontend). Not documented as a
+    consumer-facing correlation id; recorded as observed infrastructure behaviour only.
+field_selection:
+  supported: false
+  client_side: >-
+    The CLI provides `--rsh-filter` / `-f` for client-side projection of the response; the API itself
+    declares no sparse-fieldset or expansion parameters.
+cross_links:
+  authentication: authentication/apicontext-authentication.yml
+  scopes: scopes/apicontext-scopes.yml
+  errors: errors/apicontext-problem-types.yml
+  lifecycle: lifecycle/apicontext-lifecycle.yml
+  rate_limits: rate-limits/apicontext-rate-limits.yml

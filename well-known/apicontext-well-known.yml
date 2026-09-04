@@ -1,0 +1,325 @@
+generated: '2026-09-04'
+method: probed
+source: live GET of the named /.well-known/ path list on every host this record knows
+note: >-
+  apicontext.com, www.apicontext.com and apimetrics.io share one marketing front end that answers
+  HTTP 200 with the same 90,387-byte HTML document for every /.well-known/* path, including the
+  negative control below — so every HTML-bodied 200 on those hosts is a catch-all, not a document,
+  and none of them is recorded as a hit. The single exception is /.well-known/api-catalog, which
+  returns a distinct 1,198-byte body with Content-Type application/linkset+json and content that
+  cannot be produced by echoing the request path (it names first-party docs, a Postman collection
+  and the CLI repo). That one is recorded as a real document. auth.apimetrics.io (the Auth0 tenant
+  behind the platform OAuth2 flows) serves genuine RFC 8414 / OIDC discovery documents.
+path_echo_control: failed
+path_echo_control_detail: >-
+  GET /.well-known/apicontext-negative-control-7f3ab91c.json returned HTTP 200 with the same
+  90,387-byte HTML shell on apicontext.com, www.apicontext.com and apimetrics.io; it returned 404
+  on client.apimetrics.io, auth.apimetrics.io, docs.apimetrics.io and docs.apicontext.com.
+hit_count: 3
+hosts:
+- host: https://apicontext.com
+  soft_404_control:
+    path: /.well-known/apicontext-negative-control-7f3ab91c.json
+    status: 200
+    bytes: 90387
+    content_type: text/html
+    verdict: catch-all
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: application/linkset+json
+    bytes: 1198
+    file: apicontext-api-catalog.json
+    note: RFC 9727 linkset. Distinct body and content-type; not the host catch-all.
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /.well-known/ucp.json
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /.well-known/acp.json
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /.well-known/aauth-resource.json
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /.well-known/apis.json
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /apis.json
+    status: 403
+    file: null
+    note: Cloudflare managed challenge
+  - path: /apis.yml
+    status: 403
+    file: null
+    note: Cloudflare managed challenge
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not an AgentCard
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not an AgentCard
+- host: https://www.apicontext.com
+  soft_404_control:
+    path: /.well-known/apicontext-negative-control-7f3ab91c.json
+    status: 200
+    bytes: 90387
+    content_type: text/html
+    verdict: catch-all
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: application/linkset+json
+    bytes: 1198
+    file: apicontext-api-catalog.json
+    note: identical document to the apex host
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+  - path: /apis.json
+    status: 403
+    file: null
+    note: Cloudflare managed challenge
+- host: https://apimetrics.io
+  soft_404_control:
+    path: /.well-known/apicontext-negative-control-7f3ab91c.json
+    status: 200
+    bytes: 90387
+    content_type: text/html
+    verdict: catch-all
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: application/linkset+json
+    bytes: 1198
+    file: apicontext-api-catalog.json
+    note: identical document to apicontext.com; apimetrics.io fronts the same site
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    file: null
+    note: catch-all HTML shell, not a document
+- host: https://auth.apimetrics.io
+  soft_404_control:
+    path: /.well-known/apicontext-negative-control-7f3ab91c.json
+    status: 404
+    verdict: honest-404
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    bytes: 2501
+    file: apicontext-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    bytes: 2501
+    file: apicontext-oauth-authorization-server.json
+    note: byte-identical to the OIDC discovery document
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/ucp.json
+    status: 404
+    file: null
+  - path: /.well-known/acp.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: https://client.apimetrics.io
+  soft_404_control:
+    path: /.well-known/apicontext-negative-control-7f3ab91c.json
+    status: 404
+    verdict: honest-404
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/ucp.json
+    status: 404
+    file: null
+  - path: /.well-known/acp.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: https://docs.apimetrics.io
+  soft_404_control:
+    path: /.well-known/apicontext-negative-control-7f3ab91c.json
+    status: 404
+    verdict: honest-404
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 404
+    file: null
+  - path: /apis.yml
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: https://docs.apicontext.com
+  soft_404_control:
+    path: /.well-known/apicontext-negative-control-7f3ab91c.json
+    status: 404
+    verdict: honest-404
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 404
+    file: null
+  - path: /.well-known/apis.json
+    status: 404
+    file: null
+  - path: /apis.json
+    status: 403
+    file: null
+    note: Cloudflare managed challenge
+  - path: /apis.yml
+    status: 403
+    file: null
+    note: Cloudflare managed challenge
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null

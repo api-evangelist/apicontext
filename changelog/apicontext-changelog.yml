@@ -1,0 +1,23 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.apimetrics.io/llms.txt and the individual entries at https://docs.apimetrics.io/changelog/
+url: https://docs.apimetrics.io/changelog/
+scheme: dated-entries
+note: >-
+  APIContext runs one combined feed for product release notes AND service/incident updates. Entries
+  are titled, not versioned — there is no release version number attached to any of them — so the
+  `version` field below is null throughout. Dates below are taken from the entry bodies; only the
+  recent window listed in llms.txt is captured here.
+current_version: null
+api_spec_version: v2026-09-02
+entries:
+- {version: null, date: '2026-03-30', title: AWS Middle East 1, type: service-update, breaking: false, highlights: "AWS Middle East 1 monitoring node removed from global schedules due to ongoing AWS issues; AWS Middle East Central 1 and South 1 subsequently disabled."}
+- {version: null, date: '2026-03-25', title: Service interruption - monitoring queue, type: incident, breaking: false, highlights: "Monitoring queue processing delayed 22:00-22:37; some scheduled calls ran late and may have returned 4xx warnings."}
+- {version: null, date: null, title: Service interruption - alerting, type: incident, breaking: false}
+- {version: null, date: '2025-07-27', title: Service Update - planned maintenance on July 27, type: maintenance, breaking: false, highlights: "1800-1810 UTC maintenance window; schedules maintained, results delayed up to one hour."}
+- {version: null, date: '2025-07-10', title: Release Notes - 10th of July 2025, type: release, breaking: false, highlights: "Added: stop all alerts across an organization (org admins). Added: visible downtime IDs. Added: bulk update for Conformance findings. Fixed: navigation UI."}
+- {version: null, date: '2025-07-12', title: Service Update - system restored, type: incident, breaking: false}
+- {version: null, date: '2025-06-12', title: Service Update - Google Cloud impact, type: incident, breaking: false}
+- {version: null, date: '2025-05-20', title: Service Update - system restored, type: incident, breaking: false}
+- {version: null, date: '2025-05-20', title: Service Update - currently investigating, type: incident, breaking: false}
+- {version: null, date: null, title: Service Update - system restored, type: incident, breaking: false}

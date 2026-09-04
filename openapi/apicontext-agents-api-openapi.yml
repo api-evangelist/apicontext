@@ -1,42 +1,587 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: APIContext Platform Agents API
-  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
-  version: 2.0.0
+  title: APIContext Agents API
+  description: API for the APImetrics platform This document is the 'Agents' slice of the APIContext (APImetrics)
+    platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
   contact:
-    name: APIContext
-    url: https://apicontext.com/
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
 servers:
-- url: https://client.apimetrics.io/api/2
-  description: APIContext production API
-security:
-- ApiTokenAuth: []
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
 tags:
 - name: Agents
+  description: Shared / community remote agent registry (list + info + admin-only by-key operations).
 paths:
-  /agents/info:
+  /api/2/agents/:
     get:
       tags:
       - Agents
-      operationId: getAgentInfo
-      summary: Get agent info
-      description: Return the catalog of APIContext monitoring agents (regions, providers, capabilities) available for synthetic testing.
+      summary: List-Agents
+      description: 'List remote agents available to the caller.
+
+
+        Agents are shared infrastructure -- callers see any agent whose
+
+        ``owners`` list contains ``"public"``, the caller''s project id, or
+
+        (with ``organization``) the caller''s org id. Non-paginated: up to
+
+        200 rows returned in a single response.'
+      operationId: list-agents
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: organization
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Organization
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Agent info.
-  /agents/:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/agents/info:
     get:
       tags:
       - Agents
-      operationId: listAgents
-      summary: List agents
-      description: List available monitoring agents (regions, providers) that can execute synthetic API calls.
+      summary: Agents-Info
+      description: 'Return grouped agent metadata used to populate location pickers.
+
+
+        The response contains a ``regions`` list (region id + display name +
+
+        the location IDs in that region), a ``locations`` map (agent name to
+
+        human-readable label), an ``agent_list``, and an empty
+
+        ``postman_locations`` (kept for response-shape stability).
+
+        Reachable anonymously -- no auth headers required. An anonymous
+
+        caller sees public agents; an authenticated caller additionally sees
+
+        agents owned by their orgs or project.'
+      operationId: agents-info
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Agents.
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentInfoResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/agents/{agent_key_str}/:
+    get:
+      tags:
+      - Agents
+      summary: Get-Agent
+      description: 'Read a single agent by key.
+
+
+        Requires the caller to own the agent -- either as a site admin, or
+
+        because their project key is listed in the agent''s ``owners``. A
+
+        plain project API key has no such ownership on shared agents, so
+
+        ``get`` and ``update`` by key are reserved for administrators.
+
+        Returns 404 for unknown agents and for agents the caller can''t own.'
+      operationId: get-agent
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: agent_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Agent Key Str
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Agents
+      summary: Update-Agent
+      description: 'Update the display metadata (name, cloud, geography, ...) of an agent.
+
+
+        Same ownership rules as ``get-agent``: reserved for administrators.
+
+        Only fields the caller supplies are updated; omitted fields keep
+
+        their existing values.'
+      operationId: update-agent
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: agent_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Agent Key Str
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAgentRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/agents/{agent_key}/:
+    get:
+      operationId: get-agent
+      summary: Get a remote agent
+      tags:
+      - Agents
+      - Legacy (proxied)
+      parameters:
+      - $ref: '#/components/parameters/agentKey'
+      responses:
+        '200':
+          description: Agent object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentOutput'
+    post:
+      operationId: update-agent
+      summary: Update a remote agent
+      tags:
+      - Agents
+      - Legacy (proxied)
+      parameters:
+      - $ref: '#/components/parameters/agentKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentOutput'
+      responses:
+        '200':
+          description: Updated agent
+    delete:
+      operationId: delete-agent
+      summary: Delete a remote agent
+      tags:
+      - Agents
+      - Legacy (proxied)
+      parameters:
+      - $ref: '#/components/parameters/agentKey'
+      responses:
+        '204':
+          description: Deleted
 components:
   securitySchemes:
-    ApiTokenAuth:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
       type: apiKey
-      in: query
-      name: _token
+      in: header
+      name: X-Api-Key
+  schemas:
+    AgentInfoResponse:
+      properties:
+        regions:
+          items:
+            $ref: '#/components/schemas/_RegionEntry'
+          type: array
+          title: Regions
+        postman_locations:
+          items:
+            type: string
+          type: array
+          title: Postman Locations
+        locations:
+          additionalProperties:
+            type: string
+          type: object
+          title: Locations
+        agent_list:
+          items:
+            $ref: '#/components/schemas/AgentResponse'
+          type: array
+          title: Agent List
+      type: object
+      required:
+      - regions
+      - postman_locations
+      - locations
+      - agent_list
+      title: AgentInfoResponse
+    AgentListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api2__agents__agents___ListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/AgentResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: AgentListResponse
+    AgentOutput:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/KeyStr'
+        meta:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+              nullable: true
+            project_id:
+              $ref: '#/components/schemas/KeyStr'
+            created:
+              type: string
+              format: date-time
+            last_update:
+              type: string
+              format: date-time
+        agent:
+          type: object
+          properties:
+            location_id:
+              type: string
+            enabled:
+              type: boolean
+            last_seen:
+              type: string
+              format: date-time
+              nullable: true
+    AgentResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_AgentMeta'
+        agent:
+          $ref: '#/components/schemas/_AgentDetails'
+        id:
+          type: string
+          title: Id
+      type: object
+      required:
+      - meta
+      - agent
+      - id
+      title: AgentResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    KeyStr:
+      type: string
+      description: URL-safe base64 Datastore key
+      minLength: 3
+      maxLength: 400
+      pattern: ^[-A-Za-z0-9_]*={0,3}$
+    UpdateAgentRequest:
+      properties:
+        agent:
+          $ref: '#/components/schemas/_UpdateAgentBody'
+      additionalProperties: false
+      type: object
+      required:
+      - agent
+      title: UpdateAgentRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    _AgentDetails:
+      properties:
+        normalized_name:
+          type: string
+          title: Normalized Name
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        cloud:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cloud
+        cloud_full_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cloud Full Name
+        geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Geography
+        continent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Continent
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+        region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Region
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        location:
+          anyOf:
+          - items:
+              type: number
+            type: array
+          - type: 'null'
+          title: Location
+        shared_with_org:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Shared With Org
+      type: object
+      required:
+      - normalized_name
+      title: _AgentDetails
+    _AgentMeta:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        remote_addr:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Remote Addr
+      type: object
+      required:
+      - id
+      - name
+      title: _AgentMeta
+    _RegionEntry:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        locations:
+          items:
+            type: string
+          type: array
+          title: Locations
+      type: object
+      required:
+      - id
+      - locations
+      title: _RegionEntry
+    _UpdateAgentBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 100
+          - type: 'null'
+          title: Name
+        cloud:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cloud
+        cloud_full_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cloud Full Name
+        continent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Continent
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+        geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Geography
+        region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Region
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+      type: object
+      title: _UpdateAgentBody
+      description: Body accepted by ``POST /api/2/agents/<key>/`` (update user_* overrides).
+    api2__agents__agents___ListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+      type: object
+      title: _ListMeta

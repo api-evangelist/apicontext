@@ -1,67 +1,235 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "APIContext Platform Agents Tokens API",
-    "version": "2.0.0"
-  },
-  "request": {
-    "auth": {
-      "type": "apikey",
-      "key": "_token",
-      "value": "{{_token}}",
-      "placement": "query"
-    }
+    "name": "APIContext Auth Tokens API",
+    "version": "v2026-09-02"
   },
   "items": [
     {
       "info": {
-        "name": "Tokens",
+        "name": "Auth Tokens",
         "type": "folder"
       },
       "items": [
         {
           "info": {
-            "name": "List API tokens",
+            "name": "List-Auth-Tokens",
             "type": "http"
           },
           "http": {
             "method": "GET",
-            "url": "https://client.apimetrics.io/api/2/tokens/"
+            "url": "https://client.apimetrics.io/api/2/tokens/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
           },
-          "docs": "List API tokens issued for the current account."
+          "docs": "List auth tokens for the project, ordered by name."
         },
         {
           "info": {
-            "name": "Create an API token",
+            "name": "Create-Auth-Token",
             "type": "http"
           },
           "http": {
             "method": "POST",
             "url": "https://client.apimetrics.io/api/2/tokens/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
             "body": {
               "type": "json",
               "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
             }
           },
-          "docs": "Issue a new API token scoped to the requesting account."
+          "docs": "Create an auth token bound to an auth setting."
         },
         {
           "info": {
-            "name": "Revoke an API token",
+            "name": "List-Auth-Tokens-By-Auth-Setting",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/tokens/auth/:sc_key/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "sc_key",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List auth tokens belonging to a single auth setting."
+        },
+        {
+          "info": {
+            "name": "Get-Auth-Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/tokens/:token_key/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "token_key",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get a single auth token."
+        },
+        {
+          "info": {
+            "name": "Update-Auth-Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/tokens/:token_key/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "token_key",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Partially update an auth token."
+        },
+        {
+          "info": {
+            "name": "Delete-Auth-Token",
             "type": "http"
           },
           "http": {
             "method": "DELETE",
-            "url": "https://client.apimetrics.io/api/2/tokens/:token_id",
+            "url": "https://client.apimetrics.io/api/2/tokens/:token_key/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
             "params": [
               {
-                "name": "token_id",
+                "name": "token_key",
                 "value": "",
                 "type": "path"
               }
-            ]
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
           },
-          "docs": "Revoke an issued API token."
+          "docs": "Delete an auth token, returning the deleted representation."
         }
       ]
     }

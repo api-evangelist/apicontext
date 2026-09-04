@@ -1,0 +1,49 @@
+generated: '2026-09-04'
+method: probed
+status: published
+source: >-
+  Live probe of https://docs.apimetrics.io/mcp on 2026-09-04. GET returns HTTP 200 with the body
+  "This URL can only be accessed with a MCP client."; POST of a JSON-RPC tools/list returns HTTP 401
+  with {"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization required"},"id":null}.
+deployment:
+  mode: remote
+  endpoint: https://docs.apimetrics.io/mcp
+  install: null
+  package: null
+  auth: unknown
+  verified: probed
+server:
+  name: apimetrics-docs
+  transport: http
+  url: https://docs.apimetrics.io/mcp
+  host_owner: >-
+    docs.apimetrics.io is APIContext's own documentation host. The endpoint is served by the docs
+    platform (ReadMe — the response carries x-readme-conversation-id / x-readme-project-id CORS
+    headers and is fronted by Render + Cloudflare), so this is a documentation MCP server the provider
+    publishes on its own domain rather than a bespoke platform server.
+tools_gated: true
+tools: []
+tools_note: >-
+  tools/list is auth-gated (JSON-RPC error -32001 "Authorization required") and no WWW-Authenticate
+  header, /.well-known/oauth-protected-resource or /.well-known/oauth-protected-resource/mcp document
+  is served, so the authorization server could not be discovered anonymously. The real tool names and
+  inputSchemas require an authenticated introspection. NOTHING IS GUESSED HERE: no candidate tool list
+  is derived from the OpenAPI onto this server, because that would misrepresent a docs MCP server as
+  exposing the platform's 325 REST operations.
+probes:
+- {url: "https://docs.apimetrics.io/mcp", method: GET, status: 200, body: "This URL can only be accessed with a MCP client."}
+- {url: "https://docs.apimetrics.io/mcp", method: "POST tools/list", status: 401, body: '{"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization required"},"id":null}'}
+- {url: "https://docs.apimetrics.io/.well-known/oauth-protected-resource", status: 404}
+- {url: "https://docs.apimetrics.io/.well-known/oauth-protected-resource/mcp", status: 404}
+- {url: "https://docs.apimetrics.io/.well-known/oauth-authorization-server/mcp", status: 404}
+- {url: "https://docs.apimetrics.io/mcp/sse", status: 404}
+- {url: "https://docs.apicontext.com/mcp", status: 403, note: Cloudflare managed challenge on the mirror docs host}
+- {url: "https://mcp.apicontext.com/mcp", status: 404}
+- {url: "https://mcp.apimetrics.io/mcp", status: 0, note: DNS does not resolve}
+- {url: "https://client.apimetrics.io/mcp", status: 400, note: "Google Cloud Storage upload endpoint, not MCP — returns an XML InvalidArgument error"}
+- {url: "https://client.apimetrics.io/api/3/mcp", status: 404}
+related_product_note: >-
+  APIContext also SELLS MCP server monitoring — the platform contract carries MCP Monitors and MCP
+  Monitor Statistics operations (create-mcp-monitor, read-mcp-monitor, query-mcp-performance, …) and
+  the CLI ships a provider-authored setup-mcp-monitor Agent Skill. That is a product capability for
+  watching other people's MCP servers and is distinct from the docs MCP endpoint recorded above.

@@ -1,44 +1,91 @@
 {
   "item": [
     {
-      "id": "412de3f9-93b7-4584-a626-065f9747a455",
-      "name": "Alerts",
+      "id": "0f57e86a-b38c-4328-b7e3-8f279348e06b",
+      "name": "Notifications",
       "description": {
-        "content": "",
+        "content": "Issue notifications raised about monitors, results, and workflows.",
         "type": "text/plain"
       },
       "item": [
         {
-          "id": "69de1ba1-0d7f-4aa5-a23a-d4cc6d09e726",
-          "name": "List alerts",
+          "id": "a370a85f-811f-41bb-a8ad-a3a0c4935101",
+          "name": "List-Notifications",
           "request": {
-            "name": "List alerts",
+            "name": "List-Notifications",
             "description": {
-              "content": "List alert rules configured against API calls and SLOs.",
+              "content": "List notifications owned by the project, newest first.",
               "type": "text/plain"
             },
             "url": {
               "path": [
-                "alerts",
+                "api",
+                "2",
+                "notifications",
                 ""
               ],
               "host": [
                 "{{baseUrl}}"
               ],
-              "query": [],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100"
+                }
+              ],
               "variable": []
             },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "method": "GET",
-            "auth": null
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
           },
           "response": [
             {
-              "id": "0cdc4b39-a473-4c44-8db8-0df8965cfb3e",
-              "name": "Alerts.",
+              "id": "d0c99b9c-62c4-4b87-80bd-965c75941193",
+              "name": "Successful Response",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "alerts",
+                    "api",
+                    "2",
+                    "notifications",
                     ""
                   ],
                   "host": [
@@ -46,12 +93,36 @@
                   ],
                   "query": [
                     {
-                      "key": "_token",
-                      "value": "<API Key>"
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
                     }
                   ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
                 "body": {}
               },
@@ -60,12 +131,73 @@
               "header": [
                 {
                   "key": "Content-Type",
-                  "value": "text/plain"
+                  "value": "application/json"
                 }
               ],
-              "body": "",
+              "body": "{\n  \"meta\": {\n    \"more\": true,\n    \"project_id\": \"string\",\n    \"next_cursor\": \"string\"\n  },\n  \"results\": [\n    {\n      \"id\": \"string\",\n      \"viewed\": false,\n      \"created\": \"1984-08-08T12:52:04.064Z\",\n      \"last_update\": \"1978-09-07T18:51:57.445Z\",\n      \"category\": \"string\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"description_text\": \"string\",\n      \"call_id\": \"string\",\n      \"result_id\": \"string\",\n      \"worfklow_id\": \"string\",\n      \"worfklow_result_id\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"viewed\": false,\n      \"created\": \"1984-11-29T10:24:57.941Z\",\n      \"last_update\": \"1975-05-19T20:04:19.433Z\",\n      \"category\": \"string\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"description_text\": \"string\",\n      \"call_id\": \"string\",\n      \"result_id\": \"string\",\n      \"worfklow_id\": \"string\",\n      \"worfklow_result_id\": \"string\"\n    }\n  ]\n}",
               "cookie": [],
-              "_postman_previewlanguage": "text"
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d39bfcef-a812-4f8c-b74a-59e442aeb2e5",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "notifications",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
             }
           ],
           "event": [],
@@ -74,36 +206,499 @@
           }
         },
         {
-          "id": "a3cf5dcc-5caf-4cc1-86bf-cfa6d422ebf5",
-          "name": "Create an alert",
+          "id": "bdf3a771-0303-4205-afd0-1d17ef669c7e",
+          "name": "List-Notifications-By-Call",
           "request": {
-            "name": "Create an alert",
+            "name": "List-Notifications-By-Call",
             "description": {
-              "content": "Create a new alert rule (thresholds for latency, availability, SLO breach, response validation failure) and target channels.",
+              "content": "List notifications referencing a specific call, newest first.",
               "type": "text/plain"
             },
             "url": {
               "path": [
-                "alerts",
+                "api",
+                "2",
+                "notifications",
+                "call",
+                ":test_key_str",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "test_key_str",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "692c8ab4-2598-4bb7-a339-61451fe7d8e9",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "notifications",
+                    "call",
+                    ":test_key_str",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "test_key_str",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"more\": true,\n    \"project_id\": \"string\",\n    \"next_cursor\": \"string\"\n  },\n  \"results\": [\n    {\n      \"id\": \"string\",\n      \"viewed\": false,\n      \"created\": \"1984-08-08T12:52:04.064Z\",\n      \"last_update\": \"1978-09-07T18:51:57.445Z\",\n      \"category\": \"string\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"description_text\": \"string\",\n      \"call_id\": \"string\",\n      \"result_id\": \"string\",\n      \"worfklow_id\": \"string\",\n      \"worfklow_result_id\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"viewed\": false,\n      \"created\": \"1984-11-29T10:24:57.941Z\",\n      \"last_update\": \"1975-05-19T20:04:19.433Z\",\n      \"category\": \"string\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"description_text\": \"string\",\n      \"call_id\": \"string\",\n      \"result_id\": \"string\",\n      \"worfklow_id\": \"string\",\n      \"worfklow_result_id\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f1aaef79-ac45-4235-8ef0-40b16a268ae5",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "notifications",
+                    "call",
+                    ":test_key_str",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "test_key_str",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "01434558-374a-41c8-a49d-55ef2b47b51a",
+          "name": "Get-Notification",
+          "request": {
+            "name": "Get-Notification",
+            "description": {
+              "content": "Return the representation of a single notification.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "notifications",
+                ":key_str",
                 ""
               ],
               "host": [
                 "{{baseUrl}}"
               ],
               "query": [],
-              "variable": []
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "key_str",
+                  "description": "(Required) "
+                }
+              ]
             },
             "header": [
               {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8cdeb25a-a5f7-47ee-8bc5-ef0bd3b4dd57",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "notifications",
+                    ":key_str",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key_str",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"viewed\": false,\n  \"created\": \"1951-12-01T00:26:36.812Z\",\n  \"last_update\": \"2015-06-11T14:58:49.802Z\",\n  \"category\": \"string\",\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"description_text\": \"string\",\n  \"call_id\": \"string\",\n  \"result_id\": \"string\",\n  \"worfklow_id\": \"string\",\n  \"worfklow_result_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5856076e-e41e-47bc-b5b3-467b01c32de7",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "notifications",
+                    ":key_str",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key_str",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8b3c7d07-45a9-42af-93d3-3c9ef8db8eee",
+          "name": "Update-Notification",
+          "request": {
+            "name": "Update-Notification",
+            "description": {
+              "content": "Update the ``viewed`` flag for the requesting project. No other field is writable.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "notifications",
+                ":key_str",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "key_str",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
                 "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
                 "value": "application/json"
               }
             ],
             "method": "POST",
-            "auth": null,
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "<object>",
+              "raw": "{\n  \"viewed\": \"<boolean>\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -113,29 +708,55 @@
           },
           "response": [
             {
-              "id": "612c4cb4-073b-4798-a498-5ffb9a8c833a",
-              "name": "Created.",
+              "id": "40918c31-490a-4fb0-bb67-979994baeb00",
+              "name": "Successful Response",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "alerts",
+                    "api",
+                    "2",
+                    "notifications",
+                    ":key_str",
                     ""
                   ],
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [
+                  "query": [],
+                  "variable": [
                     {
-                      "key": "_token",
-                      "value": "<API Key>"
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key_str",
+                      "description": "(Required) "
                     }
-                  ],
-                  "variable": []
+                  ]
                 },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "<object>",
+                  "raw": "{\n  \"viewed\": \"<boolean>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -143,179 +764,86 @@
                   }
                 }
               },
-              "status": "Created",
-              "code": 201,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "body": "",
-              "cookie": [],
-              "_postman_previewlanguage": "text"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "2f56d203-edd7-466f-898c-80f11fa6099e",
-          "name": "Get an alert",
-          "request": {
-            "name": "Get an alert",
-            "description": {
-              "content": "Retrieve an alert rule by id.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "alerts",
-                ":alert_id"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "alert_id",
-                  "description": "(Required) "
-                }
-              ]
-            },
-            "method": "GET",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "c113e1d6-acd1-45ff-ac58-0af930672322",
-              "name": "Alert.",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "alerts",
-                    ":alert_id"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "_token",
-                      "value": "<API Key>"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "alert_id",
-                      "description": "(Required) "
-                    }
-                  ]
-                },
-                "method": "GET",
-                "body": {}
-              },
               "status": "OK",
               "code": 200,
               "header": [
                 {
                   "key": "Content-Type",
-                  "value": "text/plain"
+                  "value": "application/json"
                 }
               ],
-              "body": "",
+              "body": "{\n  \"id\": \"string\",\n  \"viewed\": false,\n  \"created\": \"1951-12-01T00:26:36.812Z\",\n  \"last_update\": \"2015-06-11T14:58:49.802Z\",\n  \"category\": \"string\",\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"description_text\": \"string\",\n  \"call_id\": \"string\",\n  \"result_id\": \"string\",\n  \"worfklow_id\": \"string\",\n  \"worfklow_result_id\": \"string\"\n}",
               "cookie": [],
-              "_postman_previewlanguage": "text"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "99caca13-39f6-47e5-a8e3-b843c4e3558b",
-          "name": "Delete an alert",
-          "request": {
-            "name": "Delete an alert",
-            "description": {
-              "content": "Delete an alert rule.",
-              "type": "text/plain"
+              "_postman_previewlanguage": "json"
             },
-            "url": {
-              "path": [
-                "alerts",
-                ":alert_id"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "alert_id",
-                  "description": "(Required) "
-                }
-              ]
-            },
-            "method": "DELETE",
-            "auth": null
-          },
-          "response": [
             {
-              "id": "349e88ce-700f-43fc-8efe-76513b0f0a26",
-              "name": "Deleted.",
+              "id": "d09643a9-54af-4f38-bee8-79b621382537",
+              "name": "Validation Error",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "alerts",
-                    ":alert_id"
+                    "api",
+                    "2",
+                    "notifications",
+                    ":key_str",
+                    ""
                   ],
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [
-                    {
-                      "key": "_token",
-                      "value": "<API Key>"
-                    }
-                  ],
+                  "query": [],
                   "variable": [
                     {
                       "disabled": false,
                       "type": "any",
                       "value": "<string>",
-                      "key": "alert_id",
+                      "key": "key_str",
                       "description": "(Required) "
                     }
                   ]
                 },
-                "method": "DELETE",
-                "body": {}
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"viewed\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
-              "status": "No Content",
-              "code": 204,
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
               "header": [
                 {
                   "key": "Content-Type",
-                  "value": "text/plain"
+                  "value": "application/json"
                 }
               ],
-              "body": "",
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
               "cookie": [],
-              "_postman_previewlanguage": "text"
+              "_postman_previewlanguage": "json"
             }
           ],
           "event": [],
@@ -331,33 +859,16 @@
   "variable": [
     {
       "type": "string",
-      "value": "https://client.apimetrics.io/api/2",
+      "value": "https://client.apimetrics.io",
       "key": "baseUrl"
     }
   ],
-  "auth": {
-    "type": "apikey",
-    "apikey": [
-      {
-        "key": "key",
-        "value": "_token"
-      },
-      {
-        "key": "value",
-        "value": "{{apiKey}}"
-      },
-      {
-        "key": "in",
-        "value": "query"
-      }
-    ]
-  },
   "info": {
-    "_postman_id": "acfabb26-4be9-4fc1-a0c2-190b31d9f492",
-    "name": "APIContext Platform Agents Alerts API",
+    "_postman_id": "02a01fd7-166f-46d4-9afd-4e2035533fc8",
+    "name": "APIContext Notifications (Alerts) API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
-      "content": "APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.\n\nContact Support:\n Name: APIContext",
+      "content": "API for the APImetrics platform This document is the 'Notifications' slice of the APIContext (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.\n\nContact Support:\n Name: APIContext Support\n Email: support@apicontext.com",
       "type": "text/plain"
     }
   }

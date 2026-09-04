@@ -1,137 +1,1706 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: APIContext Platform Agents Schedules API
-  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
-  version: 2.0.0
+  title: APIContext Schedules API
+  description: API for the APImetrics platform This document is the 'Schedules' slice of the APIContext
+    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
   contact:
-    name: APIContext
-    url: https://apicontext.com/
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
 servers:
-- url: https://client.apimetrics.io/api/2
-  description: APIContext production API
-security:
-- ApiTokenAuth: []
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
 tags:
 - name: Schedules
+  description: '
+
+    Manage schedules for a project.
+
+
+    A schedule runs one or more monitors at a fixed frequency from a chosen set of
+
+    regions, clouds and agent locations. Targets (monitors) can be set in bulk via
+
+    the schedule body, or added and removed individually via the
+
+    `add-call-to-schedule` and `remove-call-from-schedule` operations.
+
+    '
+- name: Schedules
+  description: Manage schedules and their scheduled downtimes.
 paths:
-  /schedules/:
+  /api/3/schedules/:
     get:
       tags:
       - Schedules
-      operationId: listSchedules
-      summary: List schedules
-      description: List monitoring schedules that control how often API calls are executed and from which regions.
+      summary: List-Schedules
+      description: List schedules for the project.
+      operationId: list-schedules
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pagination cursor from a previous response's meta.next_cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          title: Maximum number of schedules to return
+          default: 25
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Schedules.
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api3__schedules__router___ListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
       - Schedules
-      operationId: createSchedule
-      summary: Create a schedule
-      description: Create a monitoring schedule (frequency + regions) that can be attached to API calls.
+      summary: Create-Schedule
+      description: Create a new schedule for the project.
+      operationId: create-schedule
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                meta:
-                  type: object
-                schedule:
-                  type: object
-                  properties:
-                    regions:
-                      type: array
-                      items:
-                        type: string
-                    frequency:
-                      type: integer
+              $ref: '#/components/schemas/EditableScheduleBody'
       responses:
-        '201':
-          description: Created.
-  /schedules/{schedule_id}:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSchedule'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/schedules/{schedule_id}:
     get:
       tags:
       - Schedules
-      operationId: getSchedule
-      summary: Get a schedule
-      description: Retrieve a monitoring schedule by id.
+      summary: Get-Schedule
+      description: Get a specific schedule by ID.
+      operationId: get-schedule
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
       - name: schedule_id
         in: path
         required: true
         schema:
           type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Schedule.
-    delete:
-      tags:
-      - Schedules
-      operationId: deleteSchedule
-      summary: Delete a schedule
-      description: Delete a monitoring schedule.
-      parameters:
-      - name: schedule_id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '204':
-          description: Deleted.
-  /schedules/{schedule_id}/call/{call_id}:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSchedule'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
     put:
       tags:
       - Schedules
-      operationId: addCallToSchedule
-      summary: Add an API call to a schedule
-      description: Attach an API call to a monitoring schedule so it executes on that cadence and across the schedule's configured regions.
+      summary: Update-Schedule
+      description: Update an existing schedule.
+      operationId: update-schedule
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
       - name: schedule_id
         in: path
         required: true
         schema:
           type: string
-      - name: call_id
-        in: path
-        required: true
-        schema:
-          type: string
-      requestBody:
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: apimetrics-project-id
+        in: header
         required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/EditableScheduleBody'
       responses:
         '200':
-          description: Linked.
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSchedule'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
       - Schedules
-      operationId: removeCallFromSchedule
-      summary: Remove an API call from a schedule
-      description: Detach an API call from a monitoring schedule.
+      summary: Delete-Schedule
+      description: Delete an existing schedule for this org.
+      operationId: delete-schedule
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
       - name: schedule_id
         in: path
         required: true
         schema:
           type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/schedules/{schedule_id}/targets/{target_id}:
+    post:
+      tags:
+      - Schedules
+      summary: Add-Call-To-Schedule
+      description: Add a target to an existing schedule.
+      operationId: add-call-to-schedule
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: target_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSchedule'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Schedules
+      summary: Remove-Call-From-Schedule
+      description: Remove a target from an existing schedule.
+      operationId: remove-call-from-schedule
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: target_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSchedule'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/schedules/call/{call_id}/:
+    get:
+      tags:
+      - Schedules
+      summary: List-Schedules-By-Call
+      description: List schedules that target a specific API call.
+      operationId: list-schedules-by-call
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
       - name: call_id
         in: path
         required: true
         schema:
           type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
-        '204':
-          description: Detached.
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/schedules/workflow/{workflow_id}/:
+    get:
+      tags:
+      - Schedules
+      summary: List-Schedules-By-Workflow
+      description: List schedules that target a specific workflow.
+      operationId: list-schedules-by-workflow
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Workflow ID
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/schedules/:
+    get:
+      tags:
+      - Schedules
+      summary: List-Schedules
+      description: 'List all schedules for the authenticated project.
+
+
+        A project with no schedules and no cursor gets a freshly-created
+
+        "Default Schedule".
+
+
+        Deprecated: use ``GET /api/3/schedules/`` instead.'
+      operationId: list-schedules
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Schedules
+      summary: Create-Schedule
+      description: 'Create a new schedule.
+
+
+        Deprecated: use ``POST /api/3/schedules/`` instead.'
+      operationId: create-schedule
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleCreateBody'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/schedules/{schedule_id}/:
+    get:
+      tags:
+      - Schedules
+      summary: Get-Schedule
+      description: 'Get a single schedule by id.
+
+
+        Deprecated: use ``GET /api/3/schedules/{schedule_id}`` instead.'
+      operationId: get-schedule
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Schedules
+      summary: Update-Schedule
+      description: 'Partially update a schedule (only supplied fields change).
+
+
+        Deprecated: use ``PUT /api/3/schedules/{schedule_id}`` instead.'
+      operationId: update-schedule
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleUpdateBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Schedules
+      summary: Delete-Schedule
+      description: 'Delete a schedule and return its last representation.
+
+
+        Deprecated: use ``DELETE /api/3/schedules/{schedule_id}`` instead.'
+      operationId: delete-schedule
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/schedules/{schedule_id}/call/{call_id}:
+    post:
+      tags:
+      - Schedules
+      summary: Ensure-Schedule-Call
+      description: 'Associate an API call with a schedule (idempotent; 202 if already associated).
+
+
+        Deprecated: use ``POST /api/3/schedules/{schedule_id}/targets/{target_id}``
+
+        instead.'
+      operationId: ensure-schedule-call
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Schedules
+      summary: Remove-Schedule-Call
+      description: 'Disassociate an API call from a schedule (202 if it was not associated).
+
+
+        Deprecated: use ``DELETE /api/3/schedules/{schedule_id}/targets/{target_id}``
+
+        instead.'
+      operationId: remove-schedule-call
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/schedules/{schedule_id}/run/{workflow_id}:
+    post:
+      tags:
+      - Schedules
+      summary: Ensure-Schedule-Workflow
+      description: 'Associate a workflow with a schedule (idempotent; 202 if already associated).
+
+
+        Deprecated: use ``POST /api/3/schedules/{schedule_id}/targets/{target_id}``
+
+        instead -- it accepts both call and workflow target ids.'
+      operationId: ensure-schedule-workflow
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Workflow ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Schedules
+      summary: Remove-Schedule-Workflow
+      description: 'Disassociate a workflow from a schedule (202 if it was not associated).
+
+
+        Deprecated: use ``DELETE /api/3/schedules/{schedule_id}/targets/{target_id}``
+
+        instead -- it accepts both call and workflow target ids.'
+      operationId: remove-schedule-workflow
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Workflow ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/schedules/{schedule_id}/downtime/:
+    get:
+      tags:
+      - Schedules
+      summary: List-Schedule-Downtimes
+      description: List scheduled downtimes for a schedule.
+      operationId: list-schedule-downtimes
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DowntimeListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Schedules
+      summary: Create-Schedule-Downtime
+      description: Create a scheduled downtime under a schedule.
+      operationId: create-schedule-downtime
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Schedule ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DowntimeCreateBody'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DowntimeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/schedules/downtime/{downtime_id}/:
+    get:
+      tags:
+      - Schedules
+      summary: Get-Schedule-Downtime
+      description: Get a single scheduled downtime by id.
+      operationId: get-schedule-downtime
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: downtime_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DowntimeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Schedules
+      summary: Update-Schedule-Downtime
+      description: Partially update a scheduled downtime (only supplied fields change).
+      operationId: update-schedule-downtime
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: downtime_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DowntimeUpdateBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DowntimeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Schedules
+      summary: Delete-Schedule-Downtime
+      description: Delete a scheduled downtime and return its last representation.
+      operationId: delete-schedule-downtime
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: downtime_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DowntimeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   securitySchemes:
-    ApiTokenAuth:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
       type: apiKey
-      in: query
-      name: _token
+      in: header
+      name: X-Api-Key
+  schemas:
+    ApiSchedule:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ApiScheduleMeta'
+        schedule:
+          $ref: '#/components/schemas/ApiScheduleSpec'
+      type: object
+      required:
+      - meta
+      - schedule
+      title: ApiSchedule
+    ApiScheduleMeta:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the schedule
+        name:
+          type: string
+          title: Name
+          description: Display name for the schedule
+        owner:
+          type: string
+          title: Owner
+          description: ID of the project that owns the schedule
+        created:
+          type: string
+          format: date-time
+          title: Created
+          description: When the schedule was first created
+        last_update:
+          type: string
+          format: date-time
+          title: Last Update
+          description: When the schedule was most recently modified
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+          description: Tags applied to the schedule
+      type: object
+      required:
+      - id
+      - name
+      - owner
+      - created
+      - last_update
+      - tags
+      title: ApiScheduleMeta
+    ApiScheduleSpec:
+      properties:
+        frequency:
+          type: integer
+          title: Frequency
+          description: Run interval in seconds
+        target_ids:
+          items:
+            type: string
+          type: array
+          title: Target Ids
+          description: IDs of the monitors run on this schedule
+        regions:
+          items:
+            type: string
+          type: array
+          title: Regions
+          description: Regions and clouds the schedule runs from (['all'] when worldwide)
+        locations:
+          items:
+            type: string
+          type: array
+          title: Locations
+          description: Specific agent locations the schedule runs from
+        backoff_method:
+          anyOf:
+          - $ref: '#/components/schemas/BackoffMethod'
+          - type: 'null'
+          description: Retry backoff strategy applied on failure
+      type: object
+      required:
+      - frequency
+      - target_ids
+      - regions
+      - locations
+      - backoff_method
+      title: ApiScheduleSpec
+    BackoffMethod:
+      type: string
+      enum:
+      - fibo
+      - expo
+      - constant
+      - none
+      title: BackoffMethod
+    DowntimeBodyResponse:
+      properties:
+        start_time:
+          type: string
+          title: Start Time
+        end_time:
+          type: string
+          title: End Time
+        zone:
+          type: string
+          title: Zone
+        repeated:
+          type: boolean
+          title: Repeated
+        repeat_days:
+          type: integer
+          title: Repeat Days
+      type: object
+      required:
+      - start_time
+      - end_time
+      - zone
+      - repeated
+      - repeat_days
+      title: DowntimeBodyResponse
+    DowntimeCreateBody:
+      properties:
+        downtime:
+          anyOf:
+          - $ref: '#/components/schemas/_DowntimeBodyFields'
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      title: DowntimeCreateBody
+    DowntimeListMetaResponse:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: DowntimeListMetaResponse
+    DowntimeListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/DowntimeListMetaResponse'
+        results:
+          items:
+            $ref: '#/components/schemas/DowntimeResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: DowntimeListResponse
+    DowntimeMetaResponse:
+      properties:
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        state:
+          type: string
+          title: State
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        org_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Id
+        schedule_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Schedule Id
+        project_ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Project Ids
+      type: object
+      required:
+      - state
+      title: DowntimeMetaResponse
+    DowntimeResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/DowntimeMetaResponse'
+        schedule:
+          $ref: '#/components/schemas/DowntimeBodyResponse'
+      type: object
+      required:
+      - id
+      - meta
+      - schedule
+      title: DowntimeResponse
+    DowntimeUpdateBody:
+      properties:
+        downtime:
+          anyOf:
+          - $ref: '#/components/schemas/_DowntimeBodyFields'
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      title: DowntimeUpdateBody
+    EditableScheduleBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Display name for the schedule
+        frequency:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Frequency
+          description: Run interval in seconds
+        targets:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Targets
+          description: IDs of the monitors to run on this schedule
+        regions:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Regions
+          description: Regions and clouds to run from. Use ['all'] to run worldwide; otherwise a mix of
+            region codes and cloud codes. Discover the values available to this project via the `list-agents-for-project`
+            operation (`GET /api/3/project/agents`).
+        locations:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Locations
+          description: Specific agent locations to run from. Discover available locations via the `list-agents-for-project`
+            operation (`GET /api/3/project/agents`).
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+          description: Tags applied to the schedule
+        backoff_method:
+          anyOf:
+          - $ref: '#/components/schemas/BackoffMethod'
+          - type: 'null'
+          description: Retry backoff strategy applied on failure
+      type: object
+      title: EditableScheduleBody
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ScheduleBodyResponse:
+      properties:
+        target_ids:
+          items:
+            type: string
+          type: array
+          title: Target Ids
+          default: []
+        frequency:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Frequency
+        worldwide:
+          type: boolean
+          title: Worldwide
+        regions:
+          items:
+            type: string
+          type: array
+          title: Regions
+          default: []
+        clouds:
+          items:
+            type: string
+          type: array
+          title: Clouds
+          default: []
+        locations:
+          items:
+            type: string
+          type: array
+          title: Locations
+          default: []
+        backoff_method:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Backoff Method
+      type: object
+      required:
+      - worldwide
+      title: ScheduleBodyResponse
+    ScheduleCreateBody:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/_ScheduleBodyMeta'
+          - type: 'null'
+        schedule:
+          anyOf:
+          - $ref: '#/components/schemas/_ScheduleBodySchedule'
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      title: ScheduleCreateBody
+    ScheduleListMetaResponse:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: ScheduleListMetaResponse
+    ScheduleListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ScheduleListMetaResponse'
+        results:
+          items:
+            $ref: '#/components/schemas/ScheduleResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ScheduleListResponse
+    ScheduleMetaResponse:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        owner:
+          type: string
+          title: Owner
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          default: []
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+      type: object
+      required:
+      - owner
+      title: ScheduleMetaResponse
+    ScheduleResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/ScheduleMetaResponse'
+        schedule:
+          $ref: '#/components/schemas/ScheduleBodyResponse'
+      type: object
+      required:
+      - id
+      - meta
+      - schedule
+      title: ScheduleResponse
+    ScheduleUpdateBody:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/_ScheduleBodyMeta'
+          - type: 'null'
+        schedule:
+          anyOf:
+          - $ref: '#/components/schemas/_ScheduleBodySchedule'
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      title: ScheduleUpdateBody
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    _DowntimeBodyFields:
+      properties:
+        start_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start Time
+        end_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: End Time
+        zone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zone
+        repeated:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Repeated
+        repeat_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Repeat Days
+      additionalProperties: false
+      type: object
+      title: _DowntimeBodyFields
+    _ScheduleBodyMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+      additionalProperties: false
+      type: object
+      title: _ScheduleBodyMeta
+    _ScheduleBodySchedule:
+      properties:
+        target_ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Target Ids
+        regions:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Regions
+        locations:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Locations
+        frequency:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Frequency
+        backoff_method:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Backoff Method
+      additionalProperties: false
+      type: object
+      title: _ScheduleBodySchedule
+    api3__schedules__router___ListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api3__schedules__router___ListResponseMeta'
+        data:
+          items:
+            $ref: '#/components/schemas/ApiSchedule'
+          type: array
+          title: Data
+      type: object
+      required:
+      - meta
+      - data
+      title: _ListResponse
+    api3__schedules__router___ListResponseMeta:
+      properties:
+        project_id:
+          type: string
+          title: Project Id
+          description: The project the schedules belong to
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Cursor to pass to retrieve the next page, or null on the last page
+        more:
+          type: boolean
+          title: More
+          description: True if there are further pages beyond this response
+      type: object
+      required:
+      - project_id
+      - next_cursor
+      - more
+      title: _ListResponseMeta

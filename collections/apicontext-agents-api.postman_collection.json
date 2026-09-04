@@ -1,24 +1,210 @@
 {
   "item": [
     {
-      "id": "99b5ed06-3a17-4196-ad7d-b1b70e39de90",
+      "id": "cc2b8318-6a42-4ab0-bcc0-f492834d172c",
       "name": "Agents",
       "description": {
-        "content": "",
+        "content": "Shared / community remote agent registry (list + info + admin-only by-key operations).",
         "type": "text/plain"
       },
       "item": [
         {
-          "id": "53528368-544f-492e-9a35-2c55dd298d65",
-          "name": "Get agent info",
+          "id": "766d9fe2-f2d9-42e5-9b10-e20b31079f02",
+          "name": "List-Agents",
           "request": {
-            "name": "Get agent info",
+            "name": "List-Agents",
             "description": {
-              "content": "Return the catalog of APIContext monitoring agents (regions, providers, capabilities) available for synthetic testing.",
+              "content": "List remote agents available to the caller.\n\nAgents are shared infrastructure -- callers see any agent whose\n``owners`` list contains ``\"public\"``, the caller's project id, or\n(with ``organization``) the caller's org id. Non-paginated: up to\n200 rows returned in a single response.",
               "type": "text/plain"
             },
             "url": {
               "path": [
+                "api",
+                "2",
+                "agents",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "organization",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f9a761c0-e0fd-45af-8a60-6295dbdb145f",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "organization",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"next_cursor\": \"string\",\n    \"more\": false\n  },\n  \"results\": [\n    {\n      \"meta\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"last_update\": \"1950-10-23T16:36:47.649Z\",\n        \"created\": \"2019-10-10T03:09:49.480Z\",\n        \"remote_addr\": \"string\"\n      },\n      \"agent\": {\n        \"normalized_name\": \"string\",\n        \"name\": \"string\",\n        \"cloud\": \"string\",\n        \"cloud_full_name\": \"string\",\n        \"geography\": \"string\",\n        \"continent\": \"string\",\n        \"country\": \"string\",\n        \"region\": \"string\",\n        \"city\": \"string\",\n        \"location\": [\n          7428.73712283288,\n          7513.245824422646\n        ],\n        \"shared_with_org\": \"string\"\n      },\n      \"id\": \"string\"\n    },\n    {\n      \"meta\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"last_update\": \"1976-04-22T19:56:29.834Z\",\n        \"created\": \"2021-07-14T05:31:34.998Z\",\n        \"remote_addr\": \"string\"\n      },\n      \"agent\": {\n        \"normalized_name\": \"string\",\n        \"name\": \"string\",\n        \"cloud\": \"string\",\n        \"cloud_full_name\": \"string\",\n        \"geography\": \"string\",\n        \"continent\": \"string\",\n        \"country\": \"string\",\n        \"region\": \"string\",\n        \"city\": \"string\",\n        \"location\": [\n          6941.979038380926,\n          1227.6879230352888\n        ],\n        \"shared_with_org\": \"string\"\n      },\n      \"id\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f4609b9f-fd7b-4236-aa9c-66744f0c4b9c",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "organization",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ac55a4b1-db3d-4282-b9a9-9d955f64b343",
+          "name": "Agents-Info",
+          "request": {
+            "name": "Agents-Info",
+            "description": {
+              "content": "Return grouped agent metadata used to populate location pickers.\n\nThe response contains a ``regions`` list (region id + display name +\nthe location IDs in that region), a ``locations`` map (agent name to\nhuman-readable label), an ``agent_list``, and an empty\n``postman_locations`` (kept for response-shape stability).\nReachable anonymously -- no auth headers required. An anonymous\ncaller sees public agents; an authenticated caller additionally sees\nagents owned by their orgs or project.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
                 "agents",
                 "info"
               ],
@@ -28,32 +214,713 @@
               "query": [],
               "variable": []
             },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "method": "GET",
-            "auth": null
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
           },
           "response": [
             {
-              "id": "b1076d4a-37fa-4e2c-9f76-915e5453ce99",
-              "name": "Agent info.",
+              "id": "a62e62ae-45e6-4c25-97c4-9013e51de217",
+              "name": "Successful Response",
               "originalRequest": {
                 "url": {
                   "path": [
+                    "api",
+                    "2",
                     "agents",
                     "info"
                   ],
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [
-                    {
-                      "key": "_token",
-                      "value": "<API Key>"
-                    }
-                  ],
+                  "query": [],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
                 "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"regions\": [\n    {\n      \"id\": \"string\",\n      \"locations\": [\n        \"string\",\n        \"string\"\n      ],\n      \"name\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"locations\": [\n        \"string\",\n        \"string\"\n      ],\n      \"name\": \"string\"\n    }\n  ],\n  \"postman_locations\": [\n    \"string\",\n    \"string\"\n  ],\n  \"locations\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\"\n  },\n  \"agent_list\": [\n    {\n      \"meta\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"last_update\": \"2023-06-11T12:02:01.213Z\",\n        \"created\": \"1955-09-11T22:29:50.033Z\",\n        \"remote_addr\": \"string\"\n      },\n      \"agent\": {\n        \"normalized_name\": \"string\",\n        \"name\": \"string\",\n        \"cloud\": \"string\",\n        \"cloud_full_name\": \"string\",\n        \"geography\": \"string\",\n        \"continent\": \"string\",\n        \"country\": \"string\",\n        \"region\": \"string\",\n        \"city\": \"string\",\n        \"location\": [\n          8722.365800272855,\n          5605.343057170607\n        ],\n        \"shared_with_org\": \"string\"\n      },\n      \"id\": \"string\"\n    },\n    {\n      \"meta\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"last_update\": \"1974-12-03T03:59:12.737Z\",\n        \"created\": \"1946-09-18T13:01:55.731Z\",\n        \"remote_addr\": \"string\"\n      },\n      \"agent\": {\n        \"normalized_name\": \"string\",\n        \"name\": \"string\",\n        \"cloud\": \"string\",\n        \"cloud_full_name\": \"string\",\n        \"geography\": \"string\",\n        \"continent\": \"string\",\n        \"country\": \"string\",\n        \"region\": \"string\",\n        \"city\": \"string\",\n        \"location\": [\n          9765.937194323307,\n          5770.4932054199935\n        ],\n        \"shared_with_org\": \"string\"\n      },\n      \"id\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e7c6dda5-c48b-4ba2-a472-129e1f0eae28",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    "info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "da955c20-d3fe-42de-8be7-5d22fdd1edcd",
+          "name": "Get-Agent",
+          "request": {
+            "name": "Get-Agent",
+            "description": {
+              "content": "Read a single agent by key.\n\nRequires the caller to own the agent -- either as a site admin, or\nbecause their project key is listed in the agent's ``owners``. A\nplain project API key has no such ownership on shared agents, so\n``get`` and ``update`` by key are reserved for administrators.\nReturns 404 for unknown agents and for agents the caller can't own.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "agents",
+                ":agent_key_str",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "agent_key_str",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "387f04b5-abc9-48c9-beb5-53de77f7fc69",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ":agent_key_str",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "agent_key_str",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"last_update\": \"1949-09-09T11:55:19.942Z\",\n    \"created\": \"1965-07-15T06:19:10.246Z\",\n    \"remote_addr\": \"string\"\n  },\n  \"agent\": {\n    \"normalized_name\": \"string\",\n    \"name\": \"string\",\n    \"cloud\": \"string\",\n    \"cloud_full_name\": \"string\",\n    \"geography\": \"string\",\n    \"continent\": \"string\",\n    \"country\": \"string\",\n    \"region\": \"string\",\n    \"city\": \"string\",\n    \"location\": [\n      1106.9306713056815,\n      1541.2577074548528\n    ],\n    \"shared_with_org\": \"string\"\n  },\n  \"id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "59db4b5a-dc29-473b-80b8-8070d8d86550",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ":agent_key_str",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "agent_key_str",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7891d658-edf6-417a-80e3-4e70ad553d20",
+          "name": "Update-Agent",
+          "request": {
+            "name": "Update-Agent",
+            "description": {
+              "content": "Update the display metadata (name, cloud, geography, ...) of an agent.\n\nSame ownership rules as ``get-agent``: reserved for administrators.\nOnly fields the caller supplies are updated; omitted fields keep\ntheir existing values.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "agents",
+                ":agent_key_str",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "agent_key_str",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"agent\": {\n    \"name\": \"<string>\",\n    \"cloud\": \"<string>\",\n    \"cloud_full_name\": \"<string>\",\n    \"continent\": \"<string>\",\n    \"country\": \"<string>\",\n    \"geography\": \"<string>\",\n    \"region\": \"<string>\",\n    \"city\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7d3d6d56-a688-4df7-af18-3c58c02cce94",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ":agent_key_str",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "agent_key_str",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"agent\": {\n    \"name\": \"string\",\n    \"cloud\": \"string\",\n    \"cloud_full_name\": \"string\",\n    \"continent\": \"string\",\n    \"country\": \"string\",\n    \"geography\": \"string\",\n    \"region\": \"string\",\n    \"city\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"last_update\": \"1949-09-09T11:55:19.942Z\",\n    \"created\": \"1965-07-15T06:19:10.246Z\",\n    \"remote_addr\": \"string\"\n  },\n  \"agent\": {\n    \"normalized_name\": \"string\",\n    \"name\": \"string\",\n    \"cloud\": \"string\",\n    \"cloud_full_name\": \"string\",\n    \"geography\": \"string\",\n    \"continent\": \"string\",\n    \"country\": \"string\",\n    \"region\": \"string\",\n    \"city\": \"string\",\n    \"location\": [\n      1106.9306713056815,\n      1541.2577074548528\n    ],\n    \"shared_with_org\": \"string\"\n  },\n  \"id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "65a9ae1a-2b25-4e41-912d-51f8daed5214",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ":agent_key_str",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "agent_key_str",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"agent\": {\n    \"name\": \"string\",\n    \"cloud\": \"string\",\n    \"cloud_full_name\": \"string\",\n    \"continent\": \"string\",\n    \"country\": \"string\",\n    \"geography\": \"string\",\n    \"region\": \"string\",\n    \"city\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a9304926-52f1-4bd1-be68-f822b6f84a90",
+          "name": "Get a remote agent",
+          "request": {
+            "name": "Get a remote agent",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "agents",
+                ":agent_key",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "64f4b428-0f93-4c2d-9965-26b66a5ed8cd",
+              "name": "Agent object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ":agent_key",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"qlq3\",\n  \"meta\": {\n    \"name\": \"string\",\n    \"description\": \"string\",\n    \"project_id\": \"===\",\n    \"created\": \"1976-08-19T21:25:30.309Z\",\n    \"last_update\": \"2026-07-04T02:46:15.176Z\"\n  },\n  \"agent\": {\n    \"location_id\": \"string\",\n    \"enabled\": false,\n    \"last_seen\": \"1977-12-26T00:44:10.507Z\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "aaf115e2-9e89-4a36-ba83-e7faa8c1e944",
+          "name": "Update a remote agent",
+          "request": {
+            "name": "Update a remote agent",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "agents",
+                ":agent_key",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<string>\",\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"project_id\": \"<string>\",\n    \"created\": \"<dateTime>\",\n    \"last_update\": \"<dateTime>\"\n  },\n  \"agent\": {\n    \"location_id\": \"<string>\",\n    \"enabled\": \"<boolean>\",\n    \"last_seen\": \"<dateTime>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b23952f5-e3c8-4dd0-869e-7352e62c05c6",
+              "name": "Updated agent",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ":agent_key",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"kK33l7ig62===\",\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"project_id\": \"3gr1XStO===\",\n    \"created\": \"<dateTime>\",\n    \"last_update\": \"<dateTime>\"\n  },\n  \"agent\": {\n    \"location_id\": \"<string>\",\n    \"enabled\": \"<boolean>\",\n    \"last_seen\": \"<dateTime>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "status": "OK",
               "code": 200,
@@ -74,17 +941,17 @@
           }
         },
         {
-          "id": "e256731d-8bc8-4774-b139-32e9f26c61cb",
-          "name": "List agents",
+          "id": "9f5145cd-861b-4ebc-b7be-16c85e44a34d",
+          "name": "Delete a remote agent",
           "request": {
-            "name": "List agents",
-            "description": {
-              "content": "List available monitoring agents (regions, providers) that can execute synthetic API calls.",
-              "type": "text/plain"
-            },
+            "name": "Delete a remote agent",
+            "description": {},
             "url": {
               "path": [
+                "api",
+                "2",
                 "agents",
+                ":agent_key",
                 ""
               ],
               "host": [
@@ -93,35 +960,268 @@
               "query": [],
               "variable": []
             },
-            "method": "GET",
+            "method": "DELETE",
             "auth": null
           },
           "response": [
             {
-              "id": "9c9506c6-8633-4e96-81a4-50e10458f110",
-              "name": "Agents.",
+              "id": "39a8bf95-e081-4a3f-bc45-6577ffdf9903",
+              "name": "Deleted",
               "originalRequest": {
                 "url": {
                   "path": [
+                    "api",
+                    "2",
                     "agents",
+                    ":agent_key",
                     ""
                   ],
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [
-                    {
-                      "key": "_token",
-                      "value": "<API Key>"
-                    }
-                  ],
+                  "query": [],
                   "variable": []
                 },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "a957893f-da97-410c-9e3d-3c082cf9afb5",
+      "name": "Legacy (proxied)",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "5fb801f0-f594-449a-9cf5-665250ac9046",
+          "name": "Get a remote agent",
+          "request": {
+            "name": "Get a remote agent",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "agents",
+                ":agent_key",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2371e15e-7e46-4fc9-8128-de4263730e64",
+              "name": "Agent object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ":agent_key",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
                 "body": {}
               },
               "status": "OK",
               "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"qlq3\",\n  \"meta\": {\n    \"name\": \"string\",\n    \"description\": \"string\",\n    \"project_id\": \"===\",\n    \"created\": \"1976-08-19T21:25:30.309Z\",\n    \"last_update\": \"2026-07-04T02:46:15.176Z\"\n  },\n  \"agent\": {\n    \"location_id\": \"string\",\n    \"enabled\": false,\n    \"last_seen\": \"1977-12-26T00:44:10.507Z\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "47918b20-d3f3-4c72-b5e8-fba284b4d817",
+          "name": "Update a remote agent",
+          "request": {
+            "name": "Update a remote agent",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "agents",
+                ":agent_key",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<string>\",\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"project_id\": \"<string>\",\n    \"created\": \"<dateTime>\",\n    \"last_update\": \"<dateTime>\"\n  },\n  \"agent\": {\n    \"location_id\": \"<string>\",\n    \"enabled\": \"<boolean>\",\n    \"last_seen\": \"<dateTime>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "48f3ded3-38e6-4d9e-b146-33a917ad3fae",
+              "name": "Updated agent",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ":agent_key",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"kK33l7ig62===\",\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"project_id\": \"3gr1XStO===\",\n    \"created\": \"<dateTime>\",\n    \"last_update\": \"<dateTime>\"\n  },\n  \"agent\": {\n    \"location_id\": \"<string>\",\n    \"enabled\": \"<boolean>\",\n    \"last_seen\": \"<dateTime>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d24c93aa-fb72-4a11-b5dc-5f1e010ff1e4",
+          "name": "Delete a remote agent",
+          "request": {
+            "name": "Delete a remote agent",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "2",
+                "agents",
+                ":agent_key",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9b046466-c8a6-4137-b085-dea697d462e5",
+              "name": "Deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "2",
+                    "agents",
+                    ":agent_key",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
               "header": [
                 {
                   "key": "Content-Type",
@@ -146,33 +1246,16 @@
   "variable": [
     {
       "type": "string",
-      "value": "https://client.apimetrics.io/api/2",
+      "value": "https://client.apimetrics.io",
       "key": "baseUrl"
     }
   ],
-  "auth": {
-    "type": "apikey",
-    "apikey": [
-      {
-        "key": "key",
-        "value": "_token"
-      },
-      {
-        "key": "value",
-        "value": "{{apiKey}}"
-      },
-      {
-        "key": "in",
-        "value": "query"
-      }
-    ]
-  },
   "info": {
-    "_postman_id": "7de69f79-99b2-429e-b5d4-18ef81ab6c41",
-    "name": "APIContext Platform Agents API",
+    "_postman_id": "3552d7fb-4ca6-41f3-a82a-ebd629cc022e",
+    "name": "APIContext Agents API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
-      "content": "APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.\n\nContact Support:\n Name: APIContext",
+      "content": "API for the APImetrics platform This document is the 'Agents' slice of the APIContext (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.\n\nContact Support:\n Name: APIContext Support\n Email: support@apicontext.com",
       "type": "text/plain"
     }
   }

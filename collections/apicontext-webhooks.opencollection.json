@@ -1,0 +1,655 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "APIContext Webhooks API",
+    "version": "v2026-09-02"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List-Webhooks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/3/webhooks/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "monitor_id",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List webhooks for the project."
+        },
+        {
+          "info": {
+            "name": "Create-Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/3/webhooks/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Create a new webhook for the project."
+        },
+        {
+          "info": {
+            "name": "Get-Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/3/webhooks/:webhook_id",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "webhook_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get a specific webhook by ID."
+        },
+        {
+          "info": {
+            "name": "Update-Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://client.apimetrics.io/api/3/webhooks/:webhook_id",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "webhook_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Update an existing webhook."
+        },
+        {
+          "info": {
+            "name": "Delete-Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/3/webhooks/:webhook_id",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "webhook_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Delete an existing webhook for this project."
+        },
+        {
+          "info": {
+            "name": "List-Webhook-Types-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/webhooks/types",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List every supported webhook service type."
+        },
+        {
+          "info": {
+            "name": "Get-Webhook-Type-Properties-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/webhooks/types/:type",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List the parameter descriptors for a webhook service type."
+        },
+        {
+          "info": {
+            "name": "List-Webhooks-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/webhooks/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List project-level webhooks."
+        },
+        {
+          "info": {
+            "name": "Create-Webhook-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://client.apimetrics.io/api/2/webhooks/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Create a project-level webhook."
+        },
+        {
+          "info": {
+            "name": "Snooze-Webhook-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/webhooks/snooze/:web_hook_key_str",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "web_hook_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Snooze (partially update) a webhook."
+        },
+        {
+          "info": {
+            "name": "Get-Webhook-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/webhooks/:web_hook_key_str",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "web_hook_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get a project-level webhook."
+        },
+        {
+          "info": {
+            "name": "Update-Webhook-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/webhooks/:web_hook_key_str",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "web_hook_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Partially update a project-level webhook."
+        },
+        {
+          "info": {
+            "name": "Delete-Webhook-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/2/webhooks/:web_hook_key_str",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "web_hook_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Delete a project-level webhook, returning the deleted representation."
+        },
+        {
+          "info": {
+            "name": "List-Call-Webhooks-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:test_key_str/webhooks/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "test_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "List webhooks bound to a specific API call."
+        },
+        {
+          "info": {
+            "name": "Create-Call-Webhook-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://client.apimetrics.io/api/2/calls/:test_key_str/webhooks/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "test_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Create a webhook bound to a specific API call."
+        },
+        {
+          "info": {
+            "name": "Get-Call-Webhook-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/calls/:test_key_str/webhooks/:web_hook_key_str",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "test_key_str",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "web_hook_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get a webhook bound to a specific API call."
+        },
+        {
+          "info": {
+            "name": "Update-Call-Webhook-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/calls/:test_key_str/webhooks/:web_hook_key_str",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "test_key_str",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "web_hook_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Partially update a webhook bound to a specific API call."
+        },
+        {
+          "info": {
+            "name": "Delete-Call-Webhook-V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/2/calls/:test_key_str/webhooks/:web_hook_key_str",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "test_key_str",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "web_hook_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Delete a webhook bound to a specific API call, returning the deleted representation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

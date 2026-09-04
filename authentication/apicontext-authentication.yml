@@ -1,15 +1,61 @@
-generated: '2026-07-11'
+generated: '2026-09-04'
 method: derived
-source: openapi/apicontext-platform-openapi.yaml
+source: openapi/apicontext-agents-api-openapi.yml, openapi/apicontext-alerts-api-openapi.yml,
+  openapi/apicontext-api-calls-api-openapi.yml, openapi/apicontext-directory-api-openapi.yml,
+  openapi/apicontext-governance-openapi.yml, openapi/apicontext-insights-api-openapi.yml, openapi/apicontext-mcp-monitors-openapi.yml,
+  openapi/apicontext-platform-openapi.yml, openapi/apicontext-projects-api-openapi.yml, openapi/apicontext-reports-api-openapi.yml,
+  openapi/apicontext-results-api-openapi.yml, openapi/apicontext-schedules-api-openapi.yml ...
 summary:
   types:
   - apiKey
+  - oauth2
   api_key_in:
-  - query
+  - header
+  oauth2_flows:
+  - authorizationCode
 schemes:
-- name: ApiTokenAuth
-  type: apiKey
-  in: query
-  parameter: _token
+- name: OAuth2
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+    tokenUrl: https://auth.apimetrics.io/oauth/token
+    scopes: 3
   sources:
-  - openapi/apicontext-platform-openapi.yaml
+  - openapi/apicontext-agents-api-openapi.yml
+  - openapi/apicontext-alerts-api-openapi.yml
+  - openapi/apicontext-api-calls-api-openapi.yml
+  - openapi/apicontext-directory-api-openapi.yml
+  - openapi/apicontext-governance-openapi.yml
+  - openapi/apicontext-insights-api-openapi.yml
+  - openapi/apicontext-mcp-monitors-openapi.yml
+  - openapi/apicontext-platform-openapi.yml
+  - openapi/apicontext-projects-api-openapi.yml
+  - openapi/apicontext-reports-api-openapi.yml
+  - openapi/apicontext-results-api-openapi.yml
+  - openapi/apicontext-schedules-api-openapi.yml
+  - openapi/apicontext-statistics-api-openapi.yml
+  - openapi/apicontext-tokens-api-openapi.yml
+  - openapi/apicontext-webhooks-openapi.yml
+  - openapi/apicontext-workflows-api-openapi.yml
+- name: ApiKey
+  type: apiKey
+  in: header
+  parameter: X-Api-Key
+  sources:
+  - openapi/apicontext-agents-api-openapi.yml
+  - openapi/apicontext-alerts-api-openapi.yml
+  - openapi/apicontext-api-calls-api-openapi.yml
+  - openapi/apicontext-directory-api-openapi.yml
+  - openapi/apicontext-governance-openapi.yml
+  - openapi/apicontext-insights-api-openapi.yml
+  - openapi/apicontext-mcp-monitors-openapi.yml
+  - openapi/apicontext-platform-openapi.yml
+  - openapi/apicontext-projects-api-openapi.yml
+  - openapi/apicontext-reports-api-openapi.yml
+  - openapi/apicontext-results-api-openapi.yml
+  - openapi/apicontext-schedules-api-openapi.yml
+  - openapi/apicontext-statistics-api-openapi.yml
+  - openapi/apicontext-tokens-api-openapi.yml
+  - openapi/apicontext-webhooks-openapi.yml
+  - openapi/apicontext-workflows-api-openapi.yml

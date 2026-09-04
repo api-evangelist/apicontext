@@ -1,0 +1,1219 @@
+{
+  "item": [
+    {
+      "id": "ae4d292c-4480-4078-b610-cb804a03d2a9",
+      "name": "MCP Monitors",
+      "description": {
+        "content": "\nManage MCP Monitors.\n\nMCP Monitors test MCP servers by running a configurable sequence of steps (e.g. listing tools, calling a tool) against a\ntarget HTTP(S) URL.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6ef83215-e4c3-4721-8e8c-ce05230ffdbc",
+          "name": "List all MCP Monitors for a project",
+          "request": {
+            "name": "List all MCP Monitors for a project",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "3",
+                "monitors",
+                "mcp",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b65ccb32-202f-4492-b7f1-3ca0daa09b78",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"results\": [\n    {\n      \"id\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHIWCxILTWNwVGVzdFNldHVwGICAgICA\",\n      \"meta\": {\n        \"monitor_type\": \"mcp\",\n        \"name\": \"Check tools endpoint\",\n        \"tags\": [],\n        \"domain\": \"mcp.example.com\",\n        \"created\": \"2025-01-15T10:00:00Z\",\n        \"last_update\": \"2025-01-15T10:00:00Z\",\n        \"owner\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHILCxIEVXNlchhiAgI\",\n        \"workspace\": \"global\"\n      },\n      \"setup\": {\n        \"url\": \"https://mcp.example.com/sse\",\n        \"overall_timeout_ms\": 30000,\n        \"steps\": [\n          {\n            \"timeout_ms\": 10000,\n            \"wait_ms\": 0,\n            \"step_type\": \"list_tools\"\n          }\n        ]\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "710043d4-c4f0-49c7-bceb-5c93e989c1aa",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b3df3d4b-0a12-47b3-8ecc-f5aa88c4bdd8",
+          "name": "Create a new MCP Monitor",
+          "request": {
+            "name": "Create a new MCP Monitor",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "3",
+                "monitors",
+                "mcp",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"url\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"workspace\": \"global\",\n  \"overall_timeout_ms\": 30000,\n  \"steps\": [\n    {\n      \"timeout_ms\": \"<integer>\",\n      \"wait_ms\": \"<integer>\",\n      \"step_type\": \"list_tools\"\n    }\n  ],\n  \"auth_id\": \"<string>\",\n  \"token_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "641459fe-ea26-4125-a165-d01215b89fb9",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Check tools endpoint\",\n  \"tags\": [],\n  \"workspace\": \"global\",\n  \"url\": \"https://mcp.example.com/sse\",\n  \"overall_timeout_ms\": 30000,\n  \"steps\": [\n    {\n      \"timeout_ms\": 10000,\n      \"wait_ms\": 0,\n      \"step_type\": \"list_tools\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHIWCxILTWNwVGVzdFNldHVwGICAgICA\",\n  \"meta\": {\n    \"monitor_type\": \"mcp\",\n    \"name\": \"Check tools endpoint\",\n    \"tags\": [],\n    \"domain\": \"mcp.example.com\",\n    \"created\": \"2025-01-15T10:00:00Z\",\n    \"last_update\": \"2025-01-15T10:00:00Z\",\n    \"owner\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHILCxIEVXNlchhiAgI\",\n    \"workspace\": \"global\"\n  },\n  \"setup\": {\n    \"url\": \"https://mcp.example.com/sse\",\n    \"overall_timeout_ms\": 30000,\n    \"steps\": [\n      {\n        \"timeout_ms\": 10000,\n        \"wait_ms\": 0,\n        \"step_type\": \"list_tools\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8a37a635-522c-4fe3-ba6c-0a945724df5c",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Check tools endpoint\",\n  \"tags\": [],\n  \"workspace\": \"global\",\n  \"url\": \"https://mcp.example.com/sse\",\n  \"overall_timeout_ms\": 30000,\n  \"steps\": [\n    {\n      \"timeout_ms\": 10000,\n      \"wait_ms\": 0,\n      \"step_type\": \"list_tools\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a18e68aa-0731-4416-b4aa-5d033aa1b0cc",
+          "name": "Read an MCP Monitor by ID",
+          "request": {
+            "name": "Read an MCP Monitor by ID",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "3",
+                "monitors",
+                "mcp",
+                ":monitor_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "monitor_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f8a64cfc-c173-4f06-ade3-b26bad9dc453",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ":monitor_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitor_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHIWCxILTWNwVGVzdFNldHVwGICAgICA\",\n  \"meta\": {\n    \"monitor_type\": \"mcp\",\n    \"name\": \"Check tools endpoint\",\n    \"tags\": [],\n    \"domain\": \"mcp.example.com\",\n    \"created\": \"2025-01-15T10:00:00Z\",\n    \"last_update\": \"2025-01-15T10:00:00Z\",\n    \"owner\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHILCxIEVXNlchhiAgI\",\n    \"workspace\": \"global\"\n  },\n  \"setup\": {\n    \"url\": \"https://mcp.example.com/sse\",\n    \"overall_timeout_ms\": 30000,\n    \"steps\": [\n      {\n        \"timeout_ms\": 10000,\n        \"wait_ms\": 0,\n        \"step_type\": \"list_tools\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8209a1b0-9585-42d0-9383-5a0dc1db0d29",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ":monitor_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitor_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "673381b6-ef27-4c3f-9b6c-ee09d3d417f3",
+          "name": "Update an existing MCP Monitor",
+          "request": {
+            "name": "Update an existing MCP Monitor",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "3",
+                "monitors",
+                "mcp",
+                ":monitor_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "monitor_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"url\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"workspace\": \"global\",\n  \"overall_timeout_ms\": 30000,\n  \"steps\": [\n    {\n      \"timeout_ms\": \"<integer>\",\n      \"wait_ms\": \"<integer>\",\n      \"step_type\": \"list_tools\"\n    }\n  ],\n  \"auth_id\": \"<string>\",\n  \"token_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1b0945b4-d560-4435-878c-13f3c8a0d6f4",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ":monitor_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitor_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Check tools endpoint\",\n  \"tags\": [],\n  \"workspace\": \"global\",\n  \"url\": \"https://mcp.example.com/sse\",\n  \"overall_timeout_ms\": 30000,\n  \"steps\": [\n    {\n      \"timeout_ms\": 10000,\n      \"wait_ms\": 0,\n      \"step_type\": \"list_tools\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHIWCxILTWNwVGVzdFNldHVwGICAgICA\",\n  \"meta\": {\n    \"monitor_type\": \"mcp\",\n    \"name\": \"Check tools endpoint\",\n    \"tags\": [],\n    \"domain\": \"mcp.example.com\",\n    \"created\": \"2025-01-15T10:00:00Z\",\n    \"last_update\": \"2025-01-15T10:00:00Z\",\n    \"owner\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHILCxIEVXNlchhiAgI\",\n    \"workspace\": \"global\"\n  },\n  \"setup\": {\n    \"url\": \"https://mcp.example.com/sse\",\n    \"overall_timeout_ms\": 30000,\n    \"steps\": [\n      {\n        \"timeout_ms\": 10000,\n        \"wait_ms\": 0,\n        \"step_type\": \"list_tools\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f8f49e51-fc6a-4cc6-97b2-ea630699e9af",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ":monitor_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitor_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Check tools endpoint\",\n  \"tags\": [],\n  \"workspace\": \"global\",\n  \"url\": \"https://mcp.example.com/sse\",\n  \"overall_timeout_ms\": 30000,\n  \"steps\": [\n    {\n      \"timeout_ms\": 10000,\n      \"wait_ms\": 0,\n      \"step_type\": \"list_tools\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d153f863-85cb-4936-958b-6102d975ff66",
+          "name": "Patch an existing MCP Monitor",
+          "request": {
+            "name": "Patch an existing MCP Monitor",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "3",
+                "monitors",
+                "mcp",
+                ":monitor_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "monitor_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"workspace\": \"global\",\n  \"url\": \"<string>\",\n  \"overall_timeout_ms\": \"<integer>\",\n  \"steps\": [\n    {\n      \"timeout_ms\": \"<integer>\",\n      \"wait_ms\": \"<integer>\",\n      \"step_type\": \"list_tools\"\n    }\n  ],\n  \"auth_id\": \"<string>\",\n  \"token_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "dff3d115-27a0-4602-80ec-3af70335a0eb",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ":monitor_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitor_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated monitor name\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHIWCxILTWNwVGVzdFNldHVwGICAgICA\",\n  \"meta\": {\n    \"monitor_type\": \"mcp\",\n    \"name\": \"Check tools endpoint\",\n    \"tags\": [],\n    \"domain\": \"mcp.example.com\",\n    \"created\": \"2025-01-15T10:00:00Z\",\n    \"last_update\": \"2025-01-15T10:00:00Z\",\n    \"owner\": \"ahJzfmFwaW1ldHJpY3MtcHJvZHILCxIEVXNlchhiAgI\",\n    \"workspace\": \"global\"\n  },\n  \"setup\": {\n    \"url\": \"https://mcp.example.com/sse\",\n    \"overall_timeout_ms\": 30000,\n    \"steps\": [\n      {\n        \"timeout_ms\": 10000,\n        \"wait_ms\": 0,\n        \"step_type\": \"list_tools\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "89669c83-ca85-48ec-ae12-45714617a0b6",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ":monitor_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitor_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated monitor name\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1fc8fe46-b1e5-4a1d-9b21-671b70e86448",
+          "name": "Delete an existing MCP Monitor",
+          "request": {
+            "name": "Delete an existing MCP Monitor",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "3",
+                "monitors",
+                "mcp",
+                ":monitor_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "monitor_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "apimetrics-project-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid profile email"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://auth.apimetrics.io/oauth/token"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e7b2d537-7960-4ac1-8255-93e8ffb9b95f",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ":monitor_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitor_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ebc5f919-32ee-4c1e-a8ba-8179d5b136e3",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "3",
+                    "monitors",
+                    "mcp",
+                    ":monitor_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "monitor_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "apimetrics-project-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://client.apimetrics.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "3a3e076b-c4ce-457e-8490-c59b1b41c665",
+    "name": "APIContext MCP Monitors API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API for the APImetrics platform This document is the 'MCP Monitors' slice of the APIContext (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.\n\nContact Support:\n Name: APIContext Support\n Email: support@apicontext.com",
+      "type": "text/plain"
+    }
+  }
+}

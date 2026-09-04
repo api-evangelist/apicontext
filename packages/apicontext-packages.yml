@@ -1,0 +1,62 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://registry.npmjs.org/@apimetrics/cli, https://github.com/APImetrics/APImetrics-cli/releases,
+  https://github.com/APImetrics/homebrew-tap/blob/main/Formula/apimetrics.rb, and the CLI repository
+  README. The APIContext /.well-known/api-catalog linkset also names the CLI as a related resource.
+note: >-
+  APIContext ships a command-line client, not a language SDK. There is no first-party Python, Java,
+  Ruby, PHP, .NET or Go client library on any public registry — searched npm, PyPI, RubyGems,
+  crates.io, NuGet, Maven Central and pkg.go.dev for apimetrics/apicontext-scoped packages and found
+  only the two CLI distributions below. The published /.well-known/api-catalog still points at
+  https://github.com/APImetrics/APImetrics-CLI, which returns 404 (the Node CLI repository has been
+  removed); the successor is the Go CLI at APImetrics/APImetrics-cli.
+packages:
+- language: go
+  registry: github-releases
+  name: apimetrics
+  url: https://github.com/APImetrics/APImetrics-cli/releases
+  install: brew install apimetrics/tap/apimetrics
+  install_alternatives:
+  - winget install APIContext.APImetricsCLI
+  - curl -LO https://github.com/APImetrics/APImetrics-cli/releases/latest/download/apimetrics-[version]-linux-amd64.tar.gz
+  official: true
+  version: v0.1.0-beta-1
+  published: '2026-08-19'
+  note: >-
+    Current first-party CLI, written in Go and built on the restish command surface (the --rsh-*
+    global flags). v0.1.0-beta-1 is the newest tag; the GitHub "latest release" pointer still
+    resolves to v0.0.1-beta-3 (2026-07-07) because the newer tags are marked pre-release.
+- language: go
+  registry: homebrew
+  name: apimetrics/tap/apimetrics
+  url: https://github.com/APImetrics/homebrew-tap
+  install: brew install apimetrics/tap/apimetrics
+  official: true
+  version: 0.0.1-beta-3
+  published: '2026-07-08'
+  note: >-
+    First-party Homebrew tap. The formula pins 0.0.1-beta-3, one release behind the repository's
+    newest tag (v0.1.0-beta-1, 2026-08-19) — a Homebrew install does not get the latest CLI.
+- language: javascript
+  registry: npm
+  name: "@apimetrics/cli"
+  url: https://www.npmjs.com/package/@apimetrics/cli
+  install: npm install -g @apimetrics/cli
+  official: true
+  version: 0.3.0
+  published: '2023-11-21'
+  superseded_by: APImetrics-cli (Go)
+  note: >-
+    Superseded oclif-based Node CLI. Last published 2023-11-21, nearly three years before the
+    v2026-09-02 platform OpenAPI it would call, and its source repository
+    (github.com/APImetrics/APIm-CLI) now returns 404. Retained here as a decay signal, not as a
+    recommended install.
+registries_searched:
+- {registry: npm, result: "@apimetrics/cli (superseded); no other first-party package"}
+- {registry: pypi, result: no first-party package}
+- {registry: rubygems, result: no first-party package}
+- {registry: crates.io, result: no first-party package}
+- {registry: nuget, result: no first-party package}
+- {registry: maven-central, result: no first-party package}
+- {registry: pkg.go.dev, result: "module is the CLI binary itself; no published client library"}

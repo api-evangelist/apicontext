@@ -1,0 +1,23 @@
+# APIContext Docs
+
+> Documentation for APImetrics by APIContext — API performance monitoring,
+> testing, conformance, and analytics. Covers getting started, guides,
+> concepts, the CLI, and the full REST API reference.
+
+Note: llms.txt is a community convention (https://llmstxt.org). It is not a
+Google ranking signal. It is provided here as a convenience for tools and
+crawlers that read it.
+
+## Sections
+
+- [Start Here & Guides](https://docs.apicontext.com/): Onboarding, tutorials, and task-based guides for monitoring, workflows, alerting, analytics, and integrations.
+- [Concepts](https://docs.apicontext.com/): Background on environment variables, conformance, and how APImetrics works.
+- [CLI](https://docs.apicontext.com/): Reference for the APImetrics command-line tool.
+- [API Reference](https://docs.apicontext.com/reference/intro): Hand-written and OpenAPI-generated reference for the APImetrics REST API, including Try-It.
+- [Changelog](https://docs.apicontext.com/changelog/welcome-to-the-changelogs-for-apimetrics): Release notes and service/incident updates.
+
+## Resources
+
+- [Sitemap](https://docs.apicontext.com/sitemap.xml): Full list of indexable pages.
+- [Main site](https://apicontext.com): Product, plans, and company information.
+- [Support](https://apicontext.com/support): Contact and support requests.

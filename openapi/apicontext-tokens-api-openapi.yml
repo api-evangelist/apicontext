@@ -1,63 +1,511 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: APIContext Platform Agents Tokens API
-  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
-  version: 2.0.0
+  title: APIContext Auth Tokens API
+  description: API for the APImetrics platform This document is the 'Auth Tokens' slice of the APIContext
+    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
   contact:
-    name: APIContext
-    url: https://apicontext.com/
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
 servers:
-- url: https://client.apimetrics.io/api/2
-  description: APIContext production API
-security:
-- ApiTokenAuth: []
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
 tags:
-- name: Tokens
+- name: Auth Tokens
 paths:
-  /tokens/:
+  /api/2/tokens/:
     get:
       tags:
-      - Tokens
-      operationId: listTokens
-      summary: List API tokens
-      description: List API tokens issued for the current account.
+      - Auth Tokens
+      summary: List-Auth-Tokens
+      description: List auth tokens for the project, ordered by name.
+      operationId: list-auth-tokens
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          title: Maximum results to return
+          default: 100
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Tokens.
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
-      - Tokens
-      operationId: createToken
-      summary: Create an API token
-      description: Issue a new API token scoped to the requesting account.
+      - Auth Tokens
+      summary: Create-Auth-Token
+      description: Create an auth token bound to an auth setting.
+      operationId: create-auth-token
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CreateTokenRequest'
       responses:
         '201':
-          description: Created.
-  /tokens/{token_id}:
-    delete:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/tokens/auth/{sc_key}/:
+    get:
       tags:
-      - Tokens
-      operationId: deleteToken
-      summary: Revoke an API token
-      description: Revoke an issued API token.
+      - Auth Tokens
+      summary: List-Auth-Tokens-By-Auth-Setting
+      description: List auth tokens belonging to a single auth setting.
+      operationId: list-auth-tokens-by-auth-setting
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
-      - name: token_id
+      - name: sc_key
         in: path
         required: true
         schema:
           type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Auth Setting ID
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          title: Maximum results to return
+          default: 100
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
-        '204':
-          description: Revoked.
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenListResponse'
+        '404':
+          description: Cannot access object
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/tokens/{token_key}/:
+    get:
+      tags:
+      - Auth Tokens
+      summary: Get-Auth-Token
+      description: Get a single auth token.
+      operationId: get-auth-token
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: token_key
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Auth Token ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '404':
+          description: Cannot access object
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Auth Tokens
+      summary: Update-Auth-Token
+      description: Partially update an auth token.
+      operationId: update-auth-token
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: token_key
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Auth Token ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTokenRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '404':
+          description: Cannot access object
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Auth Tokens
+      summary: Delete-Auth-Token
+      description: Delete an auth token, returning the deleted representation.
+      operationId: delete-auth-token
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: token_key
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Auth Token ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '404':
+          description: Cannot access object
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   securitySchemes:
-    ApiTokenAuth:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
       type: apiKey
-      in: query
-      name: _token
+      in: header
+      name: X-Api-Key
+  schemas:
+    CreateTokenRequest:
+      properties:
+        meta:
+          $ref: '#/components/schemas/TokenMetaInput'
+        token:
+          anyOf:
+          - $ref: '#/components/schemas/TokenDataInput'
+          - type: 'null'
+      type: object
+      title: CreateTokenRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TokenData:
+      properties:
+        expire_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expire Time
+        expired:
+          type: boolean
+          title: Expired
+          default: false
+      additionalProperties: true
+      type: object
+      title: TokenData
+    TokenDataInput:
+      properties:
+        expire_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expire Time
+      additionalProperties: true
+      type: object
+      title: TokenDataInput
+    TokenListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - project_id
+      title: TokenListMeta
+    TokenListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/TokenListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/TokenResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: TokenListResponse
+    TokenMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Domain
+        auth_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Id
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        auth_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Type
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        owner:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Owner
+      type: object
+      title: TokenMeta
+    TokenMetaInput:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Display name for the token
+        auth_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Id
+          description: Key of the owning auth setting (ServiceConfig) to bind to
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Domain
+          description: Plain hostname the token applies to, e.g. api.example.com
+      type: object
+      title: TokenMetaInput
+    TokenResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/TokenMeta'
+        token:
+          $ref: '#/components/schemas/TokenData'
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - meta
+      - token
+      title: TokenResponse
+    UpdateTokenRequest:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/TokenMetaInput'
+          - type: 'null'
+        token:
+          anyOf:
+          - $ref: '#/components/schemas/TokenDataInput'
+          - type: 'null'
+      type: object
+      title: UpdateTokenRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

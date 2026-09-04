@@ -1,52 +1,111 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "APIContext Platform Agents Directory API",
-    "version": "2.0.0"
-  },
-  "request": {
-    "auth": {
-      "type": "apikey",
-      "key": "_token",
-      "value": "{{_token}}",
-      "placement": "query"
-    }
+    "name": "APIContext Suppliers (API Directory) API",
+    "version": "v2026-09-02"
   },
   "items": [
     {
       "info": {
-        "name": "Directory",
+        "name": "Suppliers",
         "type": "folder"
       },
       "items": [
         {
           "info": {
-            "name": "List API directory providers",
+            "name": "List-Suppliers",
             "type": "http"
           },
           "http": {
             "method": "GET",
-            "url": "https://client.apimetrics.io/api/2/directory/providers"
+            "url": "https://client.apimetrics.io/api/3/suppliers"
           },
-          "docs": "List API providers tracked in the APIContext public API directory (300+ top providers) with current performance data for benchmarking."
+          "docs": "Return a categorised list of suppliers."
         },
         {
           "info": {
-            "name": "Get an API directory provider",
+            "name": "Get-Project-Suppliers",
             "type": "http"
           },
           "http": {
             "method": "GET",
-            "url": "https://client.apimetrics.io/api/2/directory/providers/:provider_id",
-            "params": [
+            "url": "https://client.apimetrics.io/api/3/project/suppliers",
+            "headers": [
               {
-                "name": "provider_id",
-                "value": "",
-                "type": "path"
+                "name": "apimetrics-project-id",
+                "value": ""
               }
-            ]
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
           },
-          "docs": "Retrieve performance data and metadata for a single provider in the APIContext API directory."
+          "docs": "Return the list of enabled suppliers for the selected project."
+        },
+        {
+          "info": {
+            "name": "Put-Project-Suppliers",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://client.apimetrics.io/api/3/project/suppliers",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Set the list of enabled suppliers for the selected project"
+        },
+        {
+          "info": {
+            "name": "Get-Suppliers-Results",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/3/project/suppliers/results",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Query the current supplier results for the selected project"
         }
       ]
     }

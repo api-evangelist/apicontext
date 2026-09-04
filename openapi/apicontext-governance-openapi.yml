@@ -1,0 +1,862 @@
+openapi: 3.1.0
+info:
+  title: APIContext Governance API
+  description: API for the APImetrics platform This document is the 'Governance' slice of the APIContext
+    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
+servers:
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
+tags:
+- name: Governance
+paths:
+  /api/3/governance/changes:
+    get:
+      tags:
+      - Governance
+      summary: List-Changes
+      description: Return a list of changes within the given time range.
+      operationId: list-changes
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: from_timestamp
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+          title: From Timestamp
+      - name: to_timestamp
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+          title: To Timestamp
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/governance/conformance/{spec}/endpoints:
+    post:
+      tags:
+      - Governance
+      summary: Manage-Endpoint-Classification
+      description: Manage the classification of endpoints for a given spec
+      operationId: manage-endpoint-classification
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: spec
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Spec
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointClassificationRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Governance
+      summary: Get-Endpoint-Classifications
+      description: Manage the classification of endpoints for a given spec
+      operationId: get-endpoint-classifications
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: spec
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Spec
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/governance/conformance/results:
+    get:
+      tags:
+      - Governance
+      summary: Conformance-Results
+      description: Query the conformance results
+      operationId: conformance-results
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: resolved
+        in: query
+        required: false
+        schema:
+          type: boolean
+          title: Include resolved results
+          default: false
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/governance/conformance/data-checks:
+    get:
+      tags:
+      - Governance
+      summary: List-Data-Checks
+      description: List data checks for the given project
+      operationId: list-data-checks
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/governance/conformance/data-checks/{check_name}:
+    put:
+      tags:
+      - Governance
+      summary: Put-Data-Check
+      description: Create or update data check with the given name
+      operationId: put-data-check
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: check_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Check Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataCheckPutRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Governance
+      summary: Delete-Data-Check
+      description: Delete data check with the given name
+      operationId: delete-data-check
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: check_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Check Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/governance/conformance/results/summary:
+    get:
+      tags:
+      - Governance
+      summary: Conformance-Results-Summary
+      description: Query the latest conformance result summary for a project
+      operationId: conformance-results-summary
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/governance/conformance/resolution:
+    post:
+      tags:
+      - Governance
+      summary: Update-Resolution
+      description: Update the resolution status for a conformance result
+      operationId: update-resolution
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConformanceResolutionRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/governance/conformance/results/evaluate:
+    post:
+      tags:
+      - Governance
+      summary: Evaluate-Most-Recent
+      description: Run conformance checks and summary calculation on the most recent calls
+      operationId: evaluate-most-recent
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/governance/conformance/settings:
+    get:
+      tags:
+      - Governance
+      summary: List-Settings
+      description: Retrieve the conformance settings for a project
+      operationId: list-settings
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Governance
+      summary: Put-Settings
+      description: Insert or update conformance settings for a project
+      operationId: put-settings
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConformanceSettingsRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+  schemas:
+    ConformanceResolutionRequest:
+      properties:
+        result_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Id
+        conformance_result_id:
+          type: string
+          title: Conformance Result Id
+        status:
+          type: string
+          title: Status
+        notes:
+          type: string
+          title: Notes
+      type: object
+      required:
+      - conformance_result_id
+      - status
+      - notes
+      title: ConformanceResolutionRequest
+    ConformanceSettingsRequest:
+      properties:
+        standards_settings:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Standards Settings
+        network_settings:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Network Settings
+        coverage_settings:
+          anyOf:
+          - $ref: '#/components/schemas/CoverageSettings'
+          - type: 'null'
+      type: object
+      required:
+      - standards_settings
+      - network_settings
+      - coverage_settings
+      title: ConformanceSettingsRequest
+    CoverageSettings:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+        test_coverage:
+          type: number
+          maximum: 1.0
+          minimum: 0.0
+          title: Test Coverage
+          description: Test coverage percentage (0-1)
+        endpoint_coverage:
+          type: number
+          maximum: 1.0
+          minimum: 0.0
+          title: Endpoint Coverage
+          description: Endpoint coverage percentage (0-1)
+      type: object
+      required:
+      - enabled
+      - test_coverage
+      - endpoint_coverage
+      title: CoverageSettings
+    DataCheckPutRequest:
+      properties:
+        include_tags:
+          items:
+            type: string
+          type: array
+          title: Include Tags
+        exclude_tags:
+          items:
+            type: string
+          type: array
+          title: Exclude Tags
+        rules:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/JsonPathGroupRule'
+            - $ref: '#/components/schemas/JsonPathValueRule'
+            - $ref: '#/components/schemas/JsonPathRegexRule'
+            - $ref: '#/components/schemas/JsonPathSubstringRule'
+            - $ref: '#/components/schemas/JsonPathCountRule'
+          type: array
+          title: Rules
+      type: object
+      required:
+      - include_tags
+      - exclude_tags
+      - rules
+      title: DataCheckPutRequest
+    EndpointClassificationRequest:
+      properties:
+        method:
+          type: string
+          title: Method
+        hostname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hostname
+        path:
+          type: string
+          title: Path
+        classification:
+          type: string
+          title: Classification
+      type: object
+      required:
+      - method
+      - hostname
+      - path
+      - classification
+      title: EndpointClassificationRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    JsonPathCountRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-count
+          title: Type
+        count:
+          type: integer
+          title: Count
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - count
+      title: JsonPathCountRule
+    JsonPathGroupRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-group
+          title: Type
+        sub_rules:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/JsonPathValueRule'
+            - $ref: '#/components/schemas/JsonPathRegexRule'
+            - $ref: '#/components/schemas/JsonPathSubstringRule'
+            - $ref: '#/components/schemas/JsonPathCountRule'
+          type: array
+          title: Sub Rules
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - sub_rules
+      title: JsonPathGroupRule
+    JsonPathRegexRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-regex
+          title: Type
+        regex:
+          type: string
+          title: Regex
+        flags:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - g
+              - i
+              - m
+              - s
+              - u
+              - v
+            type: array
+          - type: 'null'
+          title: Flags
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - regex
+      - flags
+      title: JsonPathRegexRule
+    JsonPathSubstringRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-substring
+          title: Type
+        substring_of:
+          type: string
+          title: Substring Of
+        flags:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - ignore_case
+              - ignore_whitespace
+            type: array
+          - type: 'null'
+          title: Flags
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - substring_of
+      - flags
+      title: JsonPathSubstringRule
+    JsonPathValueRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-value
+          title: Type
+        value:
+          title: Value
+        flags:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - ignore_case
+              - ignore_whitespace
+            type: array
+          - type: 'null'
+          title: Flags
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - value
+      - flags
+      title: JsonPathValueRule
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

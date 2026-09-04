@@ -31,6 +31,20 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
+  "notes": [
+    "apicontext-agents-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-alerts-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-api-calls-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-directory-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-insights-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-projects-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-reports-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-results-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-schedules-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-statistics-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-tokens-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apicontext-workflows-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
   "skipped": []
 }

@@ -1,0 +1,86 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/_original/apicontext-apimetrics-openapi.json (harvested from https://client.apimetrics.io/openapi.json)
+format: vendor
+note: 'Derived from every 4xx/5xx response declared in the published contract. The API does NOT use RFC
+  9457 problem+json — `application/problem+json` appears nowhere in the document. The dominant shape is
+  the FastAPI validation envelope (HTTPValidationError -> detail[] of {loc, msg, type}), declared on 310
+  of 325 operations. A second `ErrorResponse` schema ({error: {message, code, details[]}}) is defined
+  in components, and a live unauthenticated request returns a third, flatter shape: {"error_msg": "Unauthorized"}.
+  The 400/403/404/409 responses carry a human description but no schema, so an agent cannot parse them
+  structurally. There is no documented error-code registry and no 429 anywhere in the contract.'
+envelopes:
+- name: HTTPValidationError
+  status: 422
+  body: '{"detail": [{"loc": [...], "msg": "...", "type": "..."}]}'
+- name: ErrorResponse
+  status: null
+  body: '{"error": {"message": "...", "code": 0, "details": ["..."]}}'
+- name: flat-message
+  status: 401
+  body: '{"error_msg": "Unauthorized"}'
+  observed: live GET https://client.apimetrics.io/api/2/calls/ 2026-09-04
+problems:
+- status: 422
+  title: Validation Error
+  media_types:
+  - application/json
+  schema: HTTPValidationError
+  operation_count: 310
+  example_operations:
+  - _agent_by_id
+  - _agent_config_by_id
+  - _create_agent
+  - _delete_agent
+  - _update_agent
+- status: 400
+  title: Invalid request parameters (e.g. `to` before `from`)
+  media_types: null
+  schema: null
+  operation_count: 12
+  example_operations:
+  - query-api-dns-diagnostics
+  - query-api-monitor-dns-diagnostics
+  - query-api-monitor-performance
+  - query-api-performance
+  - query-browser-monitor-performance
+- status: 404
+  title: Cannot access object
+  media_types: null
+  schema: null
+  operation_count: 7
+  example_operations:
+  - delete-auth-setting
+  - delete-auth-token
+  - get-auth-setting
+  - get-auth-token
+  - list-auth-tokens-by-auth-setting
+- status: 403
+  title: Monitor not owned by this project
+  media_types: null
+  schema: null
+  operation_count: 6
+  example_operations:
+  - query-api-monitor-dns-diagnostics
+  - query-api-monitor-performance
+  - query-browser-monitor-performance
+  - query-browser-monitor-resources
+  - query-browser-monitor-sessions
+- status: 404
+  title: Monitor not found
+  media_types: null
+  schema: null
+  operation_count: 6
+  example_operations:
+  - query-api-monitor-dns-diagnostics
+  - query-api-monitor-performance
+  - query-browser-monitor-performance
+  - query-browser-monitor-resources
+  - query-browser-monitor-sessions
+- status: 409
+  title: A service account with this name already exists.
+  media_types: null
+  schema: null
+  operation_count: 1
+  example_operations:
+  - create-service-account

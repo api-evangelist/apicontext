@@ -1,16 +1,8 @@
 {
   "opencollection": "1.0.0",
   "info": {
-    "name": "APIContext Platform Agents API",
-    "version": "2.0.0"
-  },
-  "request": {
-    "auth": {
-      "type": "apikey",
-      "key": "_token",
-      "value": "{{_token}}",
-      "placement": "query"
-    }
+    "name": "APIContext Agents API",
+    "version": "v2026-09-02"
   },
   "items": [
     {
@@ -21,25 +13,173 @@
       "items": [
         {
           "info": {
-            "name": "Get agent info",
+            "name": "List-Agents",
             "type": "http"
           },
           "http": {
             "method": "GET",
-            "url": "https://client.apimetrics.io/api/2/agents/info"
+            "url": "https://client.apimetrics.io/api/2/agents/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "organization",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
           },
-          "docs": "Return the catalog of APIContext monitoring agents (regions, providers, capabilities) available for synthetic testing."
+          "docs": "List remote agents available to the caller.\n\nAgents are shared infrastructure -- callers see any agent whose\n``owners`` list contains ``\"public\"``, the caller's project id, or\n(with ``organization``) the caller's org id. Non-paginated: up to\n200 rows returned in a single response."
         },
         {
           "info": {
-            "name": "List agents",
+            "name": "Agents-Info",
             "type": "http"
           },
           "http": {
             "method": "GET",
-            "url": "https://client.apimetrics.io/api/2/agents/"
+            "url": "https://client.apimetrics.io/api/2/agents/info",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
           },
-          "docs": "List available monitoring agents (regions, providers) that can execute synthetic API calls."
+          "docs": "Return grouped agent metadata used to populate location pickers.\n\nThe response contains a ``regions`` list (region id + display name +\nthe location IDs in that region), a ``locations`` map (agent name to\nhuman-readable label), an ``agent_list``, and an empty\n``postman_locations`` (kept for response-shape stability).\nReachable anonymously -- no auth headers required. An anonymous\ncaller sees public agents; an authenticated caller additionally sees\nagents owned by their orgs or project."
+        },
+        {
+          "info": {
+            "name": "Get-Agent",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/agents/:agent_key_str/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "agent_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Read a single agent by key.\n\nRequires the caller to own the agent -- either as a site admin, or\nbecause their project key is listed in the agent's ``owners``. A\nplain project API key has no such ownership on shared agents, so\n``get`` and ``update`` by key are reserved for administrators.\nReturns 404 for unknown agents and for agents the caller can't own."
+        },
+        {
+          "info": {
+            "name": "Update-Agent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/agents/:agent_key_str/",
+            "headers": [
+              {
+                "name": "apimetrics-project-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "agent_key_str",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "authorization_code",
+              "authorizationUrl": "https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io",
+              "accessTokenUrl": "https://auth.apimetrics.io/oauth/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Update the display metadata (name, cloud, geography, ...) of an agent.\n\nSame ownership rules as ``get-agent``: reserved for administrators.\nOnly fields the caller supplies are updated; omitted fields keep\ntheir existing values."
+        },
+        {
+          "info": {
+            "name": "Get a remote agent",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://client.apimetrics.io/api/2/agents/:agent_key/"
+          },
+          "docs": "Get a remote agent"
+        },
+        {
+          "info": {
+            "name": "Update a remote agent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://client.apimetrics.io/api/2/agents/:agent_key/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a remote agent"
+        },
+        {
+          "info": {
+            "name": "Delete a remote agent",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://client.apimetrics.io/api/2/agents/:agent_key/"
+          },
+          "docs": "Delete a remote agent"
         }
       ]
     }

@@ -1,11 +1,15 @@
 aid: apicontext
 name: APIContext
 description: >-
-  APIContext (formerly APImetrics) is an advanced synthetic API testing and
-  monitoring platform that measures API performance, enforces SLOs, and validates
-  API conformance for critical APIs. It provides an API directory with performance
-  data on 300+ top API providers and offers solutions for developers, enterprises,
-  and API partners.
+  APIContext (formerly APImetrics) is a synthetic API testing, monitoring and conformance platform.
+  It calls the APIs you depend on from cloud locations around the world on a schedule, measures
+  latency and availability from the outside in, validates responses against expected schemas and
+  security profiles, and enforces SLOs with alerting, dashboards and reports. The platform monitors
+  REST APIs, browser journeys and — since 2025 — MCP servers, exports its telemetry over
+  OpenTelemetry to nineteen downstream destinations, and publishes an API directory with performance
+  data on 300+ top API providers. Its own platform API is a 325-operation OpenAPI 3.1 contract served
+  at client.apimetrics.io across two live versions, with an Auth0 OAuth2 tenant, a Go command-line
+  client and provider-authored Agent Skills.
 type: Index
 deliveryModel:
   model: saas
@@ -26,18 +30,25 @@ accessModel:
   try_now: true
   public: false
   label: Freemium · Self-serve signup
-  confidence: medium
+  confidence: low
   source:
   - plans
   - authentication
   - security
-  generated: '2026-09-03'
+  generated: '2026-09-04'
   method: derived
+  note: >-
+    Confidence lowered from medium on 2026-09-04 — the pricing page returns a Cloudflare managed
+    challenge to every non-browser client, so no tier could be read. See plans/.
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/apicontext.png
 tags:
   - API Directory
   - API Monitoring
+  - Agent Skills
   - Conformance
+  - MCP Monitoring
+  - Observability
+  - OpenTelemetry
   - Performance
   - Platform
   - SLO
@@ -46,76 +57,148 @@ tags:
 url: >-
   https://raw.githubusercontent.com/api-evangelist/apicontext/refs/heads/main/apis.yml
 created: '2025-01-08'
-modified: '2026-04-19'
+modified: '2026-09-04'
 specificationVersion: '0.23'
 apis:
-- aid: apicontext:synthetic-api-testing
-  name: APIContext Synthetic API Testing
+- aid: apicontext:apicontext-platform-api
+  name: APIContext Platform API
   description: >-
-    APIContext provides synthetic API testing and monitoring that continuously tests APIs from multiple
-    global locations to measure performance, validate responses against expected schemas, and enforce
-    SLO thresholds with alerting and dashboards.
-  humanURL: https://apicontext.com/
+    The full APIContext (APImetrics) platform API — 325 operations across 217 paths, described by a
+    first-party OpenAPI 3.1.0 document (info.version v2026-09-02) published at
+    https://client.apimetrics.io/openapi.json. Two major versions are served side by side from one
+    host: /api/2 (144 paths) and /api/3 (73 paths). Covers monitors, schedules, workflows, results,
+    statistics, insights, conformance governance, webhooks, projects, organizations, billing quota
+    and service accounts.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
   tags:
   - API Monitoring
   - Conformance
   - Performance
+  - Platform
   - SLO
   - Synthetic Testing
   properties:
-  - type: Documentation
-    url: https://apicontext.com/
-  - type: Pricing
-    url: https://apicontext.com/pricing/
-- aid: apicontext:apicontext-agents-api
-  name: APIContext Agents API
-  description: The Agents API from APIContext — 2 operation(s) for agents.
-  humanURL: https://apicontext.com/
-  tags:
-  - Agents
-  properties:
   - type: OpenAPI
-    url: openapi/apicontext-agents-api-openapi.yml
-- aid: apicontext:apicontext-alerts-api
-  name: APIContext Alerts API
-  description: The Alerts API from APIContext — 2 operation(s) for alerts.
-  humanURL: https://apicontext.com/
-  tags:
-  - Alerts
-  properties:
+    url: openapi/apicontext-platform-openapi.yml
   - type: OpenAPI
-    url: openapi/apicontext-alerts-api-openapi.yml
-- aid: apicontext:apicontext-api-calls-api
-  name: APIContext API Calls API
-  description: The API Calls API from APIContext — 3 operation(s) for api calls.
-  humanURL: https://apicontext.com/
+    name: Verbatim harvest
+    url: openapi/_original/apicontext-apimetrics-openapi.json
+  - type: Overlay
+    url: overlays/apicontext-platform-overlay.yaml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+- aid: apicontext:apicontext-calls-api
+  name: APIContext Calls API
+  description: >-
+    Create, read, update, delete and run API calls — the synthetic transactions APIContext executes
+    against a monitored API. 13 operations, including on-demand runs and a curl builder.
+  humanURL: https://docs.apimetrics.io/reference/call-object
+  baseURL: https://client.apimetrics.io
   tags:
   - API Calls
   properties:
   - type: OpenAPI
     url: openapi/apicontext-api-calls-api-openapi.yml
-- aid: apicontext:apicontext-directory-api
-  name: APIContext Directory API
-  description: The Directory API from APIContext — 2 operation(s) for directory.
-  humanURL: https://apicontext.com/
+- aid: apicontext:apicontext-schedules-api
+  name: APIContext Schedules API
+  description: >-
+    Manage monitoring schedules, the locations they run from, and scheduled downtimes at both schedule
+    and organization level. 23 operations — the largest single capability in the contract.
+  humanURL: https://docs.apimetrics.io/reference/create-schedule
+  baseURL: https://client.apimetrics.io
   tags:
-  - Directory
+  - Schedules
   properties:
   - type: OpenAPI
-    url: openapi/apicontext-directory-api-openapi.yml
-- aid: apicontext:apicontext-insights-api
-  name: APIContext Insights API
-  description: The Insights API from APIContext — 1 operation(s) for insights.
-  humanURL: https://apicontext.com/
+    url: openapi/apicontext-schedules-api-openapi.yml
+- aid: apicontext:apicontext-webhooks-api
+  name: APIContext Webhooks API
+  description: >-
+    Manage the outbound webhook subscriptions APIContext pushes alert and result events to, across
+    both API versions, plus the machine-readable registry of supported webhook types and the
+    properties each destination requires. 18 operations.
+  humanURL: https://docs.apimetrics.io/docs/using-webhooks
+  baseURL: https://client.apimetrics.io
   tags:
-  - Insights
+  - Webhooks
   properties:
   - type: OpenAPI
-    url: openapi/apicontext-insights-api-openapi.yml
+    url: openapi/apicontext-webhooks-openapi.yml
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-workflows-api
+  name: APIContext Workflows API
+  description: >-
+    Create and run multi-step workflows that chain API calls together to simulate a customer journey,
+    passing variables between steps. 11 operations.
+  humanURL: https://docs.apimetrics.io/docs/creating-a-workflow
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Workflows
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-workflows-api-openapi.yml
+- aid: apicontext:apicontext-governance-api
+  name: APIContext Governance API
+  description: >-
+    Conformance and governance findings — validate a monitored API's responses against an OpenAPI and
+    against security profiles, and manage the findings that result. 12 operations.
+  humanURL: https://docs.apimetrics.io/docs/conformance
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Conformance
+  - Governance
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-governance-openapi.yml
+- aid: apicontext:apicontext-stats-api
+  name: APIContext Stats API
+  description: >-
+    Latency, pass/fail, HTTP-code and failure statistics for a monitored API call, by period, by date
+    range and by monitoring location. 11 operations.
+  humanURL: https://docs.apimetrics.io/reference/statistic-object
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Statistics
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-statistics-api-openapi.yml
+- aid: apicontext:apicontext-results-api
+  name: APIContext Results API
+  description: >-
+    Retrieve individual monitoring results, their response content, screenshots and packet captures,
+    by call or by webhook. 10 operations.
+  humanURL: https://docs.apimetrics.io/reference/result-object
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Results
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-results-api-openapi.yml
+- aid: apicontext:apicontext-agents-api
+  name: APIContext Agents API
+  description: >-
+    List and configure the monitoring agents — the global cloud locations, and private nodes deployed
+    inside a customer's own infrastructure, that execute synthetic calls. 7 operations.
+  humanURL: https://docs.apimetrics.io/docs/add-private-nodes
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Agents
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-agents-api-openapi.yml
 - aid: apicontext:apicontext-projects-api
   name: APIContext Projects API
-  description: The Projects API from APIContext — 2 operation(s) for projects.
-  humanURL: https://apicontext.com/
+  description: >-
+    Manage projects, the ownership root for calls, authentication settings, insights and results.
+    7 operations.
+  humanURL: https://docs.apimetrics.io/docs/projects
+  baseURL: https://client.apimetrics.io
   tags:
   - Project
   tags_raw:
@@ -123,83 +206,151 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/apicontext-projects-api-openapi.yml
-- aid: apicontext:apicontext-reports-api
-  name: APIContext Reports API
-  description: The Reports API from APIContext — 2 operation(s) for reports.
-  humanURL: https://apicontext.com/
+- aid: apicontext:apicontext-insights-api
+  name: APIContext Insights API
+  description: >-
+    Insights reports and scores — the weekly and monthly quality index APIContext computes for each
+    monitored API call. 6 operations.
+  humanURL: https://docs.apimetrics.io/reference/insights-report-object
+  baseURL: https://client.apimetrics.io
   tags:
-  - Reports
+  - Insights
   properties:
   - type: OpenAPI
-    url: openapi/apicontext-reports-api-openapi.yml
-- aid: apicontext:apicontext-results-api
-  name: APIContext Results API
-  description: The Results API from APIContext — 1 operation(s) for results.
-  humanURL: https://apicontext.com/
-  tags:
-  - Results
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-results-api-openapi.yml
-- aid: apicontext:apicontext-schedules-api
-  name: APIContext Schedules API
-  description: The Schedules API from APIContext — 3 operation(s) for schedules.
-  humanURL: https://apicontext.com/
-  tags:
-  - Schedules
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-schedules-api-openapi.yml
-- aid: apicontext:apicontext-statistics-api
-  name: APIContext Statistics API
-  description: The Statistics API from APIContext — 1 operation(s) for statistics.
-  humanURL: https://apicontext.com/
-  tags:
-  - Statistics
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-statistics-api-openapi.yml
-- aid: apicontext:apicontext-tokens-api
-  name: APIContext Tokens API
-  description: The Tokens API from APIContext — 2 operation(s) for tokens.
-  humanURL: https://apicontext.com/
+    url: openapi/apicontext-insights-api-openapi.yml
+- aid: apicontext:apicontext-auth-tokens-api
+  name: APIContext Auth Tokens API
+  description: >-
+    Create, list, read, update and delete the authentication tokens APIContext uses when calling a
+    monitored API on the customer's behalf. 6 operations.
+  humanURL: https://docs.apimetrics.io/reference/token-object
+  baseURL: https://client.apimetrics.io
   tags:
   - Tokens
   properties:
   - type: OpenAPI
     url: openapi/apicontext-tokens-api-openapi.yml
-- aid: apicontext:apicontext-workflows-api
-  name: APIContext Workflows API
-  description: The Workflows API from APIContext — 3 operation(s) for workflows.
-  humanURL: https://apicontext.com/
+- aid: apicontext:apicontext-mcp-monitors-api
+  name: APIContext MCP Monitors API
+  description: >-
+    Create, read, update and delete MCP monitors — synthetic sessions run against a Model Context
+    Protocol server to measure whether AI-agent traffic is answered fast enough and correctly.
+    6 operations, plus MCP monitor statistics.
+  humanURL: https://apicontext.com/features/ai-monitoring/
+  baseURL: https://client.apimetrics.io
   tags:
-  - Workflows
+  - MCP Monitoring
   properties:
   - type: OpenAPI
-    url: openapi/apicontext-workflows-api-openapi.yml
+    url: openapi/apicontext-mcp-monitors-openapi.yml
+- aid: apicontext:apicontext-reports-api
+  name: APIContext Reports API
+  description: >-
+    Create and retrieve reports, including monthly project data reports and daily/monthly slow-data
+    reports by endpoint. 5 operations.
+  humanURL: https://docs.apimetrics.io/reference/report-object
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-reports-api-openapi.yml
+- aid: apicontext:apicontext-notifications-api
+  name: APIContext Notifications API
+  description: >-
+    Read and update the notifications an alert generated, globally or for a single monitored call.
+    4 operations.
+  humanURL: https://docs.apimetrics.io/docs/setting-up-alerts-and-webhooks
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Alerts
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-alerts-api-openapi.yml
+- aid: apicontext:apicontext-suppliers-api
+  name: APIContext Suppliers API
+  description: >-
+    List API suppliers and read a project's supplier set and supplier results — the API-directory
+    surface that backs APIContext's published performance data on top API providers. 4 operations.
+  humanURL: https://apicontext.com/api-directory/
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Directory
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-directory-api-openapi.yml
 common:
-  - type: OAuthScopes
-    url: scopes/apicontext-scopes.yml
-  - type: AgenticAccess
-    url: agentic-access/apicontext-agentic-access.yml
-  - type: DomainSecurity
-    url: security/apicontext-domain-security.yml
-  - type: Authentication
-    url: authentication/apicontext-authentication.yml
-  - type: GitHubOrganization
-    url: https://github.com/apimetrics
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/apicontext
   - type: Website
     url: https://apicontext.com/
+  - type: DeveloperPortal
+    url: https://docs.apimetrics.io/
+  - type: Documentation
+    url: https://docs.apimetrics.io/
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: GettingStarted
+    url: https://docs.apimetrics.io/docs/introducing-apimetrics
+  - type: Support
+    url: https://apicontext.com/support
+  - type: ChangeLog
+    url: https://docs.apimetrics.io/changelog/
+  - type: ChangeLog
+    name: Changelog artifact
+    url: changelog/apicontext-changelog.yml
   - type: Blog
     url: https://apicontext.com/blog
+  - type: GitHubOrganization
+    url: https://github.com/APImetrics
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/apicontext
   - type: Pricing
     url: https://apicontext.com/pricing/
+  - type: TermsOfService
+    url: https://apicontext.com/tos/
+  - type: Login
+    url: https://client.apimetrics.io/
   - type: Marketplace
     url: https://apicontext.com/api-directory/
   - type: Partners
     url: https://apicontext.com/solutions/partners-developers/
+  - type: Authentication
+    url: authentication/apicontext-authentication.yml
+  - type: OAuthScopes
+    url: scopes/apicontext-scopes.yml
+  - type: DomainSecurity
+    url: security/apicontext-domain-security.yml
+  - type: AgenticAccess
+    url: agentic-access/apicontext-agentic-access.yml
+  - type: Conventions
+    url: conventions/apicontext-conventions.yml
+  - type: ErrorCatalog
+    url: errors/apicontext-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/apicontext-lifecycle.yml
+  - type: Conformance
+    url: conformance/apicontext-conformance.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: Packages
+    url: packages/apicontext-packages.yml
+  - type: CLI
+    url: cli/apicontext-cli.yml
+  - type: WellKnown
+    url: well-known/apicontext-well-known.yml
+  - type: APICatalog
+    url: well-known/apicontext-api-catalog.json
+  - type: LLMsTxt
+    url: llms/apicontext-llms.txt
+  - type: MCPServer
+    url: mcp/apicontext-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: Overlay
+    url: overlays/apicontext-platform-overlay.yaml
   - type: Features
     data:
       - name: Synthetic API Testing
@@ -208,12 +359,18 @@ common:
         description: Define and enforce Service Level Objectives for API performance with threshold-based alerting.
       - name: API Conformance Testing
         description: Validate API responses against expected schemas and behavioral contracts to detect regressions.
+      - name: MCP Server Monitoring
+        description: Synthetic sessions against Model Context Protocol servers, isolating whether latency comes from the agent, the MCP server, authentication, or the downstream API.
+      - name: Browser Monitoring
+        description: Browser-based journey monitoring with performance, resource and session statistics alongside API-level signal.
       - name: API Directory
         description: Access performance data and metrics on 300+ top API providers for benchmarking and comparison.
       - name: Performance Dashboards
         description: Real-time and historical dashboards showing API performance trends, error rates, and SLO compliance.
       - name: Multi-Location Testing
-        description: Test APIs from multiple geographic locations to identify regional performance variations.
+        description: Test APIs from multiple geographic locations, including private nodes deployed inside customer infrastructure.
+      - name: OpenTelemetry Export
+        description: Stream monitoring telemetry over OTLP to Datadog, New Relic, Dynatrace, Splunk, Elastic, Honeycomb and a dozen other destinations.
   - type: UseCases
     data:
       - name: API Performance Monitoring
@@ -226,6 +383,13 @@ common:
         description: Compare API provider performance using the APIContext directory of 300+ top providers.
       - name: Partner API Oversight
         description: Monitor partner API performance and SLA compliance from a developer perspective.
+      - name: Agent Workflow Reliability
+        description: Watch MCP servers behind AI agents and catch drift or slowdown before it cascades through an agentic workflow.
+x-enrichment:
+  date: '2026-09-04'
+  status: enriched
+  artifacts_added: 28
+  pass: local-v3
 maintainers:
   - FN: Kin Lane
     email: info@apievangelist.com

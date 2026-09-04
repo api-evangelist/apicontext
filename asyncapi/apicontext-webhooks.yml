@@ -1,0 +1,95 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://docs.apimetrics.io/docs/using-webhooks,
+  https://docs.apimetrics.io/docs/setting-up-alerts-and-webhooks,
+  https://docs.apimetrics.io/docs/generic-webhook,
+  https://docs.apimetrics.io/docs/performance-results-webhook,
+  https://docs.apimetrics.io/docs/conformance-results-webhook,
+  https://docs.apimetrics.io/docs/export-with-opentelemetry,
+  and the Webhooks / Hooks / Notifications operations in https://client.apimetrics.io/openapi.json
+spec_type: null
+asyncapi_published: false
+asyncapi_probe:
+- {url: "https://docs.apimetrics.io/asyncapi.yaml", status: 404}
+- {url: "https://client.apimetrics.io/asyncapi.json", status: 404}
+note: >-
+  APIContext publishes no AsyncAPI document. It does ship a real, first-class OUTBOUND event surface:
+  the platform pushes alert and result events to nineteen named destinations, and the REST contract
+  carries 27 operations for managing those subscriptions. This artifact captures that webhook catalog;
+  no AsyncAPI is fabricated for it.
+direction: outbound
+delivery: provider-to-subscriber HTTP push (plus OTLP export and email)
+subscription_management:
+  v3_operations: [list-webhooks, create-webhook, get-webhook, update-webhook, delete-webhook]
+  v2_operations:
+  - list-webhook-types-v2
+  - get-webhook-type-properties-v2
+  - list-webhooks-v2
+  - create-webhook-v2
+  - get-webhook-v2
+  - update-webhook-v2
+  - delete-webhook-v2
+  - snooze-webhook-v2
+  - list-call-webhooks-v2
+  - create-call-webhook-v2
+  - get-call-webhook-v2
+  - update-call-webhook-v2
+  - delete-call-webhook-v2
+  - list-hooks
+  - create-hook
+  - get-hook
+  - update-hook
+  - delete-hook
+  - list-notifications
+  - list-notifications-by-call
+  - get-notification
+  - update-notification
+  discovery_note: >-
+    GET /api/2/webhooks/types and GET /api/2/webhooks/types/{type} are a machine-readable registry of
+    the supported webhook destinations and the properties each one requires — the closest thing the
+    platform has to a published event schema, and it is fetchable by an authenticated agent.
+event_types:
+- {id: pass, description: "An API call met its pass conditions (by default HTTP 200)."}
+- {id: warning, description: "An API call triggered a warning (by default a 4xx client-side result)."}
+- {id: error, description: "An API call triggered an error (by default a 5xx server-side result)."}
+- {id: sla, description: "The call, or part of a workflow, exceeded its expected duration or another specified SLO."}
+- {id: slow, description: "The call fell outside an expected performance parameter."}
+event_payload_flavours:
+- {id: performance-results, docs: https://docs.apimetrics.io/docs/performance-results-webhook}
+- {id: conformance-results, docs: https://docs.apimetrics.io/docs/conformance-results-webhook}
+- {id: generic, docs: https://docs.apimetrics.io/docs/generic-webhook, description: "Stream performance metrics and events to any custom downstream system."}
+- {id: expanded-alerting, docs: https://docs.apimetrics.io/docs/expanded-alerting}
+- {id: run-workflow, docs: https://docs.apimetrics.io/docs/run-workflow, description: "An alert can trigger an APImetrics workflow rather than an external notification."}
+destinations:
+- Generic
+- Axiom (OpenTelemetry API)
+- Email
+- Email (plain text)
+- Email (template)
+- BigPanda
+- DataDog Metric
+- DataDog Event
+- Flowdock
+- HipChat
+- Hydrolix
+- Microsoft Teams
+- New Relic
+- OpenTelemetry
+- OpsGenie
+- PagerDuty
+- Slack
+- StatusPage
+- VictorOps
+recommended_default: OpenTelemetry
+delivery_controls:
+  trigger_delay: "An alert can fire immediately or wait for N consecutive failures (the docs recommend 1)."
+  snooze: "POST /api/2/webhooks/snooze/{web_hook_key_str} suppresses a webhook."
+  org_kill_switch: "Organization Settings -> Downtimes -> Allow toggle disables ALL alerts for the organization."
+  scope: "Alerts can be set per API call or globally for every call in a project."
+security:
+  signing: null
+  note: >-
+    The docs describe per-destination credentials (a PagerDuty integration key, a Datadog API key,
+    an OTLP endpoint and token) but document no signature header or shared secret for verifying that
+    an inbound delivery came from APIContext. Recorded as absent, not as present.

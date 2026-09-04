@@ -1,38 +1,906 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: APIContext Platform Agents Results API
-  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
-  version: 2.0.0
+  title: APIContext Results API
+  description: API for the APImetrics platform This document is the 'Results' slice of the APIContext
+    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
   contact:
-    name: APIContext
-    url: https://apicontext.com/
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
 servers:
-- url: https://client.apimetrics.io/api/2
-  description: APIContext production API
-security:
-- ApiTokenAuth: []
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
 tags:
 - name: Results
+  description: Raw test execution results
 paths:
-  /results/call/{call_id}/:
+  /api/3/results/{result_id}/content/{path}:
     get:
       tags:
       - Results
-      operationId: getCallResults
-      summary: Get raw performance results
-      description: Return raw per-execution result records for an API call, including timing breakdowns, status codes, response bodies, and validation outcomes.
+      summary: Get-Result-Content
+      operationId: get-result-content
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
-      - name: call_id
+      - name: result_id
         in: path
         required: true
         schema:
           type: string
+          pattern: ^pg[a-z][a-z]-[A-Za-z0-9_-]+={0,2}$
+          title: Result ID
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Path
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Result records.
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/results/{result_id}/screenshot:
+    get:
+      tags:
+      - Results
+      summary: Get-Result-Screenshot
+      operationId: get-result-screenshot
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: result_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Result Id
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/results/:
+    get:
+      tags:
+      - Results
+      summary: List-Results
+      description: List results for a project.
+      operationId: list-results
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Time
+      - name: from
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: From
+      - name: result_category
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/results/call/{test_key_str}/:
+    get:
+      tags:
+      - Results
+      summary: List-Results-By-Call
+      description: List results for a specific API call.
+      operationId: list-results-by-call
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: test_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Time
+      - name: from
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: From
+      - name: result_category
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/results/hook/{hook_key_str}/:
+    get:
+      tags:
+      - Results
+      summary: List-Results-By-Hook
+      description: List results for a specific webhook.
+      operationId: list-results-by-hook
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: hook_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Webhook ID
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Time
+      - name: from
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: From
+      - name: result_category
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/results/{result_key_str}/:
+    get:
+      tags:
+      - Results
+      summary: Get-Result
+      description: 'Get a single result.
+
+
+        ``mode=full`` adds the messages, log messages, cert info and the request
+
+        body; ``header_style=mapping`` renders headers as a name -> value mapping.
+
+        A below-ANALYST caller gets the summary only -- no request, response or
+
+        context.'
+      operationId: get-result
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: result_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^pg[a-z][a-z]-[A-Za-z0-9_-]+={0,2}$
+          title: Result ID
+      - name: mode
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mode
+      - name: header_style
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Header Style
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultDetailResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/results/{result_key_str}/content:
+    get:
+      tags:
+      - Results
+      summary: Get-Result-Content
+      description: Download the raw response body for a result.
+      operationId: get-result-content
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: result_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^pg[a-z][a-z]-[A-Za-z0-9_-]+={0,2}$
+          title: Result ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/results/{result_key_str}/pcap:
+    get:
+      tags:
+      - Results
+      summary: Get-Result-Pcap
+      description: PCAP download is not available in this environment.
+      operationId: get-result-pcap
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: result_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^pg[a-z][a-z]-[A-Za-z0-9_-]+={0,2}$
+          title: Result ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/calls/{test_key_str}/results:
+    get:
+      tags:
+      - Results
+      summary: List-Results-By-Call-Alias
+      description: List results for a specific API call (alias path).
+      operationId: list-results-by-call-alias
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: test_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Time
+      - name: from
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: From
+      - name: result_category
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/hooks/{hook_key_str}/results:
+    get:
+      tags:
+      - Results
+      summary: List-Results-By-Hook-Alias
+      description: List results for a specific webhook (alias path).
+      operationId: list-results-by-hook-alias
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: hook_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Webhook ID
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Time
+      - name: from
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: From
+      - name: result_category
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   securitySchemes:
-    ApiTokenAuth:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
       type: apiKey
-      in: query
-      name: _token
+      in: header
+      name: X-Api-Key
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ResultDetailMeta:
+      properties:
+        result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result
+        result_category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+        agent_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Agent Type
+        call_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Call Name
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        start_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start Time
+      additionalProperties: true
+      type: object
+      title: ResultDetailMeta
+    ResultDetailResponse:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/ResultDetailMeta'
+          - type: 'null'
+      additionalProperties: true
+      type: object
+      title: ResultDetailResponse
+      description: Full result detail as returned by to_api().
+    ResultListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        next_cursor_before:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor Before
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: ResultListMeta
+    ResultListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ResultListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/ResultSynopsisItem'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ResultListResponse
+      description: Paginated list of result synopses.
+    ResultSynopsisItem:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        meta:
+          $ref: '#/components/schemas/ResultSynopsisMeta'
+        timing:
+          anyOf:
+          - $ref: '#/components/schemas/ResultSynopsisTiming'
+          - type: 'null'
+      type: object
+      required:
+      - meta
+      title: ResultSynopsisItem
+    ResultSynopsisMeta:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        call_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Call Id
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        start_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start Time
+        result_category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+        result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result
+        domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Domain
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+        http_code:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Http Code
+        source_ip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Ip
+        dest_ip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Dest Ip
+        target_location:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Target Location
+        request_size:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Request Size
+        response_size:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Response Size
+        agent_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Agent Type
+        is_hook:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Hook
+        is_retry:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Retry
+      additionalProperties: true
+      type: object
+      title: ResultSynopsisMeta
+    ResultSynopsisTiming:
+      properties:
+        dns:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Dns
+        tcp:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Tcp
+        handshake:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Handshake
+        upload:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Upload
+        processing:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Processing
+        download:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Download
+        total:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Total
+      type: object
+      title: ResultSynopsisTiming
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

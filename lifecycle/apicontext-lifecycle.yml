@@ -1,0 +1,51 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://client.apimetrics.io/openapi.json, https://docs.apimetrics.io/llms.txt,
+  https://docs.apimetrics.io/changelog/, and live probes of the candidate status hosts listed below.
+versioning:
+  scheme: uri-path
+  current: /api/3
+  also_served: /api/2
+  spec_version: v2026-09-02
+  spec_version_scheme: date
+  docs: https://docs.apimetrics.io/reference
+  note: >-
+    /api/2 and /api/3 are served side by side from https://client.apimetrics.io and described by one
+    OpenAPI document. Nine /api/2 operations are tagged `Legacy (proxied)`, which is the only
+    migration signal the contract carries.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecated_flag_in_spec: false
+  note: >-
+    No operation in the published contract sets `deprecated: true`, the document declares no `Sunset`
+    or `Deprecation` response header (RFC 8594), and no deprecation or end-of-life policy page was
+    found on docs.apimetrics.io or in its sitemap. The `Legacy (proxied)` tag marks nine v2
+    operations but is not accompanied by a retirement date.
+deprecated_operations: []
+legacy_operations:
+  tag: Legacy (proxied)
+  count: 9
+  note: v2 paths that the platform proxies onto the v3 implementation.
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    APIContext sells SLO and SLA monitoring as a product but publishes no SLA for its own platform on
+    any page reachable without a sales conversation.
+status_page: null
+status_page_probes:
+- {url: "https://status.apicontext.com/", status: 0, result: DNS does not resolve}
+- {url: "https://status.apimetrics.io/", status: 0, result: DNS does not resolve}
+- {url: "https://apimetrics.statuspage.io/", status: 200, result: "redirects to /inactive — title 'APImetrics Status - Page Inactive'; the Statuspage tenant exists but has been decommissioned"}
+- {url: "https://apicontext.statuspage.io/", status: 200, result: redirects to atlassian.com marketing, not a tenant of this company}
+- {url: "https://apimetrics.instatus.com/", status: 200, result: redirects to instatus.com marketing, not a tenant of this company}
+incident_communication:
+  channel: https://docs.apimetrics.io/changelog/
+  note: >-
+    Service interruptions, maintenance windows and regional node changes are published as changelog
+    entries rather than on a status page — e.g. "Service interruption - monitoring queue",
+    "Service Update - planned maintenance on July 27", "AWS Middle East 1". This is real operational
+    transparency, but it is not a status page and is not recorded as one.
+changelog: https://docs.apimetrics.io/changelog/

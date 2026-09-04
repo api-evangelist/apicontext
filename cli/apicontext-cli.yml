@@ -1,0 +1,73 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://github.com/APImetrics/APImetrics-cli (README, develop branch), the docs entry
+  https://docs.apimetrics.io/docs/command-line-interface, and https://docs.apicontext.com/cli
+name: apimetrics
+description: >-
+  First-party command-line client for the APIContext (APImetrics) platform — manage API monitors,
+  schedules, workflows, SLOs and results from a terminal or from CI. Written in Go and built on the
+  restish command surface, which is why every global flag is namespaced --rsh-*.
+repository: https://github.com/APImetrics/APImetrics-cli
+docs: https://docs.apicontext.com/cli
+license: Apache-2.0 (npm predecessor) / MIT (Homebrew formula)
+binary: apimetrics
+install:
+- method: homebrew
+  command: brew install apimetrics/tap/apimetrics
+  platform: macos
+- method: winget
+  command: winget install APIContext.APImetricsCLI
+  platform: windows
+- method: release-tarball
+  command: >-
+    curl -LO https://github.com/APImetrics/APImetrics-cli/releases/latest/download/apimetrics-[version]-linux-amd64.tar.gz
+  platform: linux
+authentication:
+- mode: browser-oauth
+  command: apimetrics login
+  note: Opens the browser for the OAuth2 authorization-code flow; tokens are cached and refreshed.
+- mode: service-account
+  command: apimetrics list-calls --service-account ./ci-runner.apimetrics.json
+  env: APIMETRICS_SERVICE_ACCOUNT
+  note: >-
+    Headless client-credentials flow for CI and cron. The service-account JSON carries name,
+    client_id, client_secret and audience (https://client.apimetrics.io). Access tokens last one
+    hour, are cached per credential, and the client_credentials grant issues no refresh token
+    (RFC 6749 section 4.4.3), so the CLI simply requests a new one on expiry.
+- mode: project-scoping
+  command: apimetrics list-calls --project-id <project-id>
+  env: APIMETRICS_PROJECT_ID
+  note: Applies to a single run and never overwrites the project saved by `project select`.
+commands:
+- group: session
+  commands: [login, logout, project select, project show]
+- group: monitors
+  commands: [create-call, list-calls, run-call, list-call-results]
+- group: schedules
+  commands: [create-schedule, list-schedules, add-call-to-schedule]
+input:
+  style: stdin-json
+  note: >-
+    Every create/update command reads a JSON body from stdin via heredoc. There is no --body,
+    --data or -d flag on any command. CLI Shorthand (`meta.name: "My API Check", request.method: GET`)
+    and `< file.json` are the documented alternatives.
+output_formats: [auto, json, yaml, table, readable, gron]
+global_flags:
+- {flag: --rsh-output-format, short: -o, description: Output format}
+- {flag: --rsh-filter, short: -f, description: Filter/project the response with a query expression}
+- {flag: --rsh-raw, short: -r, description: Raw output, strips quotes from strings}
+- {flag: --rsh-verbose, short: -v, description: Verbose logging}
+- {flag: --rsh-header, short: -H, description: Add a request header (repeatable)}
+- {flag: --rsh-query, short: -q, description: Add a query parameter (repeatable)}
+- {flag: --rsh-profile, short: -p, description: Use a named auth profile}
+- {flag: --rsh-server, short: -s, description: Override the API server base URL}
+- {flag: --rsh-no-cache, description: Disable HTTP caching}
+- {flag: --rsh-no-paginate, description: Disable automatic pagination}
+- {flag: --rsh-retry, description: "Retry count (default 2)"}
+- {flag: --rsh-timeout, short: -t, description: HTTP request timeout}
+- {flag: --rsh-insecure, description: Disable TLS verification}
+- {flag: --service-account, description: Authenticate with a service-account file instead of a browser login}
+- {flag: --project-id, description: Use this project for the run}
+ships_agent_skills: true
+agent_skills_path: skills/embed/ in github.com/APImetrics/APImetrics-cli

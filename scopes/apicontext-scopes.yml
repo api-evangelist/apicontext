@@ -1,0 +1,58 @@
+generated: '2026-09-04'
+method: searched
+source: openapi/_original/apicontext-apimetrics-openapi.json
+docs: https://docs.apimetrics.io/docs/device-code-authorization-flow
+discovery: https://auth.apimetrics.io/.well-known/openid-configuration
+note: >-
+  APIContext's OAuth2 is an Auth0 tenant at auth.apimetrics.io fronting the platform API as the
+  audience https://client.apimetrics.io. The platform contract declares only the three OIDC identity
+  scopes on its authorizationCode flow, and NO operation in the 325-operation surface declares a
+  per-operation scope requirement — every operation carries the bare `security: [{OAuth2: []},
+  {ApiKey: []}]`. Authorization is therefore enforced by project and organization role
+  (Project Roles, Organization Roles, Project Access operations exist in the contract), not by OAuth
+  scope. The wider scopes_supported list below is what the Auth0 discovery document advertises; it is
+  the standard OIDC claim set, not an APIContext permission model.
+schemes:
+- name: OAuth2
+  type: oauth2
+  source: openapi/_original/apicontext-apimetrics-openapi.json
+  audience: https://client.apimetrics.io
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+    tokenUrl: https://auth.apimetrics.io/oauth/token
+  - flow: deviceCode
+    tokenUrl: https://auth.apimetrics.io/oauth/token
+    deviceAuthorizationUrl: https://auth.apimetrics.io/oauth/device/code
+    source: https://docs.apimetrics.io/docs/device-code-authorization-flow
+  - flow: clientCredentials
+    tokenUrl: https://auth.apimetrics.io/oauth/token
+    source: https://github.com/APImetrics/APImetrics-cli (service accounts)
+scopes:
+- {scope: openid, description: OpenID Connect identity, flows: [authorizationCode], sources: [openapi/_original/apicontext-apimetrics-openapi.json]}
+- {scope: profile, description: User profile, flows: [authorizationCode], sources: [openapi/_original/apicontext-apimetrics-openapi.json]}
+- {scope: email, description: User email address, flows: [authorizationCode], sources: [openapi/_original/apicontext-apimetrics-openapi.json]}
+identity_provider_scopes_supported:
+- openid
+- profile
+- offline_access
+- name
+- given_name
+- family_name
+- nickname
+- email
+- email_verified
+- picture
+- created_at
+- identities
+- phone
+- address
+operation_scope_requirements: none
+authorization_model:
+  style: role-based
+  surfaces:
+  - {tag: Project Roles, operations: 5}
+  - {tag: Organization Roles, operations: 4}
+  - {tag: Project Access, operations: 6}
+  - {tag: Service Accounts, operations: 8}
+  - {tag: API Keys, operations: 3}

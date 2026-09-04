@@ -1,0 +1,521 @@
+generated: '2026-09-04'
+method: derived
+source: mcp/apicontext-mcp.yml + openapi/_original/apicontext-apimetrics-openapi.json
+note: 'Emitted because APIContext has BOTH an MCP endpoint (https://docs.apimetrics.io/mcp) and a published
+  OpenAPI. The crosswalk is empty on the tool side and that is the finding, not a gap in this file: tools/list
+  on that endpoint returns JSON-RPC -32001 ''Authorization required'', and no anonymous OAuth protected-resource
+  document is served, so the real tool names and inputSchemas could not be read. No tool is invented,
+  and no OpenAPI operation is mapped to a guessed tool name. The MCP endpoint is a documentation server
+  on the docs host, so there is no reason to expect it to project the platform''s REST operations at all.
+  rest_only[] below is therefore the whole REST surface, grouped by capability, and is the honest statement
+  of what an agent cannot reach through MCP today.'
+surfaces:
+  openapi:
+    file: openapi/_original/apicontext-apimetrics-openapi.json
+    url: https://client.apimetrics.io/openapi.json
+    gated: false
+    operations: 325
+  graphql: null
+  mcp:
+    url: https://docs.apimetrics.io/mcp
+    gated: true
+    gate: JSON-RPC -32001 Authorization required
+crosswalk: []
+mcp_only: []
+rest_only:
+- capability: Schedules
+  operation_count: 23
+  operations:
+  - add-call-to-schedule
+  - create-schedule
+  - create-schedule
+  - create-schedule-downtime
+  - delete-schedule
+  - delete-schedule
+  - delete-schedule-downtime
+  - ensure-schedule-call
+  - ensure-schedule-workflow
+  - get-schedule
+  - get-schedule
+  - get-schedule-downtime
+  - list-schedule-downtimes
+  - list-schedules
+  - list-schedules
+  - list-schedules-by-call
+  - list-schedules-by-workflow
+  - remove-call-from-schedule
+  - remove-schedule-call
+  - remove-schedule-workflow
+  - update-schedule
+  - update-schedule
+  - update-schedule-downtime
+- capability: Webhooks
+  operation_count: 18
+  operations:
+  - create-call-webhook-v2
+  - create-webhook
+  - create-webhook-v2
+  - delete-call-webhook-v2
+  - delete-webhook
+  - delete-webhook-v2
+  - get-call-webhook-v2
+  - get-webhook
+  - get-webhook-type-properties-v2
+  - get-webhook-v2
+  - list-call-webhooks-v2
+  - list-webhook-types-v2
+  - list-webhooks
+  - list-webhooks-v2
+  - snooze-webhook-v2
+  - update-call-webhook-v2
+  - update-webhook
+  - update-webhook-v2
+- capability: Account
+  operation_count: 14
+  operations:
+  - create-account-project
+  - get-account
+  - get-account-billing
+  - get-account-quota
+  - get-org-subscription
+  - get-org-usage
+  - get-project-subscription
+  - get-project-usage
+  - list-account-projects
+  - reset-account-password
+  - update-account-put
+  - update-org-subscription
+  - update-project-subscription
+  - verify-account-email
+- capability: Calls
+  operation_count: 13
+  operations:
+  - build-call-from-curl
+  - create-call
+  - delete-call
+  - get-call
+  - get-call-conditions
+  - get-call-variables-set
+  - get-call-variables-used
+  - list-calls
+  - list-calls-by-auth
+  - run-call-v2
+  - set-call-conditions
+  - update-call
+  - update-kms-helper
+- capability: Governance
+  operation_count: 12
+  operations:
+  - conformance-results
+  - conformance-results-summary
+  - delete-data-check
+  - evaluate-most-recent
+  - get-endpoint-classifications
+  - list-changes
+  - list-data-checks
+  - list-settings
+  - manage-endpoint-classification
+  - put-data-check
+  - put-settings
+  - update-resolution
+- capability: Workflows
+  operation_count: 11
+  operations:
+  - create-workflow
+  - delete-workflow
+  - get-workflow
+  - get-workflow-locations
+  - get-workflow-result
+  - list-workflow-results-by-workflow
+  - list-workflows
+  - list-workflows-by-call
+  - run-workflow
+  - run-workflow-v2
+  - update-workflow
+- capability: Stats
+  operation_count: 11
+  operations:
+  - get-call-failures
+  - get-call-http-codes
+  - get-call-legacy-passfail
+  - get-call-legacy-passfail-range
+  - get-call-metrics
+  - get-call-passfail
+  - get-call-passfail-range
+  - get-call-passfail-total
+  - get-call-stats
+  - get-call-stats-before
+  - get-call-stats-since
+- capability: Files
+  operation_count: 10
+  operations:
+  - create-file
+  - delete-file
+  - get-file
+  - get-file-content
+  - list-files
+  - replace-file-content
+  - update-file
+  - upload-file-from-url
+  - upload-new-oas
+  - upload-new-oas-from-url
+- capability: Results
+  operation_count: 10
+  operations:
+  - get-result
+  - get-result-content
+  - get-result-content
+  - get-result-pcap
+  - get-result-screenshot
+  - list-results
+  - list-results-by-call
+  - list-results-by-call-alias
+  - list-results-by-hook
+  - list-results-by-hook-alias
+- capability: Invites
+  operation_count: 10
+  operations:
+  - accept-invite
+  - accept-invite-secret
+  - create-org-invite
+  - create-project-invite
+  - delete-org-invite
+  - delete-project-invite
+  - list-org-invites
+  - list-project-invites
+  - reject-invite
+  - verify-invite-secret
+- capability: Environment
+  operation_count: 9
+  operations:
+  - create-environment-variable
+  - create-environment-workspace
+  - delete-environment-variable
+  - delete-environment-workspace
+  - get-environment-variable
+  - list-environment-variables
+  - list-environment-workspaces
+  - update-environment-variable
+  - update-environment-workspace-title
+- capability: Service Accounts
+  operation_count: 8
+  operations:
+  - create-service-account
+  - delete-service-account
+  - get-service-account
+  - grant-service-account-project-access
+  - list-service-accounts
+  - revoke-service-account-project-access
+  - rotate-service-account-secret
+  - update-service-account-roles
+- capability: Projects
+  operation_count: 7
+  operations:
+  - create-project-in-org
+  - delete-project-from-org
+  - get-project
+  - list-agents-for-project
+  - list-projects-in-org
+  - list-security-profiles-for-project
+  - update-project
+- capability: Agents
+  operation_count: 7
+  operations:
+  - agents-info
+  - delete-agent
+  - get-agent
+  - get-agent
+  - list-agents
+  - update-agent
+  - update-agent
+- capability: Browser Monitor Statistics
+  operation_count: 6
+  operations:
+  - query-browser-monitor-performance
+  - query-browser-monitor-resources
+  - query-browser-monitor-sessions
+  - query-browser-performance
+  - query-browser-resources
+  - query-browser-sessions
+- capability: Integrations
+  operation_count: 6
+  operations:
+  - authenticate-datadog-integration
+  - create-integration
+  - delete-integration
+  - get-integration-by-id
+  - list-integrations-for-org
+  - update-integration
+- capability: MCP Monitors
+  operation_count: 6
+  operations:
+  - create-mcp-monitor
+  - delete-mcp-monitor
+  - list-mcp-monitors
+  - patch-mcp-monitor
+  - read-mcp-monitor
+  - update-mcp-monitor
+- capability: Remote Agents
+  operation_count: 6
+  operations:
+  - _agent_by_id
+  - _agent_config_by_id
+  - _create_agent
+  - _delete_agent
+  - _list_agents
+  - _update_agent
+- capability: Account Settings
+  operation_count: 6
+  operations:
+  - delete-account-setting-variable
+  - get-account-setting-catalog
+  - get-account-setting-variable
+  - list-account-setting-catalogs
+  - reset-account-setting-catalog
+  - set-account-setting-variable
+- capability: Auth Settings
+  operation_count: 6
+  operations:
+  - create-auth-setting
+  - delete-auth-setting
+  - get-auth-setting
+  - list-auth-settings
+  - list-auth-settings-by-domain
+  - update-auth-setting
+- capability: Auth Tokens
+  operation_count: 6
+  operations:
+  - create-auth-token
+  - delete-auth-token
+  - get-auth-token
+  - list-auth-tokens
+  - list-auth-tokens-by-auth-setting
+  - update-auth-token
+- capability: Insights
+  operation_count: 6
+  operations:
+  - get-call-insights
+  - get-insights
+  - get-insights-outliers
+  - list-insights
+  - list-insights-rank
+  - list-insights-rank-history
+- capability: Organizations
+  operation_count: 6
+  operations:
+  - delete-account-from-org
+  - get-account-in-org
+  - get-org
+  - list-accounts-in-org
+  - list-orgs
+  - update-org
+- capability: Project Access
+  operation_count: 6
+  operations:
+  - create-project-access
+  - delete-project-access
+  - get-project-access
+  - list-project-access
+  - list-project-access-by-org
+  - update-project-access
+- capability: Project Subscriptions
+  operation_count: 6
+  operations:
+  - list-accounts-subscribed
+  - list-accounts-subscribed-at-level
+  - list-projects-subscribed
+  - list-projects-subscribed-at-level
+  - subscribe-to-project-emails
+  - unsubscribe-from-project-emails
+- capability: Browser Monitors
+  operation_count: 5
+  operations:
+  - create-browser-monitor
+  - delete-browser-monitor
+  - list-browser-monitors
+  - read-browser-monitor
+  - update-browser-monitor
+- capability: Certificates
+  operation_count: 5
+  operations:
+  - create-certificate
+  - delete-certificate
+  - list-certificates
+  - read-certificate
+  - update-certificate
+- capability: Hooks
+  operation_count: 5
+  operations:
+  - create-hook
+  - delete-hook
+  - get-hook
+  - list-hooks
+  - update-hook
+- capability: Project Roles
+  operation_count: 5
+  operations:
+  - create-project-role
+  - delete-project-role
+  - get-project-role
+  - list-project-roles
+  - update-project-role
+- capability: Reports
+  operation_count: 5
+  operations:
+  - create-report
+  - delete-report
+  - get-report
+  - list-reports
+  - update-report
+- capability: API Monitor Statistics
+  operation_count: 4
+  operations:
+  - query-api-dns-diagnostics
+  - query-api-monitor-dns-diagnostics
+  - query-api-monitor-performance
+  - query-api-performance
+- capability: Billing
+  operation_count: 4
+  operations:
+  - org-billing-quota
+  - org-billing-usage-counts
+  - project-billing-quota
+  - project-billing-usage-counts
+- capability: Downtimes
+  operation_count: 4
+  operations:
+  - create-org-downtime
+  - delete-org-downtime
+  - list-org-downtimes
+  - update-org-downtime
+- capability: Suppliers
+  operation_count: 4
+  operations:
+  - get-project-suppliers
+  - get-suppliers-results
+  - list-suppliers
+  - put-project-suppliers
+- capability: Crypto Utilities
+  operation_count: 4
+  operations:
+  - decode-jwt
+  - encode-jwt
+  - hmac-hash
+  - rsa-sign
+- capability: Notifications
+  operation_count: 4
+  operations:
+  - get-notification
+  - list-notifications
+  - list-notifications-by-call
+  - update-notification
+- capability: Users (admin)
+  operation_count: 4
+  operations:
+  - delete-user
+  - get-user
+  - get-user-by-username
+  - update-user
+- capability: Organization Roles
+  operation_count: 4
+  operations:
+  - create-org-role
+  - delete-org-role
+  - list-org-roles
+  - list-project-roles-by-org
+- capability: Analytics
+  operation_count: 3
+  operations:
+  - org-slow-calls-daily-csv
+  - org-slow-calls-monthly
+  - project-calls-monthly
+- capability: Inventory
+  operation_count: 3
+  operations:
+  - list-inventory
+  - oas-coverage
+  - oas-endpoints
+- capability: Monitors
+  operation_count: 3
+  operations:
+  - get-monitor
+  - list-monitors
+  - run-monitor
+- capability: API Keys
+  operation_count: 3
+  operations:
+  - create-api-key
+  - delete-api-key
+  - list-api-keys
+- capability: Audits
+  operation_count: 3
+  operations:
+  - list-audits
+  - list-audits-by-org
+  - list-audits-by-resource
+- capability: Project Setup
+  operation_count: 3
+  operations:
+  - get-current-project
+  - replace-current-project
+  - update-current-project
+- capability: Project SLOs
+  operation_count: 3
+  operations:
+  - delete-project-slo
+  - get-project-slo
+  - update-project-slo
+- capability: Baseline
+  operation_count: 2
+  operations:
+  - baseline-dailies
+  - baseline-hourlies
+- capability: MCP Monitor Statistics
+  operation_count: 2
+  operations:
+  - query-mcp-monitor-performance
+  - query-mcp-performance
+- capability: Conditions
+  operation_count: 2
+  operations:
+  - get-project-conditions
+  - set-project-conditions
+- capability: Export
+  operation_count: 2
+  operations:
+  - export-project
+  - tag-project-entities
+- capability: Import
+  operation_count: 2
+  operations:
+  - import-project
+  - import-sample-projects
+- capability: Manage
+  operation_count: 2
+  operations:
+  - copy-resources
+  - move-resources
+- capability: OpenAPI
+  operation_count: 2
+  operations:
+  - tag-project-for-openapi
+  - validate-openapi
+- capability: Project Synopsis
+  operation_count: 2
+  operations:
+  - get-organization-synopsis
+  - get-project-synopsis
+- capability: External Sources
+  operation_count: 1
+  operations:
+  - ingest-external-source
+- capability: Session
+  operation_count: 1
+  operations:
+  - logout
+coverage:
+  tools_named: 0
+  tools_bound: 0
+  mcp_only: 0
+  rest_operations_total: 325
+  rest_operations_with_a_tool: 0

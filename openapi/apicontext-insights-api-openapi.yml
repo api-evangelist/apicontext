@@ -1,38 +1,715 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: APIContext Platform Agents Insights API
-  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
-  version: 2.0.0
+  title: APIContext Insights API
+  description: API for the APImetrics platform This document is the 'Insights' slice of the APIContext
+    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
   contact:
-    name: APIContext
-    url: https://apicontext.com/
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
 servers:
-- url: https://client.apimetrics.io/api/2
-  description: APIContext production API
-security:
-- ApiTokenAuth: []
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
 tags:
 - name: Insights
+  description: Pre-computed API insights reports, rankings and outlier detail.
 paths:
-  /insights/call/{call_id}/:
+  /api/2/insights/:
     get:
       tags:
       - Insights
-      operationId: getCallInsights
-      summary: Get insights report for an API call
-      description: Return the APIContext insights report for an API call - SLO compliance, regressions, anomalies, and recommended actions.
+      summary: List-Insights
+      description: List pre-computed insights reports for the project.
+      operationId: list-insights
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          title: Maximum results to return
+          default: 100
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/insights/rank/:
+    get:
+      tags:
+      - Insights
+      summary: List-Insights-Rank
+      description: Score-ranked most-recent reports plus a short score history per monitor.
+      operationId: list-insights-rank
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: weekly
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Set true/t/1 for weekly instead of monthly.
+          title: Weekly
+        description: Set true/t/1 for weekly instead of monthly.
+      - name: reverse
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Set true/t/1 to sort best-first instead of worst-first.
+          title: Reverse
+        description: Set true/t/1 to sort best-first instead of worst-first.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RankResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/insights/rank/history:
+    get:
+      tags:
+      - Insights
+      summary: List-Insights-Rank-History
+      description: good/ok/bad score-band counts per period bucket across a date window.
+      operationId: list-insights-rank-history
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Window start (YYYY-MM-DD). Defaults to ~6 months ago.
+          title: Start Date
+        description: Window start (YYYY-MM-DD). Defaults to ~6 months ago.
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Window end (YYYY-MM-DD). Defaults to ~now.
+          title: End Date
+        description: Window end (YYYY-MM-DD). Defaults to ~now.
+      - name: weekly
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Set true/t/1 for weekly instead of monthly.
+          title: Weekly
+        description: Set true/t/1 for weekly instead of monthly.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/insights/call/{call_id}/:
+    get:
+      tags:
+      - Insights
+      summary: Get-Call-Insights
+      description: Latest insights report for a single monitor (empty object if none).
+      operationId: get-call-insights
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
       - name: call_id
         in: path
         required: true
         schema:
           type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: weekly
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Set true/t/1 for the latest weekly report.
+          title: Weekly
+        description: Set true/t/1 for the latest weekly report.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Insights report.
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/InsightsReportApi'
+                - type: object
+                  additionalProperties: true
+                title: Response Get-Call-Insights
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/insights/{filename}/outliers:
+    get:
+      tags:
+      - Insights
+      summary: Get-Insights-Outliers
+      description: Download an outliers blob, rewriting numeric result ids to urlsafe keys.
+      operationId: get-insights-outliers
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: filename
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Insights report filename
+          description: Report key of the form ``{call_id}__{start_date}__{end_date}``.
+        description: Report key of the form ``{call_id}__{start_date}__{end_date}``.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get-Insights-Outliers
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/insights/{filename}/:
+    get:
+      tags:
+      - Insights
+      summary: Get-Insights
+      description: Download a pre-computed insights report blob from cloud storage.
+      operationId: get-insights
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: filename
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Insights report filename
+          description: Report key of the form ``{call_id}__{start_date}__{end_date}``.
+        description: Report key of the form ``{call_id}__{start_date}__{end_date}``.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get-Insights
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   securitySchemes:
-    ApiTokenAuth:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
       type: apiKey
-      in: query
-      name: _token
+      in: header
+      name: X-Api-Key
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HistoryMeta:
+      properties:
+        weekly:
+          type: boolean
+          title: Weekly
+        start_date:
+          type: string
+          format: date-time
+          title: Start Date
+        end_date:
+          type: string
+          format: date-time
+          title: End Date
+      type: object
+      required:
+      - weekly
+      - start_date
+      - end_date
+      title: HistoryMeta
+    HistoryResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/HistoryMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/HistoryRow'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: HistoryResponse
+    HistoryRow:
+      properties:
+        start:
+          type: string
+          format: date-time
+          title: Start
+        good:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Good
+        ok:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Ok
+        bad:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Bad
+      type: object
+      required:
+      - start
+      title: HistoryRow
+      description: 'One period bucket. ``good``/``ok``/``bad`` are the score-band counts, or
+
+        ``None`` for a bucket with no reports — the route serializes with
+
+        ``exclude_none`` so an empty bucket renders as just ``{"start": ...}``,
+
+        matching the legacy output.'
+    InsightsListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      title: InsightsListMeta
+    InsightsListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/InsightsListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/InsightsReportApi'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: InsightsListResponse
+    InsightsReportApi:
+      properties:
+        id:
+          type: string
+          title: Id
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        call_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Call Id
+        version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Version
+        report_type:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Report Type
+        score:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Score
+        rank:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Rank
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Domain
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        owner:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Owner
+        pass_percent:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Pass Percent
+        outlier_percent:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Outlier Percent
+        mean_test_length:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Mean Test Length
+        sd_test_length:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Sd Test Length
+        start_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+      type: object
+      required:
+      - id
+      title: InsightsReportApi
+      description: 'One ``InsightsReport`` rendered as the legacy ``convert_datastore_to_api``
+
+        dict: the key''s ``filename`` becomes ``id``, ``owner_str`` becomes
+
+        ``project_id``, and ``start`` / ``end`` are renamed to
+
+        ``start_date`` / ``end_date``.'
+    RankMeta:
+      properties:
+        user:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        period:
+          type: string
+          title: Period
+        start:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start
+        org:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org
+        org_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Name
+      type: object
+      required:
+      - period
+      title: RankMeta
+    RankResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/RankMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/RankResult'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: RankResponse
+    RankResult:
+      properties:
+        id:
+          type: string
+          title: Id
+        score:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Score
+        results:
+          items:
+            prefixItems:
+            - type: string
+              format: date-time
+            - anyOf:
+              - type: integer
+              - type: 'null'
+            type: array
+            maxItems: 2
+            minItems: 2
+          type: array
+          title: Results
+        filenames:
+          items:
+            type: string
+          type: array
+          title: Filenames
+        most_recent:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Most Recent
+        insights_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Insights Id
+        pass_percent:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Pass Percent
+        outlier_percent:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Outlier Percent
+        mean_test_length:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Mean Test Length
+        sd_test_length:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Sd Test Length
+        api_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Name
+        api_tags:
+          items:
+            type: string
+          type: array
+          title: Api Tags
+        domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Domain
+        owner:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Owner
+      type: object
+      required:
+      - id
+      title: RankResult
+      description: 'A ranked monitor: its latest score plus a short ``results`` history of
+
+        ``(period_start, score)`` points and the matching ``filenames``.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

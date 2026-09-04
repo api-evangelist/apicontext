@@ -1,106 +1,1144 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: APIContext Platform Agents Workflows API
-  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
-  version: 2.0.0
+  title: APIContext Workflows API
+  description: API for the APImetrics platform This document is the 'Workflows' slice of the APIContext
+    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
   contact:
-    name: APIContext
-    url: https://apicontext.com/
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
 servers:
-- url: https://client.apimetrics.io/api/2
-  description: APIContext production API
-security:
-- ApiTokenAuth: []
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
 tags:
 - name: Workflows
+  description: Manage workflows.
 paths:
-  /workflows/:
+  /api/3/workflows/{workflow_id}/locations:
     get:
       tags:
       - Workflows
-      operationId: listWorkflows
-      summary: List workflows
-      description: List multi-step API workflows that chain calls together to exercise end-to-end business transactions.
+      summary: Get-Workflow-Locations
+      operationId: get-workflow-locations
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Workflow Id
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Workflows.
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkflowLocationOptions'
+                title: Response Get-Workflow-Locations
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/workflows/{workflow_id}/run:
     post:
       tags:
       - Workflows
-      operationId: createWorkflow
-      summary: Create a workflow
-      description: Create a multi-step API workflow combining several API calls into one synthetic transaction.
+      summary: Run-Workflow
+      operationId: run-workflow
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Workflow Id
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/WorkflowRunRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRunPayload'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/workflows/call/{call_id}/:
+    get:
+      tags:
+      - Workflows
+      summary: List-Workflows-By-Call
+      description: List workflows that reference a specific API call.
+      operationId: list-workflows-by-call
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: call_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: API Monitor ID
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/workflows/:
+    get:
+      tags:
+      - Workflows
+      summary: List-Workflows
+      description: List all workflows for the authenticated project.
+      operationId: list-workflows
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Workflows
+      summary: Create-Workflow
+      description: Create a new workflow.
+      operationId: create-workflow
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowCreateBody'
       responses:
         '201':
-          description: Created.
-  /workflows/{workflow_id}:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/workflows/results/{result_key_str}/:
     get:
       tags:
       - Workflows
-      operationId: getWorkflow
-      summary: Get a workflow
-      description: Retrieve a workflow definition by id.
+      summary: Get-Workflow-Result
+      description: Get a single workflow result.
+      operationId: get-workflow-result
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
-      - name: workflow_id
+      - name: result_key_str
         in: path
         required: true
         schema:
           type: string
+          pattern: ^pg[a-z][a-z]-[A-Za-z0-9_-]+={0,2}$
+          title: Workflow Result ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Workflow.
-    put:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResultResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/workflows/{workflow_id}/results/:
+    get:
       tags:
       - Workflows
-      operationId: updateWorkflow
-      summary: Update a workflow
-      description: Update a multi-step API workflow.
+      summary: List-Workflow-Results-By-Workflow
+      description: List results for a workflow within the ``?from``/``?time`` date window.
+      operationId: list-workflow-results-by-workflow
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
       - name: workflow_id
         in: path
         required: true
         schema:
           type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Workflow ID
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Time
+      - name: from
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: From
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Updated.
-  /workflows/{workflow_id}/run:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResultListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/workflows/{workflow_id}/:
+    get:
+      tags:
+      - Workflows
+      summary: Get-Workflow
+      description: Get a single workflow by id.
+      operationId: get-workflow
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Workflow ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
       - Workflows
-      operationId: runWorkflow
-      summary: Run a workflow
-      description: Execute a multi-step API workflow on demand from a chosen monitoring location.
+      summary: Update-Workflow
+      description: Partially update a workflow (only supplied fields change).
+      operationId: update-workflow
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
       - name: workflow_id
         in: path
         required: true
         schema:
           type: string
-      requestBody:
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Workflow ID
+      - name: apimetrics-project-id
+        in: header
         required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/WorkflowUpdateBody'
       responses:
-        '202':
-          description: Accepted.
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Workflows
+      summary: Delete-Workflow
+      description: Delete a workflow and return its last representation.
+      operationId: delete-workflow
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Workflow ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/workflows/{workflow_key_str}/run:
+    post:
+      tags:
+      - Workflows
+      summary: Run-Workflow-V2
+      description: Trigger an on-demand run of a workflow.
+      operationId: run-workflow-v2
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workflow_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Workflow ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_RunWorkflowBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRunPayload'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   securitySchemes:
-    ApiTokenAuth:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
       type: apiKey
-      in: query
-      name: _token
+      in: header
+      name: X-Api-Key
+  schemas:
+    AgentLocation:
+      prefixItems:
+      - anyOf:
+        - type: string
+        - type: 'null'
+        title: Api
+      - anyOf:
+        - type: string
+        - type: 'null'
+        title: Www
+      - anyOf:
+        - type: string
+        - type: 'null'
+        title: Mcp
+      type: array
+      maxItems: 3
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    WorkflowCreateBody:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_WorkflowCreateMeta'
+        workflow:
+          anyOf:
+          - $ref: '#/components/schemas/_WorkflowBodyWorkflow'
+          - type: 'null'
+        access:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access
+      additionalProperties: false
+      type: object
+      required:
+      - meta
+      title: WorkflowCreateBody
+    WorkflowDataResponse:
+      properties:
+        call_ids:
+          items:
+            type: string
+          type: array
+          title: Call Ids
+        stop_on_failure:
+          type: boolean
+          title: Stop On Failure
+        handle_cookies:
+          type: boolean
+          title: Handle Cookies
+      type: object
+      required:
+      - call_ids
+      - stop_on_failure
+      - handle_cookies
+      title: WorkflowDataResponse
+    WorkflowListMetaResponse:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: WorkflowListMetaResponse
+    WorkflowListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/WorkflowListMetaResponse'
+        results:
+          items:
+            $ref: '#/components/schemas/WorkflowResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: WorkflowListResponse
+    WorkflowLocationOptions:
+      properties:
+        cloud:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cloud
+        continent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Continent
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        api:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Api
+        www:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Www
+        mcp:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Mcp
+      type: object
+      required:
+      - cloud
+      - continent
+      - country
+      - city
+      - api
+      - www
+      - mcp
+      title: WorkflowLocationOptions
+    WorkflowMetaResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          default: []
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+        created:
+          type: string
+          title: Created
+        last_update:
+          type: string
+          title: Last Update
+        owner:
+          type: string
+          title: Owner
+        deployments:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Deployments
+      type: object
+      required:
+      - name
+      - created
+      - last_update
+      - owner
+      title: WorkflowMetaResponse
+    WorkflowResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/WorkflowMetaResponse'
+        workflow:
+          $ref: '#/components/schemas/WorkflowDataResponse'
+      type: object
+      required:
+      - id
+      - meta
+      - workflow
+      title: WorkflowResponse
+    WorkflowResultListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: WorkflowResultListMeta
+    WorkflowResultListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/WorkflowResultListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/WorkflowResultResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: WorkflowResultListResponse
+      description: Paginated list of workflow results.
+    WorkflowResultMeta:
+      properties:
+        workflow_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workflow Id
+        workflow_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workflow Name
+        workflow_tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Workflow Tags
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        created:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Update
+        start_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start Time
+        end_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: End Time
+        total_time:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Time
+        final_result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Final Result
+        final_result_category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Final Result Category
+        schedule_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Schedule Id
+      additionalProperties: true
+      type: object
+      title: WorkflowResultMeta
+      description: Per-result ``meta`` block, matching ``convert_datastore_to_api``.
+    WorkflowResultResponse:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        meta:
+          $ref: '#/components/schemas/WorkflowResultMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/WorkflowSubResult'
+          type: array
+          title: Results
+          default: []
+        post_context:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Post Context
+      type: object
+      required:
+      - meta
+      title: WorkflowResultResponse
+      description: A single workflow result (``TestRunResult``).
+    WorkflowRunPayload:
+      properties:
+        workflow_id:
+          type: string
+          title: Workflow Id
+        workflow_result_id:
+          type: string
+          title: Workflow Result Id
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        api_location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Location Id
+        www_location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Www Location Id
+        mcp_location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mcp Location Id
+        context:
+          additionalProperties: true
+          type: object
+          title: Context
+        between_calls_delay:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Between Calls Delay
+        user:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: User
+      type: object
+      required:
+      - workflow_id
+      - workflow_result_id
+      - context
+      title: WorkflowRunPayload
+    WorkflowRunRequest:
+      properties:
+        locations:
+          $ref: '#/components/schemas/AgentLocation'
+        run_delay:
+          type: integer
+          maximum: 86400.0
+          minimum: 0.0
+          title: Run Delay
+          default: 0
+        between_calls_delay:
+          type: integer
+          maximum: 86400.0
+          minimum: 0.0
+          title: Between Calls Delay
+          default: 0
+        context:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Context
+      type: object
+      required:
+      - locations
+      title: WorkflowRunRequest
+    WorkflowSubResult:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result
+        result_category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+        total_time:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Time
+        start_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start Time
+      type: object
+      title: WorkflowSubResult
+      description: One test result inside a workflow run.
+    WorkflowUpdateBody:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/_WorkflowUpdateMeta'
+          - type: 'null'
+        workflow:
+          anyOf:
+          - $ref: '#/components/schemas/_WorkflowBodyWorkflow'
+          - type: 'null'
+        access:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access
+      additionalProperties: false
+      type: object
+      title: WorkflowUpdateBody
+    _RunWorkflowBody:
+      properties:
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        run_delay:
+          anyOf:
+          - type: integer
+            maximum: 86400.0
+            minimum: 0.0
+          - type: 'null'
+          title: Run Delay
+        between_calls_delay:
+          anyOf:
+          - type: integer
+            maximum: 86400.0
+            minimum: 0.0
+          - type: 'null'
+          title: Between Calls Delay
+        context:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Context
+      additionalProperties: false
+      type: object
+      title: _RunWorkflowBody
+      examples:
+      - between_calls_delay: 0
+        context:
+          ACCESS_TOKEN: mytoken
+        location_id: us-west-2
+        run_delay: 0
+    _WorkflowBodyWorkflow:
+      properties:
+        call_ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Call Ids
+        stop_on_failure:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Stop On Failure
+        handle_cookies:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Handle Cookies
+      additionalProperties: false
+      type: object
+      title: _WorkflowBodyWorkflow
+    _WorkflowCreateMeta:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      title: _WorkflowCreateMeta
+    _WorkflowUpdateMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+      additionalProperties: false
+      type: object
+      title: _WorkflowUpdateMeta

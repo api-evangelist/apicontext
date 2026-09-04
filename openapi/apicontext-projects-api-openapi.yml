@@ -1,84 +1,569 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: APIContext Platform Agents Projects API
-  description: APIContext (formerly APImetrics) Platform API for synthetic API testing, monitoring, conformance, and SLO enforcement. Provides programmatic control over API calls, schedules, agents, monitors, results, statistics, insights, alerts, and reports.
-  version: 2.0.0
+  title: APIContext Projects API
+  description: API for the APImetrics platform This document is the 'Projects' slice of the APIContext
+    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
+  version: v2026-09-02
   contact:
-    name: APIContext
-    url: https://apicontext.com/
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://apimetrics.io/tos/
 servers:
-- url: https://client.apimetrics.io/api/2
-  description: APIContext production API
-security:
-- ApiTokenAuth: []
+- url: https://client.apimetrics.io
+  description: APIContext (APImetrics) platform API
 tags:
 - name: Projects
+  description: Manage projects within an organization.
+- name: Projects
+  description: Manage a project.
 paths:
-  /projects/:
+  /api/3/project/security-profiles:
     get:
       tags:
       - Projects
-      operationId: listProjects
-      summary: List projects
-      description: List APIContext projects that group API calls, schedules, alerts, and tokens.
+      summary: List-Security-Profiles-For-Project
+      operationId: list-security-profiles-for-project
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
       responses:
         '200':
-          description: Projects.
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                title: Response List-Security-Profiles-For-Project
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/project/agents:
+    get:
+      tags:
+      - Projects
+      summary: List-Agents-For-Project
+      description: 'List all agents accessible to a project.
+
+        Returns the project''s agent list (its organization''s ``agents:<name>``
+
+        system tag, or the public list) plus agents owned by the project''s
+
+        organization or by the project itself.
+
+        Personal projects (no org) only get public and project-owned agents.'
+      operationId: list-agents-for-project
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response List-Agents-For-Project
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/organizations/{org_id}/projects/:
+    get:
+      tags:
+      - Projects
+      summary: List-Projects-In-Org
+      description: List projects in an organization.
+      operationId: list-projects-in-org
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      - name: include_quota
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Include Quota
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          title: Limit
+      - name: system_tag
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: System Tag
+      - name: tag
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tag
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
       - Projects
-      operationId: createProject
-      summary: Create a project
-      description: Create a new APIContext project to group related API calls and monitors.
+      summary: Create-Project-In-Org
+      description: Create a new project in an organization.
+      operationId: create-project-in-org
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/CreateProjectBody'
       responses:
-        '201':
-          description: Created.
-  /projects/{project_id}:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/organizations/{org_id}/projects/{project_key_str}/:
+    delete:
+      tags:
+      - Projects
+      summary: Delete-Project-From-Org
+      description: Remove a project from an organization (re-homes it to community).
+      operationId: delete-project-from-org
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: project_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/projects/{project_key_str}/:
     get:
       tags:
       - Projects
-      operationId: getProject
-      summary: Get a project
-      description: Retrieve a project by id.
+      summary: Get-Project
+      description: Get a project by key.
+      operationId: get-project
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
-      - name: project_id
+      - name: project_key_str
         in: path
         required: true
         schema:
           type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
       responses:
         '200':
-          description: Project.
-    put:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
       tags:
       - Projects
-      operationId: updateProject
-      summary: Update a project
-      description: Update project metadata or configuration.
+      summary: Update-Project
+      description: Update a project's name, tags, email, or security profile.
+      operationId: update-project
+      security:
+      - OAuth2: []
+      - ApiKey: []
       parameters:
-      - name: project_id
+      - name: project_key_str
         in: path
         required: true
         schema:
           type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/UpdateProjectBody'
       responses:
         '200':
-          description: Updated.
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   securitySchemes:
-    ApiTokenAuth:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
       type: apiKey
-      in: query
-      name: _token
+      in: header
+      name: X-Api-Key
+  schemas:
+    CreateProjectBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        security_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Security Profile
+      type: object
+      title: CreateProjectBody
+      examples:
+      - name: New Project
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ProjectListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: integer
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - next_cursor
+      - more
+      title: ProjectListMeta
+    ProjectListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/ProjectResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ProjectListResponse
+      examples:
+      - meta:
+          more: true
+          next_cursor: ClIKLgoI...
+        results:
+        - created: '2026-06-19T09:06:47.046143Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+          last_update: '2026-06-19T09:06:47.046170Z'
+          name: Project 1
+          org_id: apicontext
+          sub_info:
+            counts:
+              org_test_run_count: 0
+              public_report_count: 0
+              scheduled_test_count: 288
+              test_setup_count: 4
+              user_test_run_count: 0
+            month_progress: 0.814
+            quotas:
+              public_report_quota: 10
+              test_run_quota: 1000000
+              test_setup_quota: 1000
+            sub:
+              backend: azure
+              level: CONTRACT
+              name: Enterprise
+              org_id: apicontext
+              plan: enterprise
+          tags: []
+    ProjectResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        org_id:
+          type: string
+          title: Org Id
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        system_tags:
+          items:
+            type: string
+          type: array
+          title: System Tags
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        security_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Security Profile
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        sub_info:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Sub Info
+      type: object
+      required:
+      - id
+      - name
+      - org_id
+      - tags
+      - system_tags
+      - last_update
+      - created
+      - security_profile
+      title: ProjectResponse
+      examples:
+      - created: '2026-06-19T09:06:47.046143Z'
+        id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        last_update: '2026-06-19T09:06:47.046170Z'
+        name: Project 1
+        org_id: apicontext
+        sub_info:
+          counts:
+            org_test_run_count: 0
+            public_report_count: 0
+            scheduled_test_count: 288
+            test_setup_count: 4
+            user_test_run_count: 0
+          month_progress: 0.814
+          quotas:
+            public_report_quota: 10
+            test_run_quota: 1000000
+            test_setup_quota: 1000
+          sub:
+            backend: azure
+            level: CONTRACT
+            name: Enterprise
+            org_id: apicontext
+            plan: enterprise
+        tags: []
+    UpdateProjectBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        security_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Security Profile
+      type: object
+      title: UpdateProjectBody
+      examples:
+      - name: Renamed Project
+        tags:
+        - production
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

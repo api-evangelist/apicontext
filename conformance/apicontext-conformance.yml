@@ -1,0 +1,97 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://client.apimetrics.io/openapi.json (v2026-09-02),
+  https://auth.apimetrics.io/.well-known/openid-configuration,
+  https://apicontext.com/.well-known/api-catalog,
+  https://docs.apimetrics.io/docs/oauth-2-security-conformance,
+  https://docs.apimetrics.io/docs/basic-security-conformance-profile
+note: >-
+  APIContext's PRODUCT tests other people's APIs for conformance against FAPI 2.0, an OAuth 2.0
+  security profile and customer-supplied OpenAPI. That is a capability it sells, not a property of
+  its own contract, so it is recorded under product_conformance_profiles below and is deliberately
+  NOT asserted as conformance of the APIContext API itself.
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: >-
+    https://client.apimetrics.io/openapi.json declares openapi 3.1.0 with 217 paths, 325 operations
+    and 560 component schemas.
+- id: oauth2
+  conforms: true
+  evidence: >-
+    components.securitySchemes.OAuth2 declares an authorizationCode flow against
+    https://auth.apimetrics.io/authorize and /oauth/token; every operation declares it.
+- id: oauth2-device-authorization-grant
+  conforms: true
+  evidence: >-
+    urn:ietf:params:oauth:grant-type:device_code in grant_types_supported at
+    https://auth.apimetrics.io/.well-known/openid-configuration, documented at
+    https://docs.apimetrics.io/docs/device-code-authorization-flow
+- id: oauth2-client-credentials
+  conforms: true
+  evidence: >-
+    client_credentials in grant_types_supported; used by the CLI's --service-account mode.
+- id: oidc-discovery
+  conforms: true
+  evidence: >-
+    https://auth.apimetrics.io/.well-known/openid-configuration returns HTTP 200 application/json
+    with issuer, authorization_endpoint, token_endpoint, userinfo_endpoint and jwks_uri.
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: true
+  evidence: >-
+    https://auth.apimetrics.io/.well-known/oauth-authorization-server returns HTTP 200 (byte-identical
+    to the OIDC document).
+- id: rfc7636-pkce
+  conforms: true
+  evidence: 'code_challenge_methods_supported: [S256, plain] in the discovery document'
+- id: rfc9449-dpop
+  conforms: true
+  evidence: 'dpop_signing_alg_values_supported: [ES256] in the discovery document'
+- id: rfc9727-api-catalog
+  conforms: true
+  evidence: >-
+    https://apicontext.com/.well-known/api-catalog returns HTTP 200 with Content-Type
+    application/linkset+json and a linkset[] carrying service-doc, service-desc and related entries.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: >-
+    /.well-known/security.txt is not served on any host; apicontext.com answers the path with its
+    catch-all HTML shell, and client/auth/docs hosts return 404.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: application/problem+json appears nowhere in the published contract.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation response header is declared anywhere in the contract.
+- id: idempotency-key
+  conforms: false
+  evidence: No idempotency key header, parameter or field in the contract or the docs.
+- id: cursor-pagination
+  conforms: true
+  evidence: cursor + limit query parameters on 50 and 52 operations respectively.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document published; the event surface is an outbound webhook/alert catalog documented
+    in prose (see asyncapi/apicontext-webhooks.yml).
+product_conformance_profiles:
+  note: Standards APIContext tests OTHER APIs against, as a product feature.
+  profiles:
+  - {id: fapi-2.0, name: Financial-grade API 2.0 security profile, docs: https://docs.apimetrics.io/docs/oauth-2-security-conformance}
+  - {id: apimetrics-basic-security, name: APImetrics Basic Security Conformance Profile, docs: https://docs.apimetrics.io/docs/basic-security-conformance-profile}
+  - {id: openapi-schema-conformance, name: Response validation against a customer's OpenAPI, docs: https://docs.apimetrics.io/docs/conformance}
+  - {id: opentelemetry, name: OTLP export of monitoring telemetry, docs: https://docs.apimetrics.io/docs/export-with-opentelemetry}
+domain_standard:
+  claimed: false
+  note: >-
+    Reward-only check, deliberately left unclaimed. The API-observability market has no adopted wire
+    standard that this contract declares. OpenTelemetry is the closest candidate and APIContext does
+    export OTLP, but that is an outbound webhook integration, not a shape the platform contract itself
+    declares, so no domain-standard conformance is asserted.
+compliance_program:
+  published: false
+  note: >-
+    No trust centre, certification list or compliance page was reachable. trust./security./compliance
+    paths on apicontext.com return the Cloudflare managed challenge to non-browser clients and no
+    certification page appears in the docs sitemap, so no `Compliance` pointer is emitted.

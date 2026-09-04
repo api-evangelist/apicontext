@@ -1,0 +1,188 @@
+# APImetrics Documentation
+
+> APImetrics provides a real-time method to monitor the performance and conformance of all the APIs you depend on.
+
+Append .md to any documentation page URL to get its markdown version.
+
+## Guides
+- [Introducing APImetrics by APIContext](https://docs.apimetrics.io/docs/introducing-apimetrics.md): What you need to know first!
+- [API.expert](https://docs.apimetrics.io/docs/apiexpert.md): Publicly available collections of API monitoring for a variety of API products
+- [Making an ad hoc API call](https://docs.apimetrics.io/docs/scheduling-an-api-call.md): APIs can be run on a one-off basis by clicking 'RUN NOW' and selecting a location from the picker OR scheduling the call to run
+- [Set Up Ongoing Observations](https://docs.apimetrics.io/docs/setting-up-on-going-observations.md): A one-off API call doesn't tell you very much about an API or the behavior of it - with 'schedules' you can run automatically from anywhere in the public cloud.
+- [Setting Assertions and Conditions](https://docs.apimetrics.io/docs/basic-condition-setting-scenarios.md): An overview to customizing unique conditions for each API endpoint
+- [Command Line Interface](https://docs.apimetrics.io/docs/command-line-interface.md): Interested in interacting with APImetrics using a CLI?
+- [Projects](https://docs.apimetrics.io/docs/projects.md): Your API calls, Authentication Settings, Insights and Results are all managed and owned by a Project. You can share ownership, editor, or viewer access rights with other APImetrics users.
+- [Export or Import a Project](https://docs.apimetrics.io/docs/export-or-import-an-apimetrics-project.md)
+- [Third Party Logs](https://docs.apimetrics.io/docs/third-party-logs.md)
+- [Akamai DataStream2 (DS2) Logs](https://docs.apimetrics.io/docs/akamai-datastream2-ds2-logs.md)
+- [Observability (beta)](https://docs.apimetrics.io/docs/observability-adaptors.md): Want to know what observability adaptor options we have for live API calls?
+- [Install With Akamai CDN](https://docs.apimetrics.io/docs/install-with-akamai-cdn.md): If you want APImetrics to monitor API calls in your Akamai CDN, use these steps to build an Akamai EdgeWorker.
+- [Install with AWS CloudFront](https://docs.apimetrics.io/docs/install-with-aws-cloudfront.md): If you want APImetrics to monitor API calls in your CloudFront network, use these steps to build or re-deploy the APImetrics Lambda@Edge function into your network.
+- [Install with .NET](https://docs.apimetrics.io/docs/install-with-net.md): If you want APImetrics to monitor API calls to a .NET server, use these steps to build the APImetrics into your application.
+- [Install with Express.js](https://docs.apimetrics.io/docs/install-with-expressjs.md): If you want APImetrics to monitor API calls to a Node express.js server, use these steps to build the APImetrics adaptor into your application.
+- [Install with Kong Gateway](https://docs.apimetrics.io/docs/install-with-kong-gateway.md): If you want APImetrics to monitor APIs traversing a Kong Gateway, use these steps to install APImetrics into the environment where you run Kong.
+- [Install with Kubernetes](https://docs.apimetrics.io/docs/install-with-kubernetes.md): If you want APImetrics to monitor API calls as a Kubernetes sidecar, use these steps to add the APImetrics adaptor into your application.
+- [Install with Python (WSGI)](https://docs.apimetrics.io/docs/install-with-python-wsgi.md): If you want APImetrics to monitor API calls to a Python web server, use these steps to build the APImetrics adaptor into your application.
+- [Inventory](https://docs.apimetrics.io/docs/inventory.md): Want to observe live calls from your APIs? Inventory can view live traffic and show your API calls
+- [Conformance](https://docs.apimetrics.io/docs/conformance.md): Need to monitor your conformance with different standards or your own specifications? Use the Conformance feature
+- [Issue Details](https://docs.apimetrics.io/docs/issue-details.md): Want to dive deeper from the Summary page? Issue Details will give you all the information you need for remediation
+- [Monitoring Coverage](https://docs.apimetrics.io/docs/monitoring-coverage.md): Ensure your projects have sufficient API and Endpoint monitoring in place with Coverage Checks.
+- [Setting up performance SLOs/SLAs and thresholds](https://docs.apimetrics.io/docs/setting-up-performance-slos-slas-and-thresholds.md): Configure a variety SLO and SLA criteria to track performance characteristics
+- [Exclude APIs from Conformance checks](https://docs.apimetrics.io/docs/exclude-conformance-monitoring.md): Disable Security and Schema Conformance Monitoring for Specific APIs
+- [Workflows](https://docs.apimetrics.io/docs/creating-a-workflow.md): Want to execute a set of API calls to simulate a customer interaction or to pass variables between calls? Workflows makes this an easy process
+- [Workflows Edit](https://docs.apimetrics.io/docs/workflows-edit.md)
+- [Workflows Results](https://docs.apimetrics.io/docs/workflows-results.md): The Workflow Results tab allows you to easily see how your Workflows are performing across our agents.
+- [Using Variables in Workflows](https://docs.apimetrics.io/docs/setting-environment-variables-in-a-workflow.md)
+- [Managing Schedules](https://docs.apimetrics.io/docs/setting-and-managing-schedules.md): Schedules makes it easy to manage the frequency and nature of the observation calls we make from around the world.
+- [Managing Project-Level Downtimes](https://docs.apimetrics.io/docs/managing-project-level-downtimes.md): Suspend your monitoring using downtime schedules.
+- [Certificates](https://docs.apimetrics.io/docs/certificates.md): The Certificates page is a centralised location for your MTLS certificates, so you can use them across multiple different projects.
+- [Upload a Signing Certificate](https://docs.apimetrics.io/docs/upload-a-signing-certificate.md): Use this guide to securely upload a signing certificate and automatically compute its Key ID.
+- [Handling Mutual TLS](https://docs.apimetrics.io/docs/mutual-tls.md)
+- [Add Private Nodes](https://docs.apimetrics.io/docs/add-private-nodes.md): Deploy private nodes inside your own infrastructure to monitor applications that are not available to the public internet.
+- [Setting Alerts](https://docs.apimetrics.io/docs/setting-up-alerts-and-webhooks.md): Alerts are events that trigger external notifications.
+- [Using Webhooks](https://docs.apimetrics.io/docs/using-webhooks.md): Webhooks can be used to connect APImetrics to external systems
+- [Conformance Results Webhook](https://docs.apimetrics.io/docs/conformance-results-webhook.md): You can send an alert for every API call you make, or just those that have failed or generated a warning
+- [Performance Results Webhook](https://docs.apimetrics.io/docs/performance-results-webhook.md): You can send an alert for every API call you make, or just those that have failed or generated a warning
+- [Generic Webhook](https://docs.apimetrics.io/docs/generic-webhook.md): Use this Webhook to stream your API's Performance metrics & events to any custom downstream systems.
+- [Email Alerts](https://docs.apimetrics.io/docs/email-alerts.md): Want to get alerts sent to your email? Use our Email Webhook
+- [Run Workflow](https://docs.apimetrics.io/docs/run-workflow.md): Create a custom alert using a Workflow with APIs defined in APImetrics
+- [Expanded Alerts](https://docs.apimetrics.io/docs/expanded-alerting.md): Want to send our data to another platform to view there? Use our Expanded Alerting Webhooks
+- [Export with OpenTelemetry](https://docs.apimetrics.io/docs/export-with-opentelemetry.md): Send data from APImetrics to any platform that intakes OpenTelemetry with our OpenTelemetry Webhook
+- [Export to Akamai API Security](https://docs.apimetrics.io/docs/export-to-akamai-api-security.md): Send data from APImetrics to Alibaba Cloud with our OpenTelemetry Webhook
+- [Export to Alibaba Cloud via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-alibaba-cloud-via-opentelemetry.md): Send data from APImetrics to Alibaba Cloud with our OpenTelemetry Webhook
+- [Export to AWS via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-aws-via-opentelemetry.md): Send data from APImetrics to AWS with our OpenTelemetry Webhook
+- [Export to Axiom via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-axiom-via-opentelemetry.md): Want to send your APImetrics data to your Axiom dashboard? Use our OpenTelemetry Webhook.
+- [Export to Cisco AppDynamics via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-cisco-appdynamics-via-opentelemetry.md): Send data from APImetrics to Cisco (App Dynamics) with our OpenTelemetry Webhook
+- [Export to Datadog](https://docs.apimetrics.io/docs/export-to-datadog.md): Send data from APImetrics to Datadog
+- [Export to Dynatrace via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-dynatrace.md): Send data from APImetrics to Dynatrace with our OpenTelemetry Webhook
+- [Export to Docker via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-docker-via-opentelemetry.md): Send data from APImetrics to Docker with our OpenTelemetry Webhook
+- [Export to Elastic via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-elastic-via-opentelemetry.md): Send data from APImetrics to Elastic with our OpenTelemetry Webhook
+- [Export to F5](https://docs.apimetrics.io/docs/export-to-f5.md): Send data from APImetrics to F5
+- [Export to Fastly CDN via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-fastly-cdn-via-opentelemetry.md): Send data from APImetrics to Fastly CDN with our OpenTelemetry Webhook
+- [Export to Go SDK via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-go-via-opentelemetry.md): Send data from APImetrics to Go SDK with our OpenTelemetry Webhook
+- [Export to Google Cloud Platform via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-google-cloud-platform-via-opentelemetry.md): Send data from APImetrics to Google Cloud Platform with our OpenTelemetry Webhook
+- [Export to Honeycomb via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-honeycomb-via-opentelemetry.md): Send data from APImetrics to Honeycomb with our OpenTelemetry Webhook
+- [Export to Hydrolix via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-hydrolix-via-opentelemetry.md): Send data from APImetrics to Hydrolix with our OpenTelemetry Webhook
+- [Export to IBM Instana via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-ibm-instana-via-opentelemetry.md): Send data from APImetrics to IBM Instana with our OpenTelemetry Webhook
+- [Export to Java SDK via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-java-via-opentelemetry.md): Send data from APImetrics to Java SDK with our OpenTelemetry Webhook
+- [Export to Logz.io via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-logzio-via-opentelemetry.md): Send data from APImetrics to Logz.io with our OpenTelemetry Webhook
+- [Export to Microsoft Azure Monitor via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-microsoft-azure-monitor-via-opentelemetry.md): Send data from APImetrics to Microsoft Azure Monitor with our OpenTelemetry Webhook
+- [Export to Mulesoft via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-mulesoft-via-opentelemetry.md): Send data from APImetrics to Mulesoft with our OpenTelemetry Webhook
+- [Export to New Relic via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-new-relic-via-opentelemetry.md): Send data from APImetrics to New Relic with our OpenTelemetry Webhook
+- [Export to Nginx via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-nginx-via-opentelemetry.md): Send data from APImetrics to Nginx with our OpenTelemetry Webhook
+- [Export to NodeJS SDK via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-nodejs-via-opentelemetry.md): Send data from APImetrics to NodeJS SDK with our OpenTelemetry Webhook
+- [Export to PHP SDK via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-php-via-opentelemetry.md): Send data from APImetrics to PHP SDK with our OpenTelemetry Webhook
+- [Export to Ruby SDK via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-ruby-via-opentelemetry.md): Send data from APImetrics to Ruby SDK with our OpenTelemetry Webhook
+- [Export to ServiceNow Cloud Observability (formerly Lightstep) via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-servicenow-cloud-observability-formerly-lightstep-via-opentelemetry.md): Send data from APImetrics to Java SDK with our OpenTelemetry Webhook
+- [Export to Splunk via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-splunk-via-opentelemetry.md): Send data from APImetrics to Splunk with our OpenTelemetry Webhook
+- [Export to Sumo Logic via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-sumo-logic-via-opentelemetry.md): Send data from APImetrics to Sumo Logic with our OpenTelemetry Webhook
+- [Export to TrafficPeak via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-trafficpeak-via-opentelemetry.md): Send data from APImetrics to TrafficPeak with our OpenTelemetry Webhook
+- [Export to Tyk via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-tyk-via-opentelemetry.md): Send data from APImetrics to Tyk with our OpenTelemetry Webhook
+- [Export to VMWare via OpenTelemetry](https://docs.apimetrics.io/docs/export-to-vmware-via-opentelemetry.md): Send data from APImetrics to VMWare with our OpenTelemetry Webhook
+- [How to Use Environment Variables for Secure Storage](https://docs.apimetrics.io/docs/how-to-use-environment-variables-for-secure-storage.md): Instructions on how to securely store and retrieve authentication tokens and other sensitive values using APImetrics' Environment Variables.
+- [Obtain an API call ID](https://docs.apimetrics.io/docs/how-to-obtain-id-of-an-api-call.md): Need to find an API Call 'ID' on your APImetrics Portal? Here's how:
+- [Use your Signing Key in Workflows](https://docs.apimetrics.io/docs/use-your-signing-key-in-workflows.md): Use this guide to generate the upgraded JWT Signing API call and update your existing workflows accordingly.
+- [APImetrics API Overview](https://docs.apimetrics.io/docs/using-the-apimetrics-api.md): Guide to using APImetrics directly with API calls
+- [Types of variable in APImetrics](https://docs.apimetrics.io/docs/key-concepts.md): The major types of variable used in APImetrics
+- [JSON: Extracting a variable](https://docs.apimetrics.io/docs/parsing-json-content.md): Handling returned JSON content
+- [What is the CASC Score?](https://docs.apimetrics.io/docs/what-is-the-casc-score.md): Outlining the APImetrics performance scoring system
+- [Agent Locations & IP Addresses](https://docs.apimetrics.io/docs/list-of-agent-locations-ip-addresses.md): Comprehensive list of agents, locations and IP addreses
+- [System Variables](https://docs.apimetrics.io/docs/apimetrics-defined-variables.md): APImetrics provides a range of pre-defined variables to automate certain aspects of API making calls.
+- [Security Profiles](https://docs.apimetrics.io/docs/security-profiles.md): There are many different conformance standards within the API security industry. APImetrics is able to show you whether you are conformant to these standards or not.
+- [FDX API 5.3](https://docs.apimetrics.io/docs/fdx-api-53.md): The Financial Data Exchange API 5.3, is an API security profile aligning with FAPI security standard and the insurance industry's ACORD annuity standards published in 2023.
+- [FAPI-RW-ID2](https://docs.apimetrics.io/docs/fapi-rw-id2.md): The Financial-Grade API - Part 2, Read/Write Implementers Draft 2, or FAPI-RW-ID2, is an API security profile based on the OAuth 2.0 Authorization Framework published in 2018.
+- [FAPI 2.0](https://docs.apimetrics.io/docs/fapi-20.md): The Financial-Grade API 2.0, FAPI 2.0, is an API security profile based on the OAuth 2.0 Authorization Framework, currently still in draft form with the newest update in 2024.
+- [OAuth 2.0 Security Conformance](https://docs.apimetrics.io/docs/oauth-2-security-conformance.md): The Financial-Grade API 2.0, FAPI 2.0, is an API security profile based on the OAuth 2.0 Authorization Framework, currently still in draft form with the newest update in 2024.
+- [Basic Security Conformance Checks](https://docs.apimetrics.io/docs/basic-security-conformance-profile.md): Our own defined Security Profile to ensure basic Authentication
+- [Device Code Authorization flow](https://docs.apimetrics.io/docs/device-code-authorization-flow.md): To obtain Access tokens for authenticating to API v3 (/api/3/) APImetrics Endpoints, follow these steps:
+- [FAQs](https://docs.apimetrics.io/docs/faqs.md): Answers to frequently asked questions.
+- [Contacting Us](https://docs.apimetrics.io/docs/contacting-us.md)
+
+## API Reference
+- [Call Object](https://docs.apimetrics.io/reference/call-object.md): Description of the JSON for an API Call.
+- [Create a New API Call](https://docs.apimetrics.io/reference/create-new-call.md): Use this API to create a new API Call in your account.
+- [List All API Calls](https://docs.apimetrics.io/reference/list-all-calls.md): Use this API to get your API Calls.
+- [List All API Calls by Authentication](https://docs.apimetrics.io/reference/list-all-calls-by-auth.md): Use this API to list all calls that use a specific Authentication Setting.
+- [Get an Existing API Call](https://docs.apimetrics.io/reference/get-call.md): Use this API to get details of an existing API Call.
+- [Update an Existing API Call](https://docs.apimetrics.io/reference/update-call.md): Use this API to update an existing API call.
+- [Delete an API Call](https://docs.apimetrics.io/reference/delete-call.md): Use this API to delete an existing API Call.
+- [Trigger an API Call](https://docs.apimetrics.io/reference/trigger-call.md): Use this API to run an API Call.
+- [Statistic Object](https://docs.apimetrics.io/reference/statistic-object.md): Description of the JSON for a Statistic.
+- [Get Stats for an API Call for a Specific Time Period](https://docs.apimetrics.io/reference/get-stats-for-call-for-specified-date.md): Use this API to get the latency stats for an hour, day, week or month.
+- [List Stats From Before a Specified Date for an API Call](https://docs.apimetrics.io/reference/list-stats-for-call-before-specified-date.md): Use this API to get Stats for the specified period before the given date.
+- [List Stats Since a Specified Date for an API Call](https://docs.apimetrics.io/reference/list-stats-for-call-since-specified-date.md): Use this API to get the Stats since a specified date.
+- [Get the Pass/Fail Stats for an API Call for Specified Period](https://docs.apimetrics.io/reference/get-passfail-stats-for-call-for-specified-period.md): Use this API to get the pass/fail stats for an hour, day, week or month.
+- [Get the Pass/Fail Stats for an API Call for a Time Range](https://docs.apimetrics.io/reference/get-passfail-stats-for-call-for-time-range.md): Use this API to get the pass/fail stats for a specified time range.
+- [Get the Combined Pass/Fail Stats for an API Call for a Time Range](https://docs.apimetrics.io/reference/get-combined-passfail-stats-for-call-for-time-range.md): Use this API to get the pass/fail stats for a specific range of dates.
+- [Result Object](https://docs.apimetrics.io/reference/result-object.md): Description of the JSON for a Result.
+- [List Results](https://docs.apimetrics.io/reference/list-results.md): Use this API to get the results for the Project.
+- [List Results for an API Call](https://docs.apimetrics.io/reference/list-results-for-call.md): Use this API to get the results for an API Call.
+- [Get Result](https://docs.apimetrics.io/reference/get-result.md): Use this API to get a single Result (provides more information than in the list API).
+- [Get Result Content](https://docs.apimetrics.io/reference/get-result-content.md): Use this API to get the result content for a single Result.
+- [Insights Report Object](https://docs.apimetrics.io/reference/insights-report-object.md): Description of the JSON for an Insights Report.
+- [List Insights Reports](https://docs.apimetrics.io/reference/list-insights-reports.md): Use this API to call the Insights Reports available for a user.
+- [Get Current Week's or Month's Insights](https://docs.apimetrics.io/reference/get-current-weeks-or-months-insights.md): Use this API to show the Insights Scores for the previous 8 weeks or months.
+- [Get the Latest Insights for an API Call](https://docs.apimetrics.io/reference/get-latest-insights-for-call.md): Use this API to get the latest Insights for a specific API Call.
+- [Get Insights Report](https://docs.apimetrics.io/reference/get-insights-report.md): Use this API to get an Insights Report.
+- [Authentication Object](https://docs.apimetrics.io/reference/authentication-object.md): Description of the JSON for an Authentication Setting.
+- [Create New Authentication Settings](https://docs.apimetrics.io/reference/create-authentication.md): Use this API to create a new Authentication Setting.
+- [List Authentication Settings](https://docs.apimetrics.io/reference/list-authentication.md): Use this API to list the Authentication Settings in your account.
+- [Get an Existing Authentication Setting](https://docs.apimetrics.io/reference/get-authentication.md): Use this API to get an existing Authentication Setting.
+- [Update an Existing Authentication Setting](https://docs.apimetrics.io/reference/update-authentication.md): Use this API to update an Authentication Setting.
+- [Delete an Authentication Setting](https://docs.apimetrics.io/reference/delete-authentication.md): Use this API to delete an existing Authentication Setting.
+- [Token Object](https://docs.apimetrics.io/reference/token-object.md): Description of the JSON for a Token.
+- [Create a New Authentication Token](https://docs.apimetrics.io/reference/create-token.md): Use this API to create a new Token for an Authentication Setting.
+- [List Authentication Tokens](https://docs.apimetrics.io/reference/list-tokens.md): Use this API to list the Tokens in your account.
+- [Get All Authentication Tokens for an Authentication Setting](https://docs.apimetrics.io/reference/get-all-tokens-for-authentication-setting.md): Use this API to list tokens by Authentication Setting ID.
+- [Get an Existing Authentication Token](https://docs.apimetrics.io/reference/get-token.md): Use this API to get an exising Authentication Token.
+- [Update an Authentication Token](https://docs.apimetrics.io/reference/update-token.md): Use this API to update an Authentication Token.
+- [Delete an Authentication Token](https://docs.apimetrics.io/reference/delete-token.md): Use this API to delete an exising Authentication Token.
+- [Report Object](https://docs.apimetrics.io/reference/report-object.md): Description of the JSON for a Result.
+- [Create a New Report](https://docs.apimetrics.io/reference/create-report.md): Use this API to create a new Report.
+- [List All Reports](https://docs.apimetrics.io/reference/list-reports.md): Use this API to list all Reports in your account.
+- [Get an Existing Report](https://docs.apimetrics.io/reference/get-report.md): Use this API to get an existing Report.
+- [Update an Existing Report](https://docs.apimetrics.io/reference/update-report.md): Use this API to update an existing Report.
+- [Delete a Report](https://docs.apimetrics.io/reference/delete-report.md): Use this API to delete an existing Report.
+- [Get Monthly Project Data Report](https://docs.apimetrics.io/reference/get-monthly-project-data-report.md): Use this API to get a monthly report for your project.
+- [Get Daily Project Slow Data Report](https://docs.apimetrics.io/reference/get-daily-project-data-report.md): Use this API to retrieve slow data reports for all projects within a date range
+- [Get Monthly Project Slow Data Report by Endpoint](https://docs.apimetrics.io/reference/get-monthly-project-slow-data-report.md): Use this API to retrieve a slow data report for each individual API endpoint across all projects within the specified month. The report will include aggregated slow data for each endpoint during the given monthly period.
+- [Workflow Object](https://docs.apimetrics.io/reference/workflow-object.md): Description of the JSON for a Workflow.
+- [Create a New Workflow](https://docs.apimetrics.io/reference/create-workflow.md): Use this API to create a new Workflow.
+- [List All Workflows](https://docs.apimetrics.io/reference/list-workflows.md): Use this API to list all the Workflows in your account.
+- [Get an Existing Workflow](https://docs.apimetrics.io/reference/get-workflows.md): Use this API to get an existing Workflow.
+- [Update a Workflow](https://docs.apimetrics.io/reference/update-workflow.md): Use this API to update a Workflow.
+- [Delete a Workflow](https://docs.apimetrics.io/reference/delete-workflow.md): Use this API to delete an existing Workflow.
+- [Trigger a Workflow to Run](https://docs.apimetrics.io/reference/trigger-a-workflow-to-run.md): Use this API to run a Workflow.
+- [Get Environment Variable](https://docs.apimetrics.io/reference/get-environment-variable.md): Use this API to get the value of an Environment Variable.
+- [Set Environment Variable](https://docs.apimetrics.io/reference/set-environment-variable.md): Use this to set an Environment Variable.
+- [Create Schedule](https://docs.apimetrics.io/reference/create-schedule.md): Use this API to create a new Schedule.
+- [List Schedules](https://docs.apimetrics.io/reference/list-schedules.md): Use this API to list all Schedules
+- [Get Schedule](https://docs.apimetrics.io/reference/get-schedule.md): Use this API to get a specific Schedule.
+- [Update Schedule](https://docs.apimetrics.io/reference/update-schedule.md): Use this API to update a Schedule.
+- [Delete Schedule](https://docs.apimetrics.io/reference/delete-schedule.md): Use this API to delete a Schedule.
+- [Create Scheduled Downtime](https://docs.apimetrics.io/reference/create-scheduled-downtime.md): Use this API to create Downtime for a Schedule.
+- [List Scheduled Downtimes](https://docs.apimetrics.io/reference/list-scheduled-downtimes.md): Use this API to list all the Downtimes of a Schedule.
+- [Get Scheduled Downtime by ID](https://docs.apimetrics.io/reference/get-scheduled-downtime-by-id.md): Use this API to get an existing Downtime.
+- [Update Scheduled Downtime](https://docs.apimetrics.io/reference/update-scheduled-downtime.md): Use this API to update the Downtime for a Schedule.
+- [Delete Scheduled Downtime](https://docs.apimetrics.io/reference/delete-scheduled-downtime.md): Use this API to delete the Downtime for a Schedule.
+- [List Org-level Downtimes](https://docs.apimetrics.io/reference/list-org-level-downtimes.md): Use this API to retrieve a comprehensive list all Downtime configurations across your Organization's projects.
+- [Create Org-level Downtime](https://docs.apimetrics.io/reference/create-org-level-downtime.md): Use this API to create downtime configuration across one or more projects within your Organization.
+- [Update Org-level Downtime](https://docs.apimetrics.io/reference/update-org-level-downtime.md): Use this API to update existing downtime configuration.
+- [Delete Org-level Downtime](https://docs.apimetrics.io/reference/delete-org-level-downtime.md): Use this API to delete an Org-level Downtime
+- [Refresh Token Flow](https://docs.apimetrics.io/reference/refresh-token-flow.md): If your APImetrics Access token has expired, use this refresh token flow to generate a new Access token.
+- [JWT Decode](https://docs.apimetrics.io/reference/jwt-decode.md): Use this API to decode a JWT into it's components in JSON
+- [JWT Encode](https://docs.apimetrics.io/reference/jwt-encode.md)
+- [Sign RSA](https://docs.apimetrics.io/reference/sign-rsa.md)
+- [HMAC Hash](https://docs.apimetrics.io/reference/hmac-hash.md)
+
+## Changelog
+- [AWS Middle East 1](https://docs.apimetrics.io/changelog/aws-middle-east-1.md)
+- [Service interruption - monitoring queue](https://docs.apimetrics.io/changelog/service-interruption-monitoring-queue.md)
+- [Service interruption - alerting](https://docs.apimetrics.io/changelog/service-interruption-alerting.md)
+- [Service Update - planned maintenance on July 27](https://docs.apimetrics.io/changelog/maintenance-event-july-27-2025.md)
+- [Release Notes - 10th of July 2025](https://docs.apimetrics.io/changelog/release-notes-10th-of-july-2025.md)
+- [Service Update - system restored](https://docs.apimetrics.io/changelog/service-update-system-restored-july-12-2025.md)
+- [Service Update - Google Cloud impact](https://docs.apimetrics.io/changelog/service-update-google-cloud-impact-june-12-2025.md)
+- [Service Update - system restored](https://docs.apimetrics.io/changelog/service-update-system-restored-20250520.md)
+- [Service Update - currently investigating](https://docs.apimetrics.io/changelog/service-update-currently-investigating-20250520.md)
+- [Service Update - system restored](https://docs.apimetrics.io/changelog/service-update-system-restored-1.md)

@@ -1,0 +1,43 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://client.apimetrics.io/api/1/",
+      "service-doc": [
+        {
+          "href": "https://docs.apimetrics.io/reference",
+          "type": "text/html",
+          "title": "APIContext API reference"
+        },
+        {
+          "href": "https://docs.apimetrics.io",
+          "type": "text/html",
+          "title": "APIContext documentation"
+        }
+      ],
+      "service-desc": [
+        {
+          "href": "https://raw.githubusercontent.com/APImetrics/APImetrics-API/master/Specs/Postman_Collection.json",
+          "type": "application/vnd.postman.collection+json",
+          "title": "APIContext Postman collection"
+        }
+      ],
+      "related": [
+        {
+          "href": "https://github.com/APImetrics/APIm-CLI",
+          "type": "text/html",
+          "title": "APIm CLI — official command-line client (npm: @apimetrics/cli)"
+        }
+      ]
+    },
+    {
+      "anchor": "https://apicontext.com/api/cms/search",
+      "service-doc": [
+        {
+          "href": "https://apicontext.com/ai/index.json",
+          "type": "application/json",
+          "title": "APIContext site content index"
+        }
+      ]
+    }
+  ]
+}
