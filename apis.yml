@@ -60,50 +60,6 @@ created: '2025-01-08'
 modified: '2026-09-04'
 specificationVersion: '0.23'
 apis:
-- aid: apicontext:apicontext-platform-api
-  name: APIContext Platform API
-  description: >-
-    The full APIContext (APImetrics) platform API — 325 operations across 217 paths, described by a
-    first-party OpenAPI 3.1.0 document (info.version v2026-09-02) published at
-    https://client.apimetrics.io/openapi.json. Two major versions are served side by side from one
-    host: /api/2 (144 paths) and /api/3 (73 paths). Covers monitors, schedules, workflows, results,
-    statistics, insights, conformance governance, webhooks, projects, organizations, billing quota
-    and service accounts.
-  humanURL: https://docs.apimetrics.io/reference
-  baseURL: https://client.apimetrics.io
-  tags:
-  - API Monitoring
-  - Conformance
-  - Performance
-  - Platform
-  - SLO
-  - Synthetic Testing
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-platform-openapi.yml
-  - type: OpenAPI
-    name: Verbatim harvest
-    url: openapi/_original/apicontext-apimetrics-openapi.json
-  - type: Overlay
-    url: overlays/apicontext-platform-overlay.yaml
-  - type: ToolCrosswalk
-    url: mcp/apicontext-tool-crosswalk.yml
-  - type: DataModel
-    url: data-model/apicontext-data-model.yml
-  - type: APIReference
-    url: https://docs.apimetrics.io/reference
-- aid: apicontext:apicontext-calls-api
-  name: APIContext Calls API
-  description: >-
-    Create, read, update, delete and run API calls — the synthetic transactions APIContext executes
-    against a monitored API. 13 operations, including on-demand runs and a curl builder.
-  humanURL: https://docs.apimetrics.io/reference/call-object
-  baseURL: https://client.apimetrics.io
-  tags:
-  - API Calls
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-api-calls-api-openapi.yml
 - aid: apicontext:apicontext-schedules-api
   name: APIContext Schedules API
   description: >-
@@ -116,21 +72,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/apicontext-schedules-api-openapi.yml
-- aid: apicontext:apicontext-webhooks-api
-  name: APIContext Webhooks API
-  description: >-
-    Manage the outbound webhook subscriptions APIContext pushes alert and result events to, across
-    both API versions, plus the machine-readable registry of supported webhook types and the
-    properties each destination requires. 18 operations.
-  humanURL: https://docs.apimetrics.io/docs/using-webhooks
-  baseURL: https://client.apimetrics.io
-  tags:
-  - Webhooks
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-webhooks-openapi.yml
-  - type: Webhooks
-    url: asyncapi/apicontext-webhooks.yml
 - aid: apicontext:apicontext-workflows-api
   name: APIContext Workflows API
   description: >-
@@ -143,36 +84,11 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/apicontext-workflows-api-openapi.yml
-- aid: apicontext:apicontext-governance-api
-  name: APIContext Governance API
-  description: >-
-    Conformance and governance findings — validate a monitored API's responses against an OpenAPI and
-    against security profiles, and manage the findings that result. 12 operations.
-  humanURL: https://docs.apimetrics.io/docs/conformance
-  baseURL: https://client.apimetrics.io
-  tags:
-  - Conformance
-  - Governance
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-governance-openapi.yml
-- aid: apicontext:apicontext-stats-api
-  name: APIContext Stats API
-  description: >-
-    Latency, pass/fail, HTTP-code and failure statistics for a monitored API call, by period, by date
-    range and by monitoring location. 11 operations.
-  humanURL: https://docs.apimetrics.io/reference/statistic-object
-  baseURL: https://client.apimetrics.io
-  tags:
-  - Statistics
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-statistics-api-openapi.yml
 - aid: apicontext:apicontext-results-api
   name: APIContext Results API
   description: >-
-    Retrieve individual monitoring results, their response content, screenshots and packet captures,
-    by call or by webhook. 10 operations.
+    Retrieve individual monitoring results, their response content, screenshots and packet captures, by
+    call or by webhook. 10 operations.
   humanURL: https://docs.apimetrics.io/reference/result-object
   baseURL: https://client.apimetrics.io
   tags:
@@ -195,8 +111,7 @@ apis:
 - aid: apicontext:apicontext-projects-api
   name: APIContext Projects API
   description: >-
-    Manage projects, the ownership root for calls, authentication settings, insights and results.
-    7 operations.
+    Manage projects, the ownership root for calls, authentication settings, insights and results. 7 operations.
   humanURL: https://docs.apimetrics.io/docs/projects
   baseURL: https://client.apimetrics.io
   tags:
@@ -209,8 +124,8 @@ apis:
 - aid: apicontext:apicontext-insights-api
   name: APIContext Insights API
   description: >-
-    Insights reports and scores — the weekly and monthly quality index APIContext computes for each
-    monitored API call. 6 operations.
+    Insights reports and scores — the weekly and monthly quality index APIContext computes for each monitored
+    API call. 6 operations.
   humanURL: https://docs.apimetrics.io/reference/insights-report-object
   baseURL: https://client.apimetrics.io
   tags:
@@ -218,36 +133,11 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/apicontext-insights-api-openapi.yml
-- aid: apicontext:apicontext-auth-tokens-api
-  name: APIContext Auth Tokens API
-  description: >-
-    Create, list, read, update and delete the authentication tokens APIContext uses when calling a
-    monitored API on the customer's behalf. 6 operations.
-  humanURL: https://docs.apimetrics.io/reference/token-object
-  baseURL: https://client.apimetrics.io
-  tags:
-  - Tokens
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-tokens-api-openapi.yml
-- aid: apicontext:apicontext-mcp-monitors-api
-  name: APIContext MCP Monitors API
-  description: >-
-    Create, read, update and delete MCP monitors — synthetic sessions run against a Model Context
-    Protocol server to measure whether AI-agent traffic is answered fast enough and correctly.
-    6 operations, plus MCP monitor statistics.
-  humanURL: https://apicontext.com/features/ai-monitoring/
-  baseURL: https://client.apimetrics.io
-  tags:
-  - MCP Monitoring
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-mcp-monitors-openapi.yml
 - aid: apicontext:apicontext-reports-api
   name: APIContext Reports API
   description: >-
-    Create and retrieve reports, including monthly project data reports and daily/monthly slow-data
-    reports by endpoint. 5 operations.
+    Create and retrieve reports, including monthly project data reports and daily/monthly slow-data reports
+    by endpoint. 5 operations.
   humanURL: https://docs.apimetrics.io/reference/report-object
   baseURL: https://client.apimetrics.io
   tags:
@@ -255,30 +145,914 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/apicontext-reports-api-openapi.yml
+- aid: apicontext:apicontext-account-api
+  name: APIContext Account API
+  description: View and update the caller's own Auth0 account profile.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-account-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-account-settings-api
+  name: APIContext Account Settings API
+  description: Per-project configurable settings catalogs (e.g. latency SLA thresholds).
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Account Settings
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-account-settings-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-analytics-api
+  name: APIContext Analytics API
+  description: The Analytics API from APIContext — 3 operation(s) for analytics.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Analytics
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-analytics-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-api-keys-api
+  name: APIContext API Keys API
+  description: Create, list and delete the API keys bound to a project.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - API Keys
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-api-keys-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-api-monitor-statistics-api
+  name: APIContext API Monitor Statistics API
+  description: Aggregate statistics for API Monitors
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - API Monitor Statistics
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-api-monitor-statistics-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-audits-api
+  name: APIContext Audits API
+  description: Audit log
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Audits
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-audits-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-auth-settings-api
+  name: APIContext Auth Settings API
+  description: Authentication / service configuration
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Auth Settings
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-auth-settings-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-auth-tokens-api
+  name: APIContext Auth Tokens API
+  description: The Auth Tokens API from APIContext — 3 operation(s) for auth tokens.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Auth Tokens
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-auth-tokens-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-baseline-api
+  name: APIContext Baseline API
+  description: The Baseline API from APIContext — 2 operation(s) for baseline.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Baseline
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-baseline-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-billing-api
+  name: APIContext Billing API
+  description: The Billing API from APIContext — 4 operation(s) for billing.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Billing
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-billing-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-browser-monitor-statistics-api
+  name: APIContext Browser Monitor Statistics API
+  description: Aggregate statistics for Browser Monitors
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Browser Monitor Statistics
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-browser-monitor-statistics-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-browser-monitors-api
+  name: APIContext Browser Monitors API
+  description: >-
+    Manage Browser Monitors.
+
+
+    Browser Monitors load a target URL in a real browser (Chromium, Firefox, or WebKit) and
+
+    measure its availability and performance. Use them to monitor pages that require JavaScript
+
+    rendering or full browser behaviour, complementing the HTTP-level checks provided by
+
+    standard Monitors.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Browser Monitors
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-browser-monitors-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-calls-api
+  name: APIContext Calls API
+  description: API call (test) definitions
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Calls
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-calls-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-certificates-api
+  name: APIContext Certificates API
+  description: The Certificates API from APIContext — 2 operation(s) for certificates.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Certificates
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-certificates-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-conditions-api
+  name: APIContext Conditions API
+  description: Project-default post-test conditions.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Conditions
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-conditions-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-crypto-utilities-api
+  name: APIContext Crypto Utilities API
+  description: Utility endpoints for decoding/signing JWTs, HMAC digests and RSA signatures.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Crypto Utilities
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-crypto-utilities-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-downtimes-api
+  name: APIContext Downtimes API
+  description: The Downtimes API from APIContext — 2 operation(s) for downtimes.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Downtimes
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-downtimes-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-environment-api
+  name: APIContext Environment API
+  description: Manage per-project environment workspaces and variables.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Environment
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-environment-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-export-api
+  name: APIContext Export API
+  description: Export and re-tag a project's configuration.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Export
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-export-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-external-sources-api
+  name: APIContext External Sources API
+  description: The External Sources API from APIContext — 1 operation(s) for external sources.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - External Sources
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-external-sources-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-files-api
+  name: APIContext Files API
+  description: Manage OpenAPI specifications and files which can be used as API request bodies.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Files
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-files-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-governance-api
+  name: APIContext Governance API
+  description: The Governance API from APIContext — 9 operation(s) for governance.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Governance
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-governance-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-hooks-api
+  name: APIContext Hooks API
+  description: >-
+    Manage inbound hooks: workflow triggers that run when their public URL receives a request.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Hooks
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-hooks-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-import-api
+  name: APIContext Import API
+  description: Import a project's configuration from an export bundle.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Import
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-import-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-integrations-api
+  name: APIContext Integrations API
+  description: The Integrations API from APIContext — 3 operation(s) for integrations.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Integrations
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-integrations-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-inventory-api
+  name: APIContext Inventory API
+  description: The Inventory API from APIContext — 3 operation(s) for inventory.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Inventory
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-inventory-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-invites-api
+  name: APIContext Invites API
+  description: Manage and accept invites to join the platform.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Invites
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-invites-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-legacy-proxied-api
+  name: APIContext Legacy (proxied) API
+  description: The Legacy (proxied) API from APIContext — 5 operation(s) for legacy (proxied).
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Legacy (proxied)
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-legacy-proxied-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-manage-api
+  name: APIContext Manage API
+  description: Copy or move resources (calls, workflows, auths, reports) between projects.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Manage
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-manage-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-mcp-monitor-statistics-api
+  name: APIContext MCP Monitor Statistics API
+  description: Aggregate statistics for MCP Monitors
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - MCP Monitor Statistics
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-mcp-monitor-statistics-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-mcp-monitors-api
+  name: APIContext MCP Monitors API
+  description: >-
+    Manage MCP Monitors.
+
+
+    MCP Monitors test MCP servers by running a configurable sequence of steps (e.g. listing tools, calling
+    a tool) against a
+
+    target HTTP(S) URL.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - MCP Monitors
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-mcp-monitors-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-monitors-api
+  name: APIContext Monitors API
+  description: >-
+    List, read, and trigger monitors.
+
+
+    This resource provides a unified view across all monitor types (API, Browser, MCP, etc.)
+
+    for a project. Use the type-specific endpoints to create or update monitors.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Monitors
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-monitors-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
 - aid: apicontext:apicontext-notifications-api
   name: APIContext Notifications API
-  description: >-
-    Read and update the notifications an alert generated, globally or for a single monitored call.
-    4 operations.
-  humanURL: https://docs.apimetrics.io/docs/setting-up-alerts-and-webhooks
+  description: Issue notifications raised about monitors, results, and workflows.
+  humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
-  - Alerts
+  - Notifications
   properties:
   - type: OpenAPI
-    url: openapi/apicontext-alerts-api-openapi.yml
+    url: openapi/apicontext-notifications-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-openapi-api
+  name: APIContext Open API
+  description: OpenAPI validation
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - OpenAPI
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-openapi-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-organization-roles-api
+  name: APIContext Organization Roles API
+  description: Manage role-based access grants across an organization's projects.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Organization Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-organization-roles-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-organizations-api
+  name: APIContext Organizations API
+  description: Manage organizations and their members.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Organizations
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-organizations-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-project-access-api
+  name: APIContext Project Access API
+  description: Manage direct account access grants on projects.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Project Access
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-project-access-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-project-roles-api
+  name: APIContext Project Roles API
+  description: Manage role-based access grants on projects.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Project Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-project-roles-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-project-setup-api
+  name: APIContext Project Setup API
+  description: >-
+    The setup of the current project — the project selected by the Apimetrics-Project-Id header (or bound
+    to the API key).
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Project Setup
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-project-setup-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-project-slos-api
+  name: APIContext Project SLOs API
+  description: Service level objectives for the current project.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Project SLOs
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-project-slos-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-project-subscriptions-api
+  name: APIContext Project Subscriptions API
+  description: Per-account per-project email digest subscriptions (daily / weekly / monthly).
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Project Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-project-subscriptions-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-project-synopsis-api
+  name: APIContext Project Synopsis API
+  description: Pre-aggregated pass/fail, timing and insight synopsis for the current project.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Project Synopsis
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-project-synopsis-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-remote-agents-api
+  name: APIContext Remote Agents API
+  description: The Remote Agents API from APIContext — 3 operation(s) for remote agents.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Remote Agents
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-remote-agents-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-service-accounts-api
+  name: APIContext Service Accounts API
+  description: The Service Accounts API from APIContext — 5 operation(s) for service accounts.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Service Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-service-accounts-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-session-api
+  name: APIContext Session API
+  description: Session endpoints preserved from the legacy API.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Session
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-session-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-stats-api
+  name: APIContext Stats API
+  description: Per-call performance and pass/fail statistics
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Stats
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-stats-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
 - aid: apicontext:apicontext-suppliers-api
   name: APIContext Suppliers API
-  description: >-
-    List API suppliers and read a project's supplier set and supplier results — the API-directory
-    surface that backs APIContext's published performance data on top API providers. 4 operations.
-  humanURL: https://apicontext.com/api-directory/
+  description: The Suppliers API from APIContext — 3 operation(s) for suppliers.
+  humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
-  - Directory
+  - Suppliers
   properties:
   - type: OpenAPI
-    url: openapi/apicontext-directory-api-openapi.yml
+    url: openapi/apicontext-suppliers-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-users-admin-api
+  name: APIContext Users (admin) API
+  description: User management
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Users (admin)
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-users-admin-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-webhooks-api
+  name: APIContext Webhooks API
+  description: Manage project-level webhooks that fire on monitor results.
+  humanURL: https://docs.apimetrics.io/reference
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-webhooks-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
 common:
   - type: Website
     url: https://apicontext.com/
