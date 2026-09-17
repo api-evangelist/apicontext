@@ -763,24 +763,6 @@ apis:
     url: https://docs.apimetrics.io/reference
   - type: Webhooks
     url: asyncapi/apicontext-webhooks.yml
-- aid: apicontext:apicontext-openapi-api
-  name: APIContext Open API
-  description: OpenAPI validation
-  humanURL: https://docs.apimetrics.io/reference
-  baseURL: https://client.apimetrics.io
-  tags:
-  - OpenAPI
-  properties:
-  - type: OpenAPI
-    url: openapi/apicontext-openapi-api-openapi.yml
-  - type: ToolCrosswalk
-    url: mcp/apicontext-tool-crosswalk.yml
-  - type: DataModel
-    url: data-model/apicontext-data-model.yml
-  - type: APIReference
-    url: https://docs.apimetrics.io/reference
-  - type: Webhooks
-    url: asyncapi/apicontext-webhooks.yml
 - aid: apicontext:apicontext-organization-roles-api
   name: APIContext Organization Roles API
   description: Manage role-based access grants across an organization's projects.
@@ -1045,6 +1027,24 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/apicontext-webhooks-api-openapi.yml
+  - type: ToolCrosswalk
+    url: mcp/apicontext-tool-crosswalk.yml
+  - type: DataModel
+    url: data-model/apicontext-data-model.yml
+  - type: APIReference
+    url: https://docs.apimetrics.io/reference
+  - type: Webhooks
+    url: asyncapi/apicontext-webhooks.yml
+- aid: apicontext:apicontext-open-api-api
+  name: APIContext Open API
+  description: OpenAPI validation
+  humanURL: https://docs.apimetrics.io/reference/create-schedule
+  baseURL: https://client.apimetrics.io
+  tags:
+  - Open API
+  properties:
+  - type: OpenAPI
+    url: openapi/apicontext-open-api-api-openapi.yml
   - type: ToolCrosswalk
     url: mcp/apicontext-tool-crosswalk.yml
   - type: DataModel
