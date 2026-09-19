@@ -68,6 +68,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference/create-schedule
   baseURL: https://client.apimetrics.io
   tags:
+  - Schedule
+  tags_raw:
   - Schedules
   properties:
   - type: OpenAPI
@@ -205,6 +207,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
+  - APIKeys
+  tags_raw:
   - API Keys
   properties:
   - type: OpenAPI
@@ -241,6 +245,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
+  - Audit
+  tags_raw:
   - Audits
   properties:
   - type: OpenAPI
@@ -521,6 +527,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
+  - File
+  tags_raw:
   - Files
   properties:
   - type: OpenAPI
@@ -594,6 +602,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
+  - Integration
+  tags_raw:
   - Integrations
   properties:
   - type: OpenAPI
@@ -751,6 +761,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
+  - Notification
+  tags_raw:
   - Notifications
   properties:
   - type: OpenAPI
@@ -787,6 +799,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
+  - Organization
+  tags_raw:
   - Organizations
   properties:
   - type: OpenAPI
@@ -951,6 +965,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
+  - Sessions
+  tags_raw:
   - Session
   properties:
   - type: OpenAPI
@@ -1023,6 +1039,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference
   baseURL: https://client.apimetrics.io
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
@@ -1041,6 +1059,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference/create-schedule
   baseURL: https://client.apimetrics.io
   tags:
+  - OpenAPI
+  tags_raw:
   - Open API
   properties:
   - type: OpenAPI
