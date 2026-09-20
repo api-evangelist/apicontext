@@ -41,6 +41,9 @@ accessModel:
     Confidence lowered from medium on 2026-09-04 — the pricing page returns a Cloudflare managed
     challenge to every non-browser client, so no tier could be read. See plans/.
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/apicontext.png
+x-docs-platform: readme
+x-docs-platform-confidence: high
+x-docs-platform-checked: 2026-09-19
 tags:
   - API Directory
   - API Monitoring
