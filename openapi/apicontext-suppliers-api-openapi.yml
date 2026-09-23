@@ -1,9 +1,8 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: APIContext Suppliers (API Directory) API
-  description: API for the APImetrics platform This document is the 'Suppliers' slice of the APIContext
-    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
-  version: v2026-09-02
+  title: APImetrics Suppliers API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
   contact:
     name: APIContext Support
     url: https://apicontext.io/
@@ -11,10 +10,7 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://apimetrics.io/tos/
-servers:
-- url: https://client.apimetrics.io
-  description: APIContext (APImetrics) platform API
+  version: v2026-09-02
 tags:
 - name: Suppliers
 paths:
@@ -142,31 +138,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
-  securitySchemes:
-    OAuth2:
-      type: oauth2
-      flows:
-        authorizationCode:
-          scopes:
-            openid: OpenID Connect identity
-            profile: User profile
-            email: User email address
-          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
-          tokenUrl: https://auth.apimetrics.io/oauth/token
-    ApiKey:
-      type: apiKey
-      in: header
-      name: X-Api-Key
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ProjectSuppliersRequestBody:
       properties:
         project_key_strs:
@@ -178,6 +150,15 @@ components:
       required:
       - project_key_strs
       title: ProjectSuppliersRequestBody
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -204,3 +185,18 @@ components:
       - msg
       - type
       title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

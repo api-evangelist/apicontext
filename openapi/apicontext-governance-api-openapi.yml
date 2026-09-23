@@ -1,9 +1,8 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: APIContext Governance API
-  description: API for the APImetrics platform This document is the 'Governance' slice of the APIContext
-    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
-  version: v2026-09-02
+  title: APImetrics Governance API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
   contact:
     name: APIContext Support
     url: https://apicontext.io/
@@ -11,10 +10,7 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://apimetrics.io/tos/
-servers:
-- url: https://client.apimetrics.io
-  description: APIContext (APImetrics) platform API
+  version: v2026-09-02
 tags:
 - name: Governance
 paths:
@@ -487,68 +483,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
-  securitySchemes:
-    OAuth2:
-      type: oauth2
-      flows:
-        authorizationCode:
-          scopes:
-            openid: OpenID Connect identity
-            profile: User profile
-            email: User email address
-          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
-          tokenUrl: https://auth.apimetrics.io/oauth/token
-    ApiKey:
-      type: apiKey
-      in: header
-      name: X-Api-Key
   schemas:
-    ConformanceResolutionRequest:
-      properties:
-        result_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Result Id
-        conformance_result_id:
-          type: string
-          title: Conformance Result Id
-        status:
-          type: string
-          title: Status
-        notes:
-          type: string
-          title: Notes
-      type: object
-      required:
-      - conformance_result_id
-      - status
-      - notes
-      title: ConformanceResolutionRequest
-    ConformanceSettingsRequest:
-      properties:
-        standards_settings:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Standards Settings
-        network_settings:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Network Settings
-        coverage_settings:
-          anyOf:
-          - $ref: '#/components/schemas/CoverageSettings'
-          - type: 'null'
-      type: object
-      required:
-      - standards_settings
-      - network_settings
-      - coverage_settings
-      title: ConformanceSettingsRequest
     CoverageSettings:
       properties:
         enabled:
@@ -572,136 +507,6 @@ components:
       - test_coverage
       - endpoint_coverage
       title: CoverageSettings
-    DataCheckPutRequest:
-      properties:
-        include_tags:
-          items:
-            type: string
-          type: array
-          title: Include Tags
-        exclude_tags:
-          items:
-            type: string
-          type: array
-          title: Exclude Tags
-        rules:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/JsonPathGroupRule'
-            - $ref: '#/components/schemas/JsonPathValueRule'
-            - $ref: '#/components/schemas/JsonPathRegexRule'
-            - $ref: '#/components/schemas/JsonPathSubstringRule'
-            - $ref: '#/components/schemas/JsonPathCountRule'
-          type: array
-          title: Rules
-      type: object
-      required:
-      - include_tags
-      - exclude_tags
-      - rules
-      title: DataCheckPutRequest
-    EndpointClassificationRequest:
-      properties:
-        method:
-          type: string
-          title: Method
-        hostname:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Hostname
-        path:
-          type: string
-          title: Path
-        classification:
-          type: string
-          title: Classification
-      type: object
-      required:
-      - method
-      - hostname
-      - path
-      - classification
-      title: EndpointClassificationRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    JsonPathCountRule:
-      properties:
-        id:
-          type: string
-          title: Id
-        domain_type:
-          type: string
-          title: Domain Type
-        json_path:
-          type: string
-          title: Json Path
-        source_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Url
-        type:
-          type: string
-          const: jsonpath-count
-          title: Type
-        count:
-          type: integer
-          title: Count
-      type: object
-      required:
-      - id
-      - domain_type
-      - json_path
-      - source_url
-      - type
-      - count
-      title: JsonPathCountRule
-    JsonPathGroupRule:
-      properties:
-        id:
-          type: string
-          title: Id
-        domain_type:
-          type: string
-          title: Domain Type
-        json_path:
-          type: string
-          title: Json Path
-        source_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Url
-        type:
-          type: string
-          const: jsonpath-group
-          title: Type
-        sub_rules:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/JsonPathValueRule'
-            - $ref: '#/components/schemas/JsonPathRegexRule'
-            - $ref: '#/components/schemas/JsonPathSubstringRule'
-            - $ref: '#/components/schemas/JsonPathCountRule'
-          type: array
-          title: Sub Rules
-      type: object
-      required:
-      - id
-      - domain_type
-      - json_path
-      - source_url
-      - type
-      - sub_rules
-      title: JsonPathGroupRule
     JsonPathRegexRule:
       properties:
         id:
@@ -749,6 +554,151 @@ components:
       - regex
       - flags
       title: JsonPathRegexRule
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    JsonPathGroupRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-group
+          title: Type
+        sub_rules:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/JsonPathValueRule'
+            - $ref: '#/components/schemas/JsonPathRegexRule'
+            - $ref: '#/components/schemas/JsonPathSubstringRule'
+            - $ref: '#/components/schemas/JsonPathCountRule'
+          type: array
+          title: Sub Rules
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - sub_rules
+      title: JsonPathGroupRule
+    JsonPathValueRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-value
+          title: Type
+        value:
+          title: Value
+        flags:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - ignore_case
+              - ignore_whitespace
+            type: array
+          - type: 'null'
+          title: Flags
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - value
+      - flags
+      title: JsonPathValueRule
+    JsonPathCountRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-count
+          title: Type
+        count:
+          type: integer
+          title: Count
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - count
+      title: JsonPathCountRule
+    ConformanceSettingsRequest:
+      properties:
+        standards_settings:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Standards Settings
+        network_settings:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Network Settings
+        coverage_settings:
+          anyOf:
+          - $ref: '#/components/schemas/CoverageSettings'
+          - type: 'null'
+      type: object
+      required:
+      - standards_settings
+      - network_settings
+      - coverage_settings
+      title: ConformanceSettingsRequest
     JsonPathSubstringRule:
       properties:
         id:
@@ -792,48 +742,29 @@ components:
       - substring_of
       - flags
       title: JsonPathSubstringRule
-    JsonPathValueRule:
+    EndpointClassificationRequest:
       properties:
-        id:
+        method:
           type: string
-          title: Id
-        domain_type:
-          type: string
-          title: Domain Type
-        json_path:
-          type: string
-          title: Json Path
-        source_url:
+          title: Method
+        hostname:
           anyOf:
           - type: string
           - type: 'null'
-          title: Source Url
-        type:
+          title: Hostname
+        path:
           type: string
-          const: jsonpath-value
-          title: Type
-        value:
-          title: Value
-        flags:
-          anyOf:
-          - items:
-              type: string
-              enum:
-              - ignore_case
-              - ignore_whitespace
-            type: array
-          - type: 'null'
-          title: Flags
+          title: Path
+        classification:
+          type: string
+          title: Classification
       type: object
       required:
-      - id
-      - domain_type
-      - json_path
-      - source_url
-      - type
-      - value
-      - flags
-      title: JsonPathValueRule
+      - method
+      - hostname
+      - path
+      - classification
+      title: EndpointClassificationRequest
     ValidationError:
       properties:
         loc:
@@ -860,3 +791,68 @@ components:
       - msg
       - type
       title: ValidationError
+    DataCheckPutRequest:
+      properties:
+        include_tags:
+          items:
+            type: string
+          type: array
+          title: Include Tags
+        exclude_tags:
+          items:
+            type: string
+          type: array
+          title: Exclude Tags
+        rules:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/JsonPathGroupRule'
+            - $ref: '#/components/schemas/JsonPathValueRule'
+            - $ref: '#/components/schemas/JsonPathRegexRule'
+            - $ref: '#/components/schemas/JsonPathSubstringRule'
+            - $ref: '#/components/schemas/JsonPathCountRule'
+          type: array
+          title: Rules
+      type: object
+      required:
+      - include_tags
+      - exclude_tags
+      - rules
+      title: DataCheckPutRequest
+    ConformanceResolutionRequest:
+      properties:
+        result_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Id
+        conformance_result_id:
+          type: string
+          title: Conformance Result Id
+        status:
+          type: string
+          title: Status
+        notes:
+          type: string
+          title: Notes
+      type: object
+      required:
+      - conformance_result_id
+      - status
+      - notes
+      title: ConformanceResolutionRequest
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

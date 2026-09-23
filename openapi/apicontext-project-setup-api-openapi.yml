@@ -1,0 +1,284 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Project Setup API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Project Setup
+  description: The setup of the current project — the project selected by the Apimetrics-Project-Id header (or bound to the API key).
+paths:
+  /api/2/project/:
+    get:
+      tags:
+      - Project Setup
+      summary: Get-Current-Project
+      description: Get the current project.
+      operationId: get-current-project
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Project Setup
+      summary: Update-Current-Project
+      description: Update the current project's name or tags.
+      operationId: update-current-project
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCurrentProjectBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Project Setup
+      summary: Replace-Current-Project
+      description: Update the current project's name or tags (alias of POST).
+      operationId: replace-current-project
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCurrentProjectBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    UpdateCurrentProjectBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 400
+            minLength: 1
+          - type: 'null'
+          title: Name
+          description: Display name.
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+          description: Replaces the whole tag list.
+      type: object
+      title: UpdateCurrentProjectBody
+      examples:
+      - name: Renamed Project
+        tags:
+        - production
+    ProjectResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        org_id:
+          type: string
+          title: Org Id
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        system_tags:
+          items:
+            type: string
+          type: array
+          title: System Tags
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        security_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Security Profile
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        sub_info:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Sub Info
+      type: object
+      required:
+      - id
+      - name
+      - org_id
+      - tags
+      - system_tags
+      - last_update
+      - created
+      - security_profile
+      title: ProjectResponse
+      examples:
+      - created: '2026-06-19T09:06:47.046143Z'
+        id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        last_update: '2026-06-19T09:06:47.046170Z'
+        name: Project 1
+        org_id: apicontext
+        sub_info:
+          counts:
+            org_test_run_count: 0
+            public_report_count: 0
+            scheduled_test_count: 288
+            test_setup_count: 4
+            user_test_run_count: 0
+          month_progress: 0.814
+          quotas:
+            public_report_quota: 10
+            test_run_quota: 1000000
+            test_setup_quota: 1000
+          sub:
+            backend: azure
+            level: CONTRACT
+            name: Enterprise
+            org_id: apicontext
+            plan: enterprise
+        tags: []
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

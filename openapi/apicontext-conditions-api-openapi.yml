@@ -1,0 +1,215 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Conditions API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Conditions
+  description: Project-default post-test conditions.
+paths:
+  /api/2/conditions/:
+    get:
+      tags:
+      - Conditions
+      summary: Get-Project-Conditions
+      description: 'Get the project-default post-test conditions.
+
+
+        An untouched project returns the built-in default conditionals rather than an
+
+        empty list.'
+      operationId: get-project-conditions
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectConditionsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Conditions
+      summary: Set-Project-Conditions
+      description: Replace the project-default post-test conditions.
+      operationId: set-project-conditions
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostProjectConditionsRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectConditionsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ProjectConditionsMeta:
+      properties:
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+          description: The project the conditions belong to.
+      type: object
+      title: ProjectConditionsMeta
+    PostProjectConditionsRequest:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+          description: The full set of conditionals; replaces any existing set.
+      type: object
+      required:
+      - conditions
+      title: PostProjectConditionsRequest
+    ProjectConditionsResponse:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+        meta:
+          $ref: '#/components/schemas/ProjectConditionsMeta'
+      type: object
+      required:
+      - conditions
+      title: ProjectConditionsResponse
+    ConditionalModel:
+      properties:
+        source:
+          type: string
+          title: Source
+        source_index:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Source Index
+        variable_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Variable Name
+        variable_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Variable Path
+        condition:
+          type: string
+          title: Condition
+        val:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Val
+        test_result_on_true:
+          title: Test Result On True
+        test_result_on_false:
+          title: Test Result On False
+      type: object
+      required:
+      - source
+      - condition
+      title: ConditionalModel
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

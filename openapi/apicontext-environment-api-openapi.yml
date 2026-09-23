@@ -1,0 +1,731 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Environment API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Environment
+  description: Manage per-project environment workspaces and variables.
+paths:
+  /api/2/environment/:
+    get:
+      tags:
+      - Environment
+      summary: List-Environment-Workspaces
+      description: List environment workspaces for the authenticated project.
+      operationId: list-environment-workspaces
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Environment
+      summary: Create-Environment-Workspace
+      description: Create an environment workspace (idempotent-by-name).
+      operationId: create-environment-workspace
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspaceBody'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/environment/{workspace_name}:
+    get:
+      tags:
+      - Environment
+      summary: List-Environment-Variables
+      description: List variables in an environment workspace.
+      operationId: list-environment-variables
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workspace_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Workspace Name
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariableListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Environment
+      summary: Create-Environment-Variable
+      description: 'Create (or overwrite by name) a variable in a workspace.
+
+
+        Auto-creates the workspace if it does not already exist.'
+      operationId: create-environment-variable
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workspace_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Workspace Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVariableBody'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariableResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Environment
+      summary: Update-Environment-Workspace-Title
+      description: Update an environment workspace's title.
+      operationId: update-environment-workspace-title
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workspace_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Workspace Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspaceBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Environment
+      summary: Delete-Environment-Workspace
+      description: Delete an empty, unreferenced environment workspace.
+      operationId: delete-environment-workspace
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workspace_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Workspace Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+                title: Response Delete-Environment-Workspace
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/environment/{workspace_name}/{variable_name}:
+    get:
+      tags:
+      - Environment
+      summary: Get-Environment-Variable
+      description: Get a single variable by name.
+      operationId: get-environment-variable
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workspace_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Workspace Name
+      - name: variable_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Variable Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/VariableResponse'
+                - type: object
+                  additionalProperties: true
+                title: Response Get-Environment-Variable
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Environment
+      summary: Update-Environment-Variable
+      description: Update a variable's value.
+      operationId: update-environment-variable
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workspace_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Workspace Name
+      - name: variable_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Variable Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVariableBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariableResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Environment
+      summary: Delete-Environment-Variable
+      description: Delete a variable (idempotent).
+      operationId: delete-environment-variable
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: workspace_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Workspace Name
+      - name: variable_name
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z_][a-zA-Z_0-9]*$
+          title: Variable Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+                title: Response Delete-Environment-Variable
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    WorkspaceListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/WorkspaceListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/WorkspaceResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: WorkspaceListResponse
+    WorkspaceListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - more
+      title: WorkspaceListMeta
+    CreateWorkspaceBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+      type: object
+      title: CreateWorkspaceBody
+      examples:
+      - name: staging
+    VariableMeta:
+      properties:
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        user:
+          type: string
+          title: User
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+      type: object
+      required:
+      - user
+      title: VariableMeta
+    WorkspaceFields:
+      properties:
+        name:
+          type: string
+          title: Name
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+      type: object
+      required:
+      - name
+      title: WorkspaceFields
+    CreateVariableBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        value:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Value
+      type: object
+      title: CreateVariableBody
+      examples:
+      - name: API_KEY
+        value: secret-value
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    VariableListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/VariableListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/VariableResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: VariableListResponse
+    WorkspaceResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/WorkspaceMeta'
+        workspace:
+          $ref: '#/components/schemas/WorkspaceFields'
+      type: object
+      required:
+      - id
+      - meta
+      - workspace
+      title: WorkspaceResponse
+      examples:
+      - id: ahFkZXZ-YXBpbWV0cmljcy1xY3IqCxIEVXNlchieQgwLEhZVc2VyRW52aXJvbm1lbnRXb3Jrc3BhY2Ui...
+        meta:
+          created: '2026-06-19T09:06:47.046143Z'
+          last_update: '2026-06-19T09:06:47.046170Z'
+          user: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        workspace:
+          name: staging
+          title: Staging
+    VariableListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - more
+      title: VariableListMeta
+    WorkspaceMeta:
+      properties:
+        user:
+          type: string
+          title: User
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+      type: object
+      required:
+      - user
+      title: WorkspaceMeta
+    VariableFields:
+      properties:
+        name:
+          type: string
+          title: Name
+        value:
+          type: string
+          title: Value
+      type: object
+      required:
+      - name
+      - value
+      title: VariableFields
+    VariableResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/VariableMeta'
+        workspace_variable:
+          $ref: '#/components/schemas/VariableFields'
+      type: object
+      required:
+      - id
+      - meta
+      - workspace_variable
+      title: VariableResponse
+      examples:
+      - id: ahFkZXZ-YXBpbWV0cmljcy1xY3IqCxIEVXNlchieQgwLEhZVc2VyRW52aXJvbm1lbnRXb3Jrc3BhY2Ui...
+        meta:
+          created: '2026-06-19T09:06:47.046143Z'
+          last_update: '2026-06-19T09:06:47.046170Z'
+          user: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+          workspace: staging
+        workspace_variable:
+          name: API_KEY
+          value: secret-value
+    UpdateVariableBody:
+      properties:
+        value:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Value
+      type: object
+      title: UpdateVariableBody
+      examples:
+      - value: new-secret-value
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UpdateWorkspaceBody:
+      properties:
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+      type: object
+      title: UpdateWorkspaceBody
+      examples:
+      - title: Staging Environment
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

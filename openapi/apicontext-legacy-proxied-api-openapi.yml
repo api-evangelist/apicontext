@@ -1,0 +1,215 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Legacy (proxied) API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Legacy (proxied)
+paths:
+  /api/2/agents/{agent_key}/:
+    get:
+      operationId: get-agent
+      summary: Get a remote agent
+      tags:
+      - Legacy (proxied)
+      parameters:
+      - $ref: '#/components/parameters/agentKey'
+      responses:
+        '200':
+          description: Agent object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentOutput'
+    post:
+      operationId: update-agent
+      summary: Update a remote agent
+      tags:
+      - Legacy (proxied)
+      parameters:
+      - $ref: '#/components/parameters/agentKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentOutput'
+      responses:
+        '200':
+          description: Updated agent
+    delete:
+      operationId: delete-agent
+      summary: Delete a remote agent
+      tags:
+      - Legacy (proxied)
+      parameters:
+      - $ref: '#/components/parameters/agentKey'
+      responses:
+        '204':
+          description: Deleted
+  /api/2/account/subscription/proj/{sub_id}:
+    get:
+      operationId: get-project-subscription
+      summary: Get subscription for a project
+      tags:
+      - Legacy (proxied)
+      security:
+      - OAuth2: []
+      parameters:
+      - $ref: '#/components/parameters/subId'
+      responses:
+        '200':
+          description: Subscription details
+    post:
+      operationId: update-project-subscription
+      summary: Update subscription for a project
+      tags:
+      - Legacy (proxied)
+      security:
+      - OAuth2: []
+      parameters:
+      - $ref: '#/components/parameters/subId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Updated subscription
+  /api/2/account/subscription/proj/{sub_id}/usage:
+    get:
+      operationId: get-project-usage
+      summary: Get usage statistics for a project subscription
+      tags:
+      - Legacy (proxied)
+      security:
+      - OAuth2: []
+      parameters:
+      - $ref: '#/components/parameters/subId'
+      responses:
+        '200':
+          description: Usage statistics
+  /api/2/account/subscription/org/{sub_id}:
+    get:
+      operationId: get-org-subscription
+      summary: Get subscription for an organisation
+      tags:
+      - Legacy (proxied)
+      security:
+      - OAuth2: []
+      parameters:
+      - $ref: '#/components/parameters/subId'
+      responses:
+        '200':
+          description: Subscription details
+    post:
+      operationId: update-org-subscription
+      summary: Update subscription for an organisation
+      tags:
+      - Legacy (proxied)
+      security:
+      - OAuth2: []
+      parameters:
+      - $ref: '#/components/parameters/subId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Updated subscription
+  /api/2/account/subscription/org/{sub_id}/usage:
+    get:
+      operationId: get-org-usage
+      summary: Get usage statistics for an organisation subscription
+      tags:
+      - Legacy (proxied)
+      security:
+      - OAuth2: []
+      parameters:
+      - $ref: '#/components/parameters/subId'
+      responses:
+        '200':
+          description: Usage statistics
+components:
+  parameters:
+    subId:
+      name: sub_id
+      in: path
+      required: true
+      description: Project or organisation subscription ID
+      schema:
+        $ref: '#/components/schemas/KeyStr'
+    agentKey:
+      name: agent_key
+      in: path
+      required: true
+      description: URL-safe Datastore key for a remote agent
+      schema:
+        $ref: '#/components/schemas/KeyStr'
+  schemas:
+    KeyStr:
+      type: string
+      description: URL-safe base64 Datastore key
+      minLength: 3
+      maxLength: 400
+      pattern: ^[-A-Za-z0-9_]*={0,3}$
+    AgentOutput:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/KeyStr'
+        meta:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+              nullable: true
+            project_id:
+              $ref: '#/components/schemas/KeyStr'
+            created:
+              type: string
+              format: date-time
+            last_update:
+              type: string
+              format: date-time
+        agent:
+          type: object
+          properties:
+            location_id:
+              type: string
+            enabled:
+              type: boolean
+            last_seen:
+              type: string
+              format: date-time
+              nullable: true
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

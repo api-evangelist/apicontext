@@ -1,0 +1,304 @@
+openapi: 3.2.0
+info:
+  title: APImetrics API Keys API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: API Keys
+  description: Create, list and delete the API keys bound to a project.
+paths:
+  /api/2/api_keys/:
+    get:
+      tags:
+      - API Keys
+      summary: List-Api-Keys
+      description: 'List every API key bound to the caller''s project (including the caller''s
+
+        own key).'
+      operationId: list-api-keys
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - API Keys
+      summary: Create-Api-Key
+      description: 'Mint a new API key for the caller''s project. The freshly generated secret
+
+        is returned in ``api_key`` on this response only.'
+      operationId: create-api-key
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/schemas/CreateApiKeyBody'
+              - type: 'null'
+              title: Body
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/api_keys/{key_str}/:
+    delete:
+      tags:
+      - API Keys
+      summary: Delete-Api-Key
+      description: Delete an API key by its urlsafe id and echo the deleted key body.
+      operationId: delete-api-key
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ApiKeyListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - more
+      title: ApiKeyListMeta
+    CreateApiKeyBody:
+      properties:
+        access_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Level
+          description: Access level for the new key; one of ['INGRESS', 'VIEWER', 'ANALYST', 'MANAGER', 'EDITOR', 'OWNER']. Defaults to VIEWER when omitted.
+      additionalProperties: false
+      type: object
+      title: CreateApiKeyBody
+      description: 'Create payload. ``access_level`` is the only accepted field (there is no
+
+        key ``name``); an unknown field is rejected. Omitting ``access_level``
+
+        defaults the key to VIEWER (but see ``create_api_key`` for the owner guard).'
+      examples:
+      - access_level: EDITOR
+    ApiKeyResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        api_key:
+          type: string
+          title: Api Key
+        account_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Id
+        account_email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Email
+        project_id:
+          type: string
+          title: Project Id
+        access_level:
+          type: string
+          title: Access Level
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+      type: object
+      required:
+      - id
+      - api_key
+      - project_id
+      - access_level
+      title: ApiKeyResponse
+      description: 'A single API key. ``api_key`` is the raw secret and is only meaningfully
+
+        populated on create (and echoed on delete); ``id`` is the urlsafe key.'
+      examples:
+      - access_level: EDITOR
+        account_email: user@example.com
+        account_id: auth0|0123456789abcdef
+        api_key: aB3dE6gH9jK2mN5pQ8sT1vW4xY7zC0eF
+        id: ahFkZXZ-YXBpbWV0cmljcy1xY3IZCxIHQXBpQXV0aBI...
+        project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3IUCxIEVXNlchiAgIC...
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ApiKeyListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ApiKeyListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/ApiKeyResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ApiKeyListResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

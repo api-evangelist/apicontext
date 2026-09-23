@@ -1,0 +1,392 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Billing API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Billing
+paths:
+  /api/3/organizations/{org_id}/billing/usage-counts:
+    get:
+      tags:
+      - Billing
+      summary: Org-Billing-Usage-Counts
+      operationId: org-billing-usage-counts
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      - name: months
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 24
+          minimum: 1
+          default: 6
+          title: Months
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageCountsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/organizations/{org_id}/billing/quota:
+    get:
+      tags:
+      - Billing
+      summary: Org-Billing-Quota
+      operationId: org-billing-quota
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api3__billing__models__QuotaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/projects/billing/usage-counts:
+    get:
+      tags:
+      - Billing
+      summary: Project-Billing-Usage-Counts
+      operationId: project-billing-usage-counts
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: months
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 24
+          minimum: 1
+          default: 6
+          title: Months
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageCountsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/projects/billing/quota:
+    get:
+      tags:
+      - Billing
+      summary: Project-Billing-Quota
+      operationId: project-billing-quota
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api3__billing__models__QuotaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    UsageCountsResponse:
+      properties:
+        org_id:
+          type: string
+          title: Org Id
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        months:
+          items:
+            $ref: '#/components/schemas/MonthlyResultCounts'
+          type: array
+          title: Months
+      type: object
+      required:
+      - org_id
+      - project_id
+      - months
+      title: UsageCountsResponse
+    MonthlyResultCounts:
+      properties:
+        month:
+          type: string
+          title: Month
+        api_count:
+          type: integer
+          title: Api Count
+        browser_count:
+          type: integer
+          title: Browser Count
+        mcp_count:
+          type: integer
+          title: Mcp Count
+        total_count:
+          type: integer
+          title: Total Count
+      type: object
+      required:
+      - month
+      - api_count
+      - browser_count
+      - mcp_count
+      - total_count
+      title: MonthlyResultCounts
+    Usage:
+      properties:
+        project_test_run_usage:
+          type: integer
+          title: Project Test Run Usage
+        org_test_run_usage:
+          type: integer
+          title: Org Test Run Usage
+        test_setup_count:
+          type: integer
+          title: Test Setup Count
+        public_report_count:
+          type: integer
+          title: Public Report Count
+        scheduled_test_count:
+          type: integer
+          title: Scheduled Test Count
+      type: object
+      required:
+      - project_test_run_usage
+      - org_test_run_usage
+      - test_setup_count
+      - public_report_count
+      - scheduled_test_count
+      title: Usage
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Quotas:
+      properties:
+        test_run_quota:
+          type: integer
+          title: Test Run Quota
+        test_setup_quota:
+          type: integer
+          title: Test Setup Quota
+        public_report_quota:
+          type: integer
+          title: Public Report Quota
+      type: object
+      required:
+      - test_run_quota
+      - test_setup_quota
+      - public_report_quota
+      title: Quotas
+    api3__billing__models__SubInfo:
+      properties:
+        level:
+          type: string
+          title: Level
+        name:
+          type: string
+          title: Name
+        plan:
+          type: string
+          title: Plan
+        start:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start
+        end:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: End
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        org_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Id
+        backend:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Backend
+      type: object
+      required:
+      - level
+      - name
+      - plan
+      - start
+      - end
+      - state
+      - org_id
+      - backend
+      title: SubInfo
+    UsageWeights:
+      properties:
+        api:
+          type: integer
+          title: Api
+          default: 1
+        browser:
+          type: integer
+          title: Browser
+          default: 50
+        mcp:
+          type: integer
+          title: Mcp
+          default: 1
+      type: object
+      title: UsageWeights
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    api3__billing__models__QuotaResponse:
+      properties:
+        sub:
+          $ref: '#/components/schemas/api3__billing__models__SubInfo'
+        quotas:
+          $ref: '#/components/schemas/Quotas'
+        usage:
+          $ref: '#/components/schemas/Usage'
+        weights:
+          $ref: '#/components/schemas/UsageWeights'
+        has_trial_expired:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Has Trial Expired
+        trial_expiry_date:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Trial Expiry Date
+        month_progress:
+          type: number
+          title: Month Progress
+      type: object
+      required:
+      - sub
+      - quotas
+      - usage
+      - weights
+      - has_trial_expired
+      - trial_expiry_date
+      - month_progress
+      title: QuotaResponse
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

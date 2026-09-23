@@ -1,9 +1,8 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: APIContext Stats API
-  description: API for the APImetrics platform This document is the 'Stats' slice of the APIContext (APImetrics)
-    platform OpenAPI published at https://client.apimetrics.io/openapi.json.
-  version: v2026-09-02
+  title: APImetrics Stats API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
   contact:
     name: APIContext Support
     url: https://apicontext.io/
@@ -11,10 +10,7 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://apimetrics.io/tos/
-servers:
-- url: https://client.apimetrics.io
-  description: APIContext (APImetrics) platform API
+  version: v2026-09-02
 tags:
 - name: Stats
   description: Per-call performance and pass/fail statistics
@@ -80,13 +76,11 @@ paths:
           - type: string
             format: date-time
           - type: 'null'
-          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-            Defaults to now.
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
           examples:
           - '2024-01-01T12:00:00Z'
           title: Time
-        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-          Defaults to now.
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
       - name: apimetrics-project-id
         in: header
         required: false
@@ -182,13 +176,11 @@ paths:
           - type: string
             format: date-time
           - type: 'null'
-          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-            Defaults to now.
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
           examples:
           - '2024-01-01T12:00:00Z'
           title: Time
-        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-          Defaults to now.
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
       - name: start
         in: query
         required: false
@@ -310,13 +302,11 @@ paths:
           - type: string
             format: date-time
           - type: 'null'
-          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-            Defaults to now.
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
           examples:
           - '2024-01-01T12:00:00Z'
           title: Time
-        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-          Defaults to now.
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
       - name: start
         in: query
         required: false
@@ -409,13 +399,11 @@ paths:
           - type: string
             format: date-time
           - type: 'null'
-          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-            Defaults to now.
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
           examples:
           - '2024-01-01T12:00:00Z'
           title: Time
-        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-          Defaults to now.
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
       - name: apimetrics-project-id
         in: header
         required: false
@@ -520,13 +508,11 @@ paths:
           - type: string
             format: date-time
           - type: 'null'
-          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-            Defaults to now.
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
           examples:
           - '2024-01-01T12:00:00Z'
           title: Time
-        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-          Defaults to now.
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
       - name: format
         in: query
         required: false
@@ -534,11 +520,9 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
-          description: Any non-empty value returns the raw combined stats map instead of the reshaped
-            pass/warning/failure counts.
+          description: Any non-empty value returns the raw combined stats map instead of the reshaped pass/warning/failure counts.
           title: Format
-        description: Any non-empty value returns the raw combined stats map instead of the reshaped pass/warning/failure
-          counts.
+        description: Any non-empty value returns the raw combined stats map instead of the reshaped pass/warning/failure counts.
       - name: apimetrics-project-id
         in: header
         required: false
@@ -757,13 +741,11 @@ paths:
           - type: string
             format: date-time
           - type: 'null'
-          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-            Defaults to now.
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
           examples:
           - '2024-01-01T12:00:00Z'
           title: Time
-        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-          Defaults to now.
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
       - name: apimetrics-project-id
         in: header
         required: false
@@ -963,13 +945,11 @@ paths:
           - type: string
             format: date-time
           - type: 'null'
-          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-            Defaults to now.
+          description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
           examples:
           - '2024-01-01T12:00:00Z'
           title: Time
-        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset).
-          Defaults to now.
+        description: Point in time selecting the period to report (ISO 8601, UTC assumed if no offset). Defaults to now.
       - name: start
         in: query
         required: false
@@ -1018,31 +998,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
-  securitySchemes:
-    OAuth2:
-      type: oauth2
-      flows:
-        authorizationCode:
-          scopes:
-            openid: OpenID Connect identity
-            profile: User profile
-            email: User email address
-          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
-          tokenUrl: https://auth.apimetrics.io/oauth/token
-    ApiKey:
-      type: apiKey
-      in: header
-      name: X-Api-Key
   schemas:
-    BreakdownKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      title: BreakdownKind
-      description: '``http_codes`` / ``legacy/passfail*`` — no YEAR.'
     HTTPValidationError:
       properties:
         detail:
@@ -1052,244 +1008,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    HttpBreakdownResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_HttpBreakdownMeta'
-        stat:
-          $ref: '#/components/schemas/_HttpBreakdownStat'
-      type: object
-      required:
-      - meta
-      - stat
-      title: HttpBreakdownResponse
-    LegacyPassFailRangeResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_LegacyPassFailMeta'
-        results:
-          additionalProperties:
-            $ref: '#/components/schemas/_PassFailCounts'
-          type: object
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: LegacyPassFailRangeResponse
-    LegacyPassFailResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_LegacyPassFailMeta'
-        stat:
-          $ref: '#/components/schemas/_PassFailCounts'
-      type: object
-      required:
-      - meta
-      - stat
-      title: LegacyPassFailResponse
-    ListStatsKind:
-      type: string
-      enum:
-      - RAW
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      - YEAR
-      title: ListStatsKind
-      description: As ``StatsKind`` plus ``RAW`` (per-result rows) for ``since``/``before``.
-    PassFailKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - MONTH
-      - YEAR
-      title: PassFailKind
-      description: '``passfail`` / ``passfail_range`` (KIND_CLASS_MAP) — no WEEK.'
-    PassFailRangeResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_PassFailRangeMeta'
-        results:
-          additionalProperties:
-            $ref: '#/components/schemas/_PassFailCounts'
-          type: object
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: PassFailRangeResponse
-    PassFailResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_PassFailMeta'
-        stat:
-          $ref: '#/components/schemas/_PassFailCounts'
-      type: object
-      required:
-      - meta
-      - stat
-      title: PassFailResponse
-    PassFailTotalResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_PassFailTotalMeta'
-        stat:
-          additionalProperties: true
-          type: object
-          title: Stat
-      type: object
-      required:
-      - meta
-      - stat
-      title: PassFailTotalResponse
-    QuantileResponse:
-      properties:
-        columns:
-          items:
-            type: string
-          type: array
-          title: Columns
-        index:
-          items:
-            items: {}
-            type: array
-          type: array
-          title: Index
-        data:
-          items:
-            items:
-              type: number
-            type: array
-          type: array
-          title: Data
-      type: object
-      required:
-      - columns
-      - index
-      - data
-      title: QuantileResponse
-      description: pandas-``to_dict('split')``-style payload (columns / index / data).
-    StatListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_StatListMeta'
-        stats:
-          items:
-            $ref: '#/components/schemas/_StatItem'
-          type: array
-          title: Stats
-      type: object
-      required:
-      - meta
-      - stats
-      title: StatListResponse
-    StatResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_StatMeta'
-        stat:
-          anyOf:
-          - $ref: '#/components/schemas/_StatValues'
-          - type: 'null'
-        adv_stat:
-          anyOf:
-          - $ref: '#/components/schemas/_StatValues'
-          - type: 'null'
-      type: object
-      required:
-      - meta
-      title: StatResponse
-    StatsCategory:
-      type: string
-      enum:
-      - PASS
-      - SLOW
-      - WARNING
-      - FAIL
-      title: StatsCategory
-      description: Result category filter for the quantile ``metrics/`` endpoint.
-    StatsKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      - YEAR
-      title: StatsKind
-      description: Aggregation period for ``stats/`` and ``metrics/`` (StatsApiHandler.VALID_KINDS).
-    StatsMetric:
-      type: string
-      enum:
-      - namelookup_time
-      - time_to_connect
-      - time_to_handshake
-      - time_to_tx_request
-      - time_to_first_byte
-      - time_to_response
-      - total_time
-      - total_time_no_dns
-      - server_time
-      - starttransfer_time
-      - starttransfer_time_no_dns
-      - network_time
-      - network_time_no_dns
-      - time_to_last_byte
-      title: StatsMetric
-    StatsType:
-      type: string
-      enum:
-      - ALL
-      - UNABLE_TO_RUN
-      - STARTED
-      - ENDED
-      - QUEUED
-      - PROCESSING
-      - SKIPPED
-      - AGENT_ERROR
-      - CONNECTION_WARNING
-      - HTTP_REDIRECT_ERROR
-      - HTTP_CLIENT_ERROR
-      - CONTENT_WARNING
-      - SLA_WARNING
-      - HTTP_SERVER_ERROR
-      - CONNECTION_ERROR
-      - HEADER_ERROR
-      - CONTENT_ERROR
-      - SLA_ERROR
-      - COMPLETE
-      - SLOW_COMPLETE
-      title: StatsType
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     _CategoryBreakdown:
       properties:
         totals:
@@ -1304,70 +1022,6 @@ components:
           title: Totals Grouped
       type: object
       title: _CategoryBreakdown
-    _HttpBreakdownMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        kind:
-          type: string
-          title: Kind
-        location_id:
-          type: string
-          title: Location Id
-        min_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-      type: object
-      required:
-      - call_id
-      - kind
-      - location_id
-      title: _HttpBreakdownMeta
-    _HttpBreakdownOverall:
-      properties:
-        pass:
-          type: integer
-          title: Pass
-          default: 0
-        warning:
-          type: integer
-          title: Warning
-          default: 0
-        failure:
-          type: integer
-          title: Failure
-          default: 0
-      type: object
-      title: _HttpBreakdownOverall
-    _HttpBreakdownStat:
-      properties:
-        overall:
-          $ref: '#/components/schemas/_HttpBreakdownOverall'
-        pass:
-          $ref: '#/components/schemas/_CategoryBreakdown'
-        warning:
-          $ref: '#/components/schemas/_CategoryBreakdown'
-        failure:
-          $ref: '#/components/schemas/_CategoryBreakdown'
-      type: object
-      required:
-      - overall
-      title: _HttpBreakdownStat
     _LegacyPassFailMeta:
       properties:
         call_id:
@@ -1402,6 +1056,19 @@ components:
       - kind
       - location_id
       title: _LegacyPassFailMeta
+    PassFailTotalResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailTotalMeta'
+        stat:
+          additionalProperties: true
+          type: object
+          title: Stat
+      type: object
+      required:
+      - meta
+      - stat
+      title: PassFailTotalResponse
     _PassFailCounts:
       properties:
         pass:
@@ -1418,40 +1085,30 @@ components:
           default: 0
       type: object
       title: _PassFailCounts
-    _PassFailMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        location_id:
-          type: string
-          title: Location Id
-        min_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-        kind:
-          type: string
-          title: Kind
-      type: object
-      required:
-      - call_id
-      - location_id
-      - kind
-      title: _PassFailMeta
+    StatsType:
+      type: string
+      enum:
+      - ALL
+      - UNABLE_TO_RUN
+      - STARTED
+      - ENDED
+      - QUEUED
+      - PROCESSING
+      - SKIPPED
+      - AGENT_ERROR
+      - CONNECTION_WARNING
+      - HTTP_REDIRECT_ERROR
+      - HTTP_CLIENT_ERROR
+      - CONTENT_WARNING
+      - SLA_WARNING
+      - HTTP_SERVER_ERROR
+      - CONNECTION_ERROR
+      - HEADER_ERROR
+      - CONTENT_ERROR
+      - SLA_ERROR
+      - COMPLETE
+      - SLOW_COMPLETE
+      title: StatsType
     _PassFailRangeMeta:
       properties:
         call_id:
@@ -1486,6 +1143,324 @@ components:
       - kind
       - location_id
       title: _PassFailRangeMeta
+    _StatValues:
+      properties:
+        min_latency:
+          type: number
+          title: Min Latency
+        max_latency:
+          type: number
+          title: Max Latency
+        avg_latency:
+          type: number
+          title: Avg Latency
+        standard_deviation:
+          type: number
+          title: Standard Deviation
+        count:
+          type: integer
+          title: Count
+        time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Time
+      type: object
+      required:
+      - min_latency
+      - max_latency
+      - avg_latency
+      - standard_deviation
+      - count
+      title: _StatValues
+    HttpBreakdownResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_HttpBreakdownMeta'
+        stat:
+          $ref: '#/components/schemas/_HttpBreakdownStat'
+      type: object
+      required:
+      - meta
+      - stat
+      title: HttpBreakdownResponse
+    _StatMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        type:
+          type: string
+          title: Type
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Time
+      type: object
+      required:
+      - call_id
+      - type
+      - kind
+      - location_id
+      title: _StatMeta
+    ListStatsKind:
+      type: string
+      enum:
+      - RAW
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      - YEAR
+      title: ListStatsKind
+      description: As ``StatsKind`` plus ``RAW`` (per-result rows) for ``since``/``before``.
+    _HttpBreakdownStat:
+      properties:
+        overall:
+          $ref: '#/components/schemas/_HttpBreakdownOverall'
+        pass:
+          $ref: '#/components/schemas/_CategoryBreakdown'
+        warning:
+          $ref: '#/components/schemas/_CategoryBreakdown'
+        failure:
+          $ref: '#/components/schemas/_CategoryBreakdown'
+      type: object
+      required:
+      - overall
+      title: _HttpBreakdownStat
+    LegacyPassFailResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_LegacyPassFailMeta'
+        stat:
+          $ref: '#/components/schemas/_PassFailCounts'
+      type: object
+      required:
+      - meta
+      - stat
+      title: LegacyPassFailResponse
+    StatsCategory:
+      type: string
+      enum:
+      - PASS
+      - SLOW
+      - WARNING
+      - FAIL
+      title: StatsCategory
+      description: Result category filter for the quantile ``metrics/`` endpoint.
+    StatsMetric:
+      type: string
+      enum:
+      - namelookup_time
+      - time_to_connect
+      - time_to_handshake
+      - time_to_tx_request
+      - time_to_first_byte
+      - time_to_response
+      - total_time
+      - total_time_no_dns
+      - server_time
+      - starttransfer_time
+      - starttransfer_time_no_dns
+      - network_time
+      - network_time_no_dns
+      - time_to_last_byte
+      title: StatsMetric
+    _HttpBreakdownOverall:
+      properties:
+        pass:
+          type: integer
+          title: Pass
+          default: 0
+        warning:
+          type: integer
+          title: Warning
+          default: 0
+        failure:
+          type: integer
+          title: Failure
+          default: 0
+      type: object
+      title: _HttpBreakdownOverall
+    StatListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_StatListMeta'
+        stats:
+          items:
+            $ref: '#/components/schemas/_StatItem'
+          type: array
+          title: Stats
+      type: object
+      required:
+      - meta
+      - stats
+      title: StatListResponse
+    _PassFailMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+        kind:
+          type: string
+          title: Kind
+      type: object
+      required:
+      - call_id
+      - location_id
+      - kind
+      title: _PassFailMeta
+    QuantileResponse:
+      properties:
+        columns:
+          items:
+            type: string
+          type: array
+          title: Columns
+        index:
+          items:
+            items: {}
+            type: array
+          type: array
+          title: Index
+        data:
+          items:
+            items:
+              type: number
+            type: array
+          type: array
+          title: Data
+      type: object
+      required:
+      - columns
+      - index
+      - data
+      title: QuantileResponse
+      description: pandas-``to_dict('split')``-style payload (columns / index / data).
+    PassFailRangeResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailRangeMeta'
+        results:
+          additionalProperties:
+            $ref: '#/components/schemas/_PassFailCounts'
+          type: object
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: PassFailRangeResponse
+    StatsKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      - YEAR
+      title: StatsKind
+      description: Aggregation period for ``stats/`` and ``metrics/`` (StatsApiHandler.VALID_KINDS).
+    LegacyPassFailRangeResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_LegacyPassFailMeta'
+        results:
+          additionalProperties:
+            $ref: '#/components/schemas/_PassFailCounts'
+          type: object
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: LegacyPassFailRangeResponse
+    _HttpBreakdownMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+      type: object
+      required:
+      - call_id
+      - kind
+      - location_id
+      title: _HttpBreakdownMeta
+    BreakdownKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      title: BreakdownKind
+      description: '``http_codes`` / ``legacy/passfail*`` — no YEAR.'
+    PassFailKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - MONTH
+      - YEAR
+      title: PassFailKind
+      description: '``passfail`` / ``passfail_range`` (KIND_CLASS_MAP) — no WEEK.'
     _PassFailTotalMeta:
       properties:
         call_id:
@@ -1512,6 +1487,64 @@ components:
       required:
       - call_id
       title: _PassFailTotalMeta
+    _StatListMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        type:
+          type: string
+          title: Type
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+      type: object
+      required:
+      - call_id
+      - type
+      - kind
+      - location_id
+      title: _StatListMeta
+    PassFailResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailMeta'
+        stat:
+          $ref: '#/components/schemas/_PassFailCounts'
+      type: object
+      required:
+      - meta
+      - stat
+      title: PassFailResponse
     _StatItem:
       properties:
         time:
@@ -1567,113 +1600,60 @@ components:
       - count
       title: _StatItem
       description: One bucket (aggregated) or one result (RAW).
-    _StatListMeta:
+    StatResponse:
       properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
+        meta:
+          $ref: '#/components/schemas/_StatMeta'
+        stat:
           anyOf:
-          - type: string
+          - $ref: '#/components/schemas/_StatValues'
           - type: 'null'
-          title: Name
+        adv_stat:
+          anyOf:
+          - $ref: '#/components/schemas/_StatValues'
+          - type: 'null'
+      type: object
+      required:
+      - meta
+      title: StatResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
         type:
           type: string
-          title: Type
-        kind:
-          type: string
-          title: Kind
-        location_id:
-          type: string
-          title: Location Id
-        min_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - call_id
+      - loc
+      - msg
       - type
-      - kind
-      - location_id
-      title: _StatListMeta
-    _StatMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        type:
-          type: string
-          title: Type
-        kind:
-          type: string
-          title: Kind
-        location_id:
-          type: string
-          title: Location Id
-        time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Time
-      type: object
-      required:
-      - call_id
-      - type
-      - kind
-      - location_id
-      title: _StatMeta
-    _StatValues:
-      properties:
-        min_latency:
-          type: number
-          title: Min Latency
-        max_latency:
-          type: number
-          title: Max Latency
-        avg_latency:
-          type: number
-          title: Avg Latency
-        standard_deviation:
-          type: number
-          title: Standard Deviation
-        count:
-          type: integer
-          title: Count
-        time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Time
-      type: object
-      required:
-      - min_latency
-      - max_latency
-      - avg_latency
-      - standard_deviation
-      - count
-      title: _StatValues
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

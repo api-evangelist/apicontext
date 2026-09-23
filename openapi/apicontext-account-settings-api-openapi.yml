@@ -1,0 +1,541 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Account Settings API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Account Settings
+  description: Per-project configurable settings catalogs (e.g. latency SLA thresholds).
+paths:
+  /api/2/account-settings/:
+    get:
+      tags:
+      - Account Settings
+      summary: List-Account-Setting-Catalogs
+      description: 'List every enabled settings catalog available on the platform.
+
+
+        Returns each catalog''s public metadata (``id``, ``title``,
+
+        ``description``, ``enabled``). The set of catalogs is defined by
+
+        the server and is the same for every caller.'
+      operationId: list-account-setting-catalogs
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/account-settings/{catalog_name}:
+    get:
+      tags:
+      - Account Settings
+      summary: Get-Account-Setting-Catalog
+      description: 'List every variable in the named catalog for the active project.
+
+
+        Each variable carries a ``value`` field showing either the project''s
+
+        override or the platform default. An unknown catalog name yields an
+
+        empty ``results`` list rather than 404 (matches the legacy contract).'
+      operationId: get-account-setting-catalog
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: catalog_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Catalog Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogVariablesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Account Settings
+      summary: Reset-Account-Setting-Catalog
+      description: 'Reset every variable in the catalog back to the platform default.
+
+
+        Deletes the catalog entity and every persisted override underneath
+
+        it. Idempotent: returns ``{"status": "OK"}`` whether or not
+
+        anything was stored.'
+      operationId: reset-account-setting-catalog
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: catalog_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Catalog Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/account-settings/{catalog_name}/{variable_name}:
+    get:
+      tags:
+      - Account Settings
+      summary: Get-Account-Setting-Variable
+      description: 'Read a single variable''s static config plus its current value.
+
+
+        Returns 404 if the variable name isn''t defined in the catalog''s
+
+        configuration.'
+      operationId: get-account-setting-variable
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: catalog_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Catalog Name
+      - name: variable_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Variable Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariableEntry'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Account Settings
+      summary: Set-Account-Setting-Variable
+      description: 'Override the variable''s value for this project.
+
+
+        The submitted value is coerced to the variable''s declared type
+
+        (integer, string, or boolean) and validated against any configured
+
+        range / length / choice constraints. Invalid values or unknown
+
+        variable names return 400. Returns the persisted entity on success.'
+      operationId: set-account-setting-variable
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: catalog_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Catalog Name
+      - name: variable_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Variable Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetVariableRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoredVariableResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Account Settings
+      summary: Delete-Account-Setting-Variable
+      description: 'Remove the project''s override for this variable.
+
+
+        After deletion the variable reverts to the platform default value.
+
+        Idempotent: returns ``{"status": "OK"}`` whether or not an override
+
+        existed.'
+      operationId: delete-account-setting-variable
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: catalog_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Catalog Name
+      - name: variable_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Variable Name
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    _VariableMeta:
+      properties:
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        user:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        catalog:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Catalog
+      type: object
+      title: _VariableMeta
+    VariableEntry:
+      properties:
+        id:
+          type: string
+          title: Id
+        type:
+          type: string
+          title: Type
+        title:
+          type: string
+          title: Title
+        description:
+          type: string
+          title: Description
+        default_value:
+          title: Default Value
+        enabled:
+          type: boolean
+          title: Enabled
+        value:
+          title: Value
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - type
+      - title
+      - description
+      - default_value
+      - enabled
+      title: VariableEntry
+      description: 'A single variable''s static config plus its current value.
+
+
+        The current value is either the persisted override or the config''s
+
+        ``default_value``. Fields mirror ``_USER_SETTINGS_CONFIG`` variable
+
+        dicts exactly for byte-compat with existing consumers.'
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: StatusResponse
+    SetVariableRequest:
+      properties:
+        value:
+          title: Value
+          description: The new value for the variable. Coerced and validated against the catalog's configured type / range / choice.
+      additionalProperties: false
+      type: object
+      required:
+      - value
+      title: SetVariableRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    api2__account_settings__settings___ListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+      type: object
+      title: _ListMeta
+      description: 'The list-envelope meta used by both ``list`` and ``get`` catalog
+
+        responses. No ``project_id`` field here -- the Py2 handler builds
+
+        the envelope by hand rather than through ``render_query_results``.'
+    CatalogListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api2__account_settings__settings___ListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/CatalogSummary'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: CatalogListResponse
+    CatalogSummary:
+      properties:
+        id:
+          type: string
+          title: Id
+        title:
+          type: string
+          title: Title
+        description:
+          type: string
+          title: Description
+        enabled:
+          type: boolean
+          title: Enabled
+      type: object
+      required:
+      - id
+      - title
+      - description
+      - enabled
+      title: CatalogSummary
+      description: One entry in the top-level catalog list.
+    CatalogVariablesResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api2__account_settings__settings___ListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/VariableEntry'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: CatalogVariablesResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    StoredVariableResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/_VariableMeta'
+        setting_variable:
+          $ref: '#/components/schemas/_StoredVariablePayload'
+      type: object
+      required:
+      - id
+      - meta
+      - setting_variable
+      title: StoredVariableResponse
+      description: 'The response from ``POST /<catalog>/<variable>`` -- the persisted
+
+        entity in its ``convert_datastore_to_api`` form.'
+    _StoredVariablePayload:
+      properties:
+        name:
+          type: string
+          title: Name
+        value:
+          title: Value
+      type: object
+      required:
+      - name
+      - value
+      title: _StoredVariablePayload
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

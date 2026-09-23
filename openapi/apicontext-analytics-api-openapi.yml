@@ -1,0 +1,472 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Analytics API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Analytics
+paths:
+  /api/3/project/analytics/calls-monthly:
+    get:
+      tags:
+      - Analytics
+      summary: Project-Calls-Monthly
+      operationId: project-calls-monthly
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Start Date
+      - name: accept
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Accept
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCallsMonthly'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/organizations/{org_id}/analytics/slow-calls-daily:
+    get:
+      tags:
+      - Analytics
+      summary: Org-Slow-Calls-Daily-Csv
+      operationId: org-slow-calls-daily-csv
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Org Id
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Start Date
+      - name: end_date
+        in: query
+        required: true
+        schema:
+          type: string
+          title: End Date
+      - name: thresholds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+          minItems: 2
+          examples:
+          - - 700
+            - 800
+            - 900
+            - 1000
+            - 2000
+          title: Thresholds
+      - name: accept
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Accept
+      responses:
+        '200':
+          description: Download a CSV file with the slow calls data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgSlowCallsDaily'
+            text/csv:
+              example: 'day,project_id,pass_count,slow700_count,slow800_count,slow1000_count,slow2000_count,slow9000_count,warn_count,fail_count,total
+
+                2024-07-02,Test New,263,0,0,0,0,0,0,0,263
+
+                2024-07-02,API Drift White Paper II,186,0,8,63,1,0,0,0,258
+
+                2024-07-02,APImetrics APIs,708,1,0,0,0,0,0,0,709
+
+                '
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/organizations/{org_id}/analytics/slow-calls-monthly:
+    get:
+      tags:
+      - Analytics
+      summary: Org-Slow-Calls-Monthly
+      operationId: org-slow-calls-monthly
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Org Id
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Start Date
+      - name: thresholds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+          minItems: 2
+          examples:
+          - - 700
+            - 800
+            - 900
+            - 1000
+            - 2000
+          title: Thresholds
+      - name: accept
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Accept
+      responses:
+        '200':
+          description: Download a CSV file with the slow calls data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgSlowCallsMonthly'
+            text/csv:
+              example: 'month,project_id,pass_count,slow700_count,slow800_count,slow1000_count,slow2000_count,slow9000_count,warn_count,fail_count,total
+
+                2024-07-01,Test New,4955,0,0,0,0,0,0,0,4955
+
+                2024-07-01,API Drift White Paper II,3301,1,239,941,4,0,7,436,4929
+
+                2024-07-01,APImetrics APIs,4739,9,2,2,1,0,0,0,4753
+
+                '
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ProjectCallsMonthly:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectCallsMetadata'
+        data:
+          items:
+            $ref: '#/components/schemas/ProjectCall'
+          type: array
+          title: Data
+      type: object
+      required:
+      - meta
+      - data
+      title: ProjectCallsMonthly
+    OrgSlowCallsDaily:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgSlowCallsMetadata'
+        data:
+          items:
+            $ref: '#/components/schemas/OrgSlowCallDaily'
+          type: array
+          title: Data
+      type: object
+      required:
+      - meta
+      - data
+      title: OrgSlowCallsDaily
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    OrgSlowCallDaily:
+      properties:
+        day:
+          type: string
+          format: date
+          title: Day
+        project_id:
+          type: string
+          title: Project Id
+        pass_count:
+          type: integer
+          title: Pass Count
+        warn_count:
+          type: integer
+          title: Warn Count
+        fail_count:
+          type: integer
+          title: Fail Count
+        total:
+          type: integer
+          title: Total
+        slow_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Slow Counts
+      type: object
+      required:
+      - day
+      - project_id
+      - pass_count
+      - warn_count
+      - fail_count
+      - total
+      - slow_counts
+      title: OrgSlowCallDaily
+    ProjectCall:
+      properties:
+        day:
+          type: string
+          format: date
+          title: Day
+        test_id:
+          type: string
+          title: Test Id
+        pass_count:
+          type: integer
+          title: Pass Count
+        slow_count:
+          type: integer
+          title: Slow Count
+        warn_count:
+          type: integer
+          title: Warn Count
+        fail_count:
+          type: integer
+          title: Fail Count
+        total:
+          type: integer
+          title: Total
+        avg_server_time:
+          type: number
+          title: Avg Server Time
+        sum_server_time:
+          type: number
+          title: Sum Server Time
+        url:
+          type: string
+          title: Url
+      type: object
+      required:
+      - day
+      - test_id
+      - pass_count
+      - slow_count
+      - warn_count
+      - fail_count
+      - total
+      - avg_server_time
+      - sum_server_time
+      - url
+      title: ProjectCall
+    ProjectCallsMetadata:
+      properties:
+        report_type:
+          type: string
+          title: Report Type
+        version:
+          type: integer
+          title: Version
+        project_id:
+          type: string
+          title: Project Id
+        month:
+          type: string
+          format: date
+          title: Month
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - report_type
+      - version
+      - project_id
+      - month
+      - created_at
+      title: ProjectCallsMetadata
+    OrgSlowCallsMetadata:
+      properties:
+        report_type:
+          type: string
+          title: Report Type
+        version:
+          type: integer
+          title: Version
+        start_date:
+          type: string
+          format: date
+          title: Start Date
+        end_date:
+          type: string
+          format: date
+          title: End Date
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - report_type
+      - version
+      - start_date
+      - end_date
+      - created_at
+      title: OrgSlowCallsMetadata
+    OrgSlowCallsMonthly:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgSlowCallsMetadata'
+        data:
+          items:
+            $ref: '#/components/schemas/OrgSlowCallMonthly'
+          type: array
+          title: Data
+      type: object
+      required:
+      - meta
+      - data
+      title: OrgSlowCallsMonthly
+    OrgSlowCallMonthly:
+      properties:
+        month:
+          type: string
+          format: date
+          title: Month
+        project_id:
+          type: string
+          title: Project Id
+        test_id:
+          type: string
+          title: Test Id
+        pass_count:
+          type: integer
+          title: Pass Count
+        warn_count:
+          type: integer
+          title: Warn Count
+        fail_count:
+          type: integer
+          title: Fail Count
+        total:
+          type: integer
+          title: Total
+        url:
+          type: string
+          title: Url
+        slow_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Slow Counts
+      type: object
+      required:
+      - month
+      - project_id
+      - test_id
+      - pass_count
+      - warn_count
+      - fail_count
+      - total
+      - url
+      - slow_counts
+      title: OrgSlowCallMonthly
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

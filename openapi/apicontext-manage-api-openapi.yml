@@ -1,0 +1,271 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Manage API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Manage
+  description: Copy or move resources (calls, workflows, auths, reports) between projects.
+paths:
+  /api/2/manage/copy:
+    post:
+      tags:
+      - Manage
+      summary: Copy-Resources
+      description: 'Clone resources from the active project into another project.
+
+
+        Cascades behaviour (see ``manage.copy_call`` etc.):
+
+        * Calls: copies the underlying ServiceConfig + emits warnings that
+
+        tokens and files are NOT cloned. Copies PostTestConditions and
+
+        non-``apimetrics_*`` webhooks.
+
+        * Workflows: also clones every referenced Call.
+
+        * Auths / Reports: cloned in isolation.
+
+
+        Set ``dry_run=true`` to preview without writing.'
+      operationId: copy-resources
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopyMoveRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CopyMoveResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/manage/move:
+    post:
+      tags:
+      - Manage
+      summary: Move-Resources
+      description: 'Re-parent resources from the active project to another project.
+
+
+        Guards (return 400 outside of dry-run, accumulate into ``errors[]``
+
+        in dry-run):
+
+        * Calls / workflows referenced by a Schedule cannot be moved.
+
+        * Calls with a ``file_key`` cannot be moved.
+
+        * Moving an auth shared by a not-being-moved call is blocked.
+
+        * Moving where ``destination == source`` is rejected with 400.
+
+
+        Cross-org moves emit two Cloud Tasks to re-home ClickHouse + Insights
+
+        data for each call. See ``move_api_call`` and ``move_insights`` on
+
+        ``TasksClient``.'
+      operationId: move-resources
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopyMoveRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CopyMoveResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    CopyMoveResponse:
+      properties:
+        source:
+          type: string
+          title: Source
+        destination:
+          type: string
+          title: Destination
+        type:
+          type: string
+          enum:
+          - call
+          - workflow
+          - auth
+          - report
+          - browser
+          - mcp
+          title: Type
+        info:
+          items:
+            type: string
+          type: array
+          title: Info
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+      type: object
+      required:
+      - source
+      - destination
+      - type
+      title: CopyMoveResponse
+      description: "Response shape for both endpoints.\n\nField semantics match the Py2 handler:\n\n* ``info``    -- success messages, one per cloned/moved entity.\n* ``warnings`` -- non-blocking advisories (e.g. tokens not copied).\n* ``errors``  -- blocking failures collected in ``dry_run`` mode;\n                 non-dry-run runs raise 400 on the first one of these."
+      examples:
+      - destination: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchifQgw
+        errors: []
+        info:
+        - Will copy API Call "Login"
+        source: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        type: call
+        warnings: []
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CopyMoveRequest:
+      properties:
+        id:
+          items:
+            type: string
+          type: array
+          title: Id
+          description: One or more resource keys to copy or move. May be sent as a JSON array or a single string; a string is normalised to a list of one.
+        type:
+          type: string
+          enum:
+          - call
+          - workflow
+          - auth
+          - report
+          - browser
+          - mcp
+          title: Type
+          description: 'Kind of resource. One of: call, workflow, auth, report.'
+        destination:
+          type: string
+          title: Destination
+          description: Urlsafe key of the destination project.
+        dry_run:
+          type: boolean
+          title: Dry Run
+          description: If true, collect what *would* happen into errors/warnings/info without writing.
+          default: false
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - type
+      - destination
+      title: CopyMoveRequest
+      description: Body shape for both ``/api/2/manage/copy`` and ``/api/2/manage/move``.
+      examples:
+      - destination: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        dry_run: true
+        id:
+        - ahFkZXZ-YXBpbWV0cmljcy1xY3IOCxIHVGVzdFNldHVwGL9CDA
+        type: call
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

@@ -1,0 +1,373 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Crypto Utilities API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Crypto Utilities
+  description: Utility endpoints for decoding/signing JWTs, HMAC digests and RSA signatures.
+paths:
+  /api/2/jwt/decode:
+    post:
+      tags:
+      - Crypto Utilities
+      summary: Decode-Jwt
+      description: 'Decode a JWT (without verifying its signature).
+
+
+        The JWT is read from the raw request body. Returns its header, payload and
+
+        signature segment. If the payload cannot be decoded, ``error`` replaces
+
+        ``payload``.'
+      operationId: decode-jwt
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtDecodeResponse'
+  /api/2/jwt/encode:
+    post:
+      tags:
+      - Crypto Utilities
+      summary: Encode-Jwt
+      description: 'Sign a JWT from the supplied claims, headers and key.
+
+
+        By default the raw token is returned with ``Content-Type: application/jwt``.
+
+        Pass ``output: "json"`` to receive a structured breakdown of the token
+
+        instead. Authentication is optional and only used to resolve a KMS signing
+
+        certificate when the header carries a ``kid`` for a KMS-enabled org.'
+      operationId: encode-jwt
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JwtEncodeRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/hash/hmac:
+    post:
+      tags:
+      - Crypto Utilities
+      summary: Hmac-Hash
+      description: Compute an HMAC digest of a message under a key and hash algorithm.
+      operationId: hmac-hash
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HmacRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HmacResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/sign/rsa:
+    post:
+      tags:
+      - Crypto Utilities
+      summary: Rsa-Sign
+      description: Produce an RSA signature of a message using a PEM private key.
+      operationId: rsa-sign
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RsaSignRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RsaSignResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HmacResponse:
+      properties:
+        alg:
+          type: string
+          title: Alg
+        digest:
+          type: string
+          title: Digest
+          description: Standard base64 of the raw digest.
+        hex_digest:
+          type: string
+          title: Hex Digest
+          description: Hex digest.
+      type: object
+      required:
+      - alg
+      - digest
+      - hex_digest
+      title: HmacResponse
+    RsaSignResponse:
+      properties:
+        alg:
+          type: string
+          title: Alg
+        signed:
+          type: string
+          title: Signed
+          description: base64url-encoded signature.
+      type: object
+      required:
+      - alg
+      - signed
+      title: RsaSignResponse
+    JwtEncodeRequest:
+      properties:
+        claims:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Claims
+          description: The claim set to sign.
+        headers:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Headers
+          description: JOSE header. Must contain 'alg'.
+        key:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Key
+          description: 'Signing key: a shared secret / PEM string, or a JWK dict. Required unless a KMS certificate is resolved via the header ''kid''.'
+        override_alg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Override Alg
+          description: Sign with this algorithm instead of headers['alg'] (the header's declared alg is left unchanged).
+        output:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Output
+          description: Set to 'json' to receive a structured breakdown instead of the raw application/jwt token.
+        access_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Token
+          description: If present, an 'at_hash' claim is added.
+        minimize:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Minimize
+          description: 'KMS signing only: minimize the emitted claims.'
+      type: object
+      title: JwtEncodeRequest
+      description: 'Input for signing a JWT. Fields are all optional here so that the exact
+
+        legacy validation order and 400 messages are reproduced in code rather than
+
+        surfaced as 422s by the model.'
+      examples:
+      - claims:
+          exp: 60
+          name: Jane Doe
+          sub: '1234567890'
+        headers:
+          alg: HS256
+          typ: JWT
+        key: your-shared-secret
+    JwtDecodeResponse:
+      properties:
+        headers:
+          additionalProperties: true
+          type: object
+          title: Headers
+        payload:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Payload
+        error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error
+        signature:
+          type: string
+          title: Signature
+      type: object
+      required:
+      - headers
+      - signature
+      title: JwtDecodeResponse
+      description: 'The decoded (but *unverified*) parts of a JWT. Exactly one of ``payload``
+
+        or ``error`` is present: ``error`` replaces ``payload`` when the claims
+
+        segment cannot be decoded.'
+    RsaSignRequest:
+      properties:
+        alg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alg
+          description: RSA algorithm (e.g. 'rs256'); case-insensitive.
+        key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key
+          description: PEM RSA private key.
+        msg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Msg
+          description: Message to sign.
+      type: object
+      title: RsaSignRequest
+      description: Input for an RSA signature. Fields are optional; see ``HmacRequest``.
+      examples:
+      - alg: rs256
+        key: '-----BEGIN RSA PRIVATE KEY-----
+
+          ...'
+        msg: hello
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HmacRequest:
+      properties:
+        alg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alg
+          description: Hash algorithm name (e.g. 'sha256'); case-insensitive.
+        key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key
+          description: HMAC key.
+        msg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Msg
+          description: Message to authenticate.
+      type: object
+      title: HmacRequest
+      description: 'Input for an HMAC digest. Fields are optional so the legacy validation
+
+        order and 400 messages are reproduced in code rather than surfaced as 422s.'
+      examples:
+      - alg: sha256
+        key: my-secret
+        msg: hello
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

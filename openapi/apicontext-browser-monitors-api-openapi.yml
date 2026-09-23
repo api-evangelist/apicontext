@@ -1,0 +1,595 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Browser Monitors API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Browser Monitors
+  description: 'Manage Browser Monitors.
+
+
+    Browser Monitors load a target URL in a real browser (Chromium, Firefox, or WebKit) and
+
+    measure its availability and performance. Use them to monitor pages that require JavaScript
+
+    rendering or full browser behaviour, complementing the HTTP-level checks provided by
+
+    standard Monitors.'
+paths:
+  /api/3/monitors/browser/:
+    get:
+      tags:
+      - Browser Monitors
+      summary: List all Browser Monitors for a project
+      operationId: list-browser-monitors
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrowserTestSetupListResults'
+              examples:
+                list:
+                  summary: A project's Browser monitors
+                  value:
+                    results:
+                    - id: ahJzfmFwaW1ldHJpY3MtcHJvZHIXCxILQnJvd3NlckNhbGwYgICA
+                      meta:
+                        monitor_type: www
+                        name: Check homepage
+                        tags: []
+                        domain: example.com
+                        created: '2025-01-15T10:00:00Z'
+                        last_update: '2025-01-15T10:00:00Z'
+                        owner: ahJzfmFwaW1ldHJpY3MtcHJvZHILCxIEVXNlchhiAgI
+                        workspace: global
+                      setup:
+                        url: https://example.com/
+                        browser_types:
+                        - chromium
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Browser Monitors
+      summary: Create a new Browser Monitor
+      operationId: create-browser-monitor
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api3__monitors__browser__api_models__CreateRequest'
+            examples:
+              basic:
+                summary: Monitor a page using the default browser
+                value:
+                  name: Check homepage
+                  tags: []
+                  workspace: global
+                  url: https://example.com
+              multi_browser:
+                summary: Monitor across multiple browsers
+                value:
+                  name: Cross-browser checkout check
+                  tags:
+                  - checkout
+                  - critical
+                  workspace: global
+                  url: https://shop.example.com/checkout
+                  browser_types:
+                  - chromium
+                  - firefox
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrowserTestSetupRepr'
+              examples:
+                chromium:
+                  summary: Browser monitor targeting Chromium
+                  value:
+                    id: ahJzfmFwaW1ldHJpY3MtcHJvZHIXCxILQnJvd3NlckNhbGwYgICA
+                    meta:
+                      monitor_type: www
+                      name: Check homepage
+                      tags: []
+                      domain: example.com
+                      created: '2025-01-15T10:00:00Z'
+                      last_update: '2025-01-15T10:00:00Z'
+                      owner: ahJzfmFwaW1ldHJpY3MtcHJvZHILCxIEVXNlchhiAgI
+                      workspace: global
+                    setup:
+                      url: https://example.com/
+                      browser_types:
+                      - chromium
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/monitors/browser/{monitor_id}:
+    get:
+      tags:
+      - Browser Monitors
+      summary: Read a Browser Monitor by ID
+      operationId: read-browser-monitor
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: monitor_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Browser Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrowserTestSetupRepr'
+              examples:
+                chromium:
+                  summary: Browser monitor targeting Chromium
+                  value:
+                    id: ahJzfmFwaW1ldHJpY3MtcHJvZHIXCxILQnJvd3NlckNhbGwYgICA
+                    meta:
+                      monitor_type: www
+                      name: Check homepage
+                      tags: []
+                      domain: example.com
+                      created: '2025-01-15T10:00:00Z'
+                      last_update: '2025-01-15T10:00:00Z'
+                      owner: ahJzfmFwaW1ldHJpY3MtcHJvZHILCxIEVXNlchhiAgI
+                      workspace: global
+                    setup:
+                      url: https://example.com/
+                      browser_types:
+                      - chromium
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Browser Monitors
+      summary: Update an existing Browser Monitor
+      operationId: update-browser-monitor
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: monitor_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Browser Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api3__monitors__browser__api_models__UpdateRequest'
+            examples:
+              rename:
+                summary: Rename the monitor
+                value:
+                  meta:
+                    name: Updated homepage monitor
+              change_setup:
+                summary: Update target URL and browsers
+                value:
+                  setup:
+                    url: https://new.example.com
+                    browser_types:
+                    - chromium
+                    - webkit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrowserTestSetupRepr'
+              examples:
+                chromium:
+                  summary: Browser monitor targeting Chromium
+                  value:
+                    id: ahJzfmFwaW1ldHJpY3MtcHJvZHIXCxILQnJvd3NlckNhbGwYgICA
+                    meta:
+                      monitor_type: www
+                      name: Check homepage
+                      tags: []
+                      domain: example.com
+                      created: '2025-01-15T10:00:00Z'
+                      last_update: '2025-01-15T10:00:00Z'
+                      owner: ahJzfmFwaW1ldHJpY3MtcHJvZHILCxIEVXNlchhiAgI
+                      workspace: global
+                    setup:
+                      url: https://example.com/
+                      browser_types:
+                      - chromium
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Browser Monitors
+      summary: Delete an existing Browser Monitor
+      operationId: delete-browser-monitor
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: monitor_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Browser Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    api3__monitors__browser__api_models__UpdateRequest:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/UpdateRequestMeta'
+          - type: 'null'
+        setup:
+          anyOf:
+          - $ref: '#/components/schemas/UpdateRequestSetup'
+          - type: 'null'
+      type: object
+      title: UpdateRequest
+    UpdateRequestMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Display name for the monitor
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Optional description for the monitor
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+          description: Tags to apply to the monitor for grouping or advanced features
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+          description: Workspace to assign the monitor to
+      type: object
+      title: UpdateRequestMeta
+    models__browser_call___SetupRepr:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: Target URL for this monitor
+        browser_types:
+          items:
+            type: string
+            enum:
+            - chromium
+            - firefox
+            - webkit
+            - camoufox
+          type: array
+          title: Browser Types
+          description: Browsers which this monitor is permitted to run on
+        user_agent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Agent
+          description: User-Agent header value for the monitor
+      type: object
+      required:
+      - url
+      - browser_types
+      title: _SetupRepr
+    BrowserTestSetupRepr:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/models__browser_call___MetaRepr'
+        setup:
+          $ref: '#/components/schemas/models__browser_call___SetupRepr'
+      type: object
+      required:
+      - id
+      - meta
+      - setup
+      title: BrowserTestSetupRepr
+    UpdateRequestSetup:
+      properties:
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: Target URL for the monitor
+        browser_types:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - chromium
+              - firefox
+              - webkit
+              - camoufox
+            type: array
+          - type: 'null'
+          title: Browser Types
+          description: Browsers which the monitor is permitted to run on
+        user_agent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Agent
+          description: User-Agent header value for the monitor
+      type: object
+      title: UpdateRequestSetup
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    models__browser_call___MetaRepr:
+      properties:
+        monitor_type:
+          type: string
+          enum:
+          - api
+          - www
+          - mcp
+          title: Monitor Type
+          default: www
+        name:
+          type: string
+          title: Name
+          description: Display name for the monitor
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Optional description for the monitor
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          description: Tags to apply to the monitor for grouping or advanced features
+        domain:
+          type: string
+          title: Domain
+          description: Domain of the target URL for this monitor
+        created:
+          type: string
+          format: date-time
+          title: Created
+        last_update:
+          type: string
+          format: date-time
+          title: Last Update
+        owner:
+          type: string
+          title: Owner
+        workspace:
+          type: string
+          title: Workspace
+      type: object
+      required:
+      - name
+      - domain
+      - created
+      - last_update
+      - owner
+      - workspace
+      title: _MetaRepr
+    api3__monitors__browser__api_models__CreateRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Display name for the monitor
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Optional description for the monitor
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          description: Tags to apply to the monitor for grouping or advanced features
+        workspace:
+          type: string
+          title: Workspace
+          description: Workspace to assign the monitor to
+          default: global
+        url:
+          type: string
+          title: Url
+          description: Target URL for the monitor
+        browser_types:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - chromium
+              - firefox
+              - webkit
+              - camoufox
+            type: array
+          - type: 'null'
+          title: Browser Types
+          description: Browsers which the monitor is permitted to run on
+        user_agent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Agent
+          description: User-Agent header value for the monitor
+      type: object
+      required:
+      - name
+      - url
+      title: CreateRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    BrowserTestSetupListResults:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/BrowserTestSetupRepr'
+          type: array
+          title: Results
+      type: object
+      required:
+      - results
+      title: BrowserTestSetupListResults
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

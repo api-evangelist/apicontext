@@ -1,0 +1,381 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Users (admin) API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Users (admin)
+  description: User management
+paths:
+  /api/2/users/username/{username}/:
+    get:
+      tags:
+      - Users (admin)
+      summary: Get-User-By-Username
+      description: Get a user by username. Full details for site/org admins; username only otherwise.
+      operationId: get-user-by-username
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Username
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/users/{user_key_str}/:
+    get:
+      tags:
+      - Users (admin)
+      summary: Get-User
+      description: Get a user by NDB key. Full details for site/org admins; username only otherwise.
+      operationId: get-user
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: user_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Users (admin)
+      summary: Update-User
+      description: Update a user's admin flag. Requires org-admin or site-admin.
+      operationId: update-user
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: user_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Users (admin)
+      summary: Delete-User
+      description: Remove a user from their org, clearing admin flag and access on owned models.
+      operationId: delete-user
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: user_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    UpdateUserBody:
+      properties:
+        is_admin:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Admin
+      type: object
+      title: UpdateUserBody
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UserResponse:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        username:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Username
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        last_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Name
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+        activated:
+          type: boolean
+          title: Activated
+          default: false
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        system_tags:
+          items:
+            type: string
+          type: array
+          title: System Tags
+        is_site_admin:
+          type: boolean
+          title: Is Site Admin
+          default: false
+        is_admin:
+          type: boolean
+          title: Is Admin
+          default: false
+        organization:
+          type: string
+          title: Organization
+          default: public
+        phonenumber:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phonenumber
+        subscription_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Subscription Level
+        api_auth_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Auth Key
+        terms_accepted:
+          type: integer
+          title: Terms Accepted
+          default: 0
+        authy_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authy Id
+        test_run_quota:
+          type: integer
+          title: Test Run Quota
+          default: 0
+        test_run_monthly_quota:
+          type: integer
+          title: Test Run Monthly Quota
+          default: 0
+        test_setup_count:
+          type: integer
+          title: Test Setup Count
+          default: 0
+        test_setup_quota:
+          type: integer
+          title: Test Setup Quota
+          default: 0
+        public_report_count:
+          type: integer
+          title: Public Report Count
+          default: 0
+        public_report_quota:
+          type: integer
+          title: Public Report Quota
+          default: 0
+        scheduled_test_count:
+          type: integer
+          title: Scheduled Test Count
+          default: 0
+        override_trial_expiry_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Override Trial Expiry Date
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        updated:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated
+        security_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Security Profile
+      type: object
+      title: UserResponse
+    DeleteStatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: DeleteStatusResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

@@ -1,0 +1,270 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Downtimes API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Downtimes
+paths:
+  /api/3/organizations/{org_id}/downtimes:
+    get:
+      tags:
+      - Downtimes
+      summary: List-Org-Downtimes
+      description: List downtimes defined on the given org.
+      operationId: list-org-downtimes
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response List-Org-Downtimes
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Downtimes
+      summary: Create-Org-Downtime
+      description: Create a new downtime for this org.
+      operationId: create-org-downtime
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditableDowntimeBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Create-Org-Downtime
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/organizations/{org_id}/downtimes/{downtime_id}:
+    put:
+      tags:
+      - Downtimes
+      summary: Update-Org-Downtime
+      description: Update an existing downtime for this org.
+      operationId: update-org-downtime
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: downtime_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditableDowntimeBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Update-Org-Downtime
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Downtimes
+      summary: Delete-Org-Downtime
+      description: Delete an existing downtime for this org.
+      operationId: delete-org-downtime
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: downtime_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    EditableDowntimeBody:
+      properties:
+        projects:
+          items:
+            type: string
+          type: array
+          title: Projects
+        repeated:
+          type: boolean
+          title: Repeated
+        repeat_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Repeat Days
+        start_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Time
+        end_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Time
+        zone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zone
+      type: object
+      required:
+      - projects
+      - repeated
+      title: EditableDowntimeBody
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

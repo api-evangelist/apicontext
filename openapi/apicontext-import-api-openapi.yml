@@ -1,0 +1,168 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Import API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Import
+  description: Import a project's configuration from an export bundle.
+paths:
+  /api/2/import/:
+    post:
+      tags:
+      - Import
+      summary: Import-Project
+      description: 'Import a configuration bundle into the caller''s project.
+
+
+        The body is parsed as JSON or YAML per ``Content-Type``, validated against
+
+        the import schema, then applied. The (mutated) bundle is echoed back with a
+
+        200 — imported object ids are rewritten to the created datastore keys.'
+      operationId: import-project
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/import/sample:
+    post:
+      tags:
+      - Import
+      summary: Import-Sample-Projects
+      description: Clone one or more sample-org projects into the caller's project.
+      operationId: import-sample-projects
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportSampleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ImportSampleResponse:
+      properties:
+        project_ids:
+          items:
+            type: string
+          type: array
+          title: Project Ids
+          default: []
+      additionalProperties: true
+      type: object
+      title: ImportSampleResponse
+    ImportResponse:
+      properties:
+        version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Version
+        project:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Project
+      additionalProperties: true
+      type: object
+      title: ImportResponse
+      description: The (mutated) import bundle echoed back on a successful import.
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

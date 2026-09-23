@@ -1,0 +1,579 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Auth Settings API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Auth Settings
+  description: Authentication / service configuration
+paths:
+  /api/2/auth/:
+    get:
+      tags:
+      - Auth Settings
+      summary: List-Auth-Settings
+      description: List auth configs for the project.
+      operationId: list-auth-settings
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          title: Maximum results to return
+          default: 100
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthConfigListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Auth Settings
+      summary: Create-Auth-Setting
+      description: Create an auth config for the project.
+      operationId: create-auth-setting
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAuthConfigRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthConfigResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/auth/domain/{domain}/:
+    get:
+      tags:
+      - Auth Settings
+      summary: List-Auth-Settings-By-Domain
+      description: List auth configs for the project filtered by domain.
+      operationId: list-auth-settings-by-domain
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Domain to filter by
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          title: Maximum results to return
+          default: 100
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthConfigListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/auth/{sc_key}/:
+    get:
+      tags:
+      - Auth Settings
+      summary: Get-Auth-Setting
+      description: Get a single auth config.
+      operationId: get-auth-setting
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: sc_key
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Auth Setting ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthConfigResponse'
+        '404':
+          description: Cannot access object
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Auth Settings
+      summary: Update-Auth-Setting
+      description: Update an auth config.
+      operationId: update-auth-setting
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: sc_key
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Auth Setting ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAuthConfigRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthConfigResponse'
+        '404':
+          description: Cannot access object
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Auth Settings
+      summary: Delete-Auth-Setting
+      description: Delete an auth config.
+      operationId: delete-auth-setting
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: sc_key
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Auth Setting ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthConfigResponse'
+        '404':
+          description: Cannot access object
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    AuthConfigMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Domain
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        owner:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Owner
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        documentation:
+          $ref: '#/components/schemas/AuthDocumentation'
+      type: object
+      title: AuthConfigMeta
+    AuthConfigSettings:
+      properties:
+        auth_type:
+          type: string
+          title: Auth Type
+        custom_variables:
+          additionalProperties: true
+          type: object
+          title: Custom Variables
+      additionalProperties: true
+      type: object
+      required:
+      - auth_type
+      title: AuthConfigSettings
+    AuthConfigMetaInput:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Display name for the config
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Domain
+          description: Plain hostname the credentials apply to, e.g. api.example.com
+        documentation:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Documentation
+          description: 'Informational URLs: keys, docs, apps, provider'
+      type: object
+      title: AuthConfigMetaInput
+    CreateAuthConfigRequest:
+      properties:
+        meta:
+          $ref: '#/components/schemas/AuthConfigMetaInput'
+        settings:
+          $ref: '#/components/schemas/AuthConfigSettingsInput'
+        keys:
+          anyOf:
+          - $ref: '#/components/schemas/AuthConfigKeysInput'
+          - type: 'null'
+      type: object
+      title: CreateAuthConfigRequest
+    AuthConfigListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - project_id
+      title: AuthConfigListMeta
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AuthDocumentation:
+      properties:
+        keys:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Keys
+        docs:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Docs
+        apps:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apps
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+      type: object
+      title: AuthDocumentation
+    UpdateAuthConfigRequest:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/AuthConfigMetaInput'
+          - type: 'null'
+        settings:
+          anyOf:
+          - $ref: '#/components/schemas/AuthConfigSettingsInput'
+          - type: 'null'
+        keys:
+          anyOf:
+          - $ref: '#/components/schemas/AuthConfigKeysInput'
+          - type: 'null'
+      type: object
+      title: UpdateAuthConfigRequest
+    AuthConfigResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/AuthConfigMeta'
+        settings:
+          $ref: '#/components/schemas/AuthConfigSettings'
+        keys:
+          $ref: '#/components/schemas/AuthConfigKeys'
+      type: object
+      required:
+      - id
+      - meta
+      - settings
+      - keys
+      title: AuthConfigResponse
+    AuthConfigListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/AuthConfigListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/AuthConfigResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: AuthConfigListResponse
+    AuthConfigKeysInput:
+      properties:
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+      type: object
+      title: AuthConfigKeysInput
+    AuthConfigKeys:
+      properties:
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+      type: object
+      title: AuthConfigKeys
+    AuthConfigSettingsInput:
+      properties:
+        auth_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Type
+          description: One of the AuthToken API names, e.g. NONE, OAUTH2, BASIC
+        custom_variables:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Custom Variables
+      additionalProperties: true
+      type: object
+      title: AuthConfigSettingsInput
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

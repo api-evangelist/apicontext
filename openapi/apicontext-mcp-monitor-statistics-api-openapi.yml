@@ -1,0 +1,451 @@
+openapi: 3.2.0
+info:
+  title: APImetrics MCP Monitor Statistics API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: MCP Monitor Statistics
+  description: Aggregate statistics for MCP Monitors
+paths:
+  /api/3/monitors/mcp/{monitor_id}/stats/performance:
+    post:
+      tags:
+      - MCP Monitor Statistics
+      summary: Aggregate performance metrics for an MCP monitor over a window
+      description: 'Aggregate performance metrics for an MCP monitor over a window.
+
+
+        Returns the requested measures (e.g. mean, p50, p90) per metric, optionally
+
+        grouped by location and/or time bucket.'
+      operationId: query-mcp-monitor-performance
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: monitor_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: MCP Monitor ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceRequest_Metric___3'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceResponse_Metric___3'
+        '400':
+          description: Invalid request parameters (e.g. `to` before `from`)
+        '403':
+          description: Monitor not owned by this project
+        '404':
+          description: Monitor not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/monitors/mcp/stats/performance:
+    post:
+      tags:
+      - MCP Monitor Statistics
+      summary: Aggregate performance metrics across all MCP monitors in the project
+      description: 'Aggregate performance metrics across all MCP monitors in the project.
+
+
+        Pair with `group_by=monitor` to get one PerformanceGroup per monitor; with
+
+        `group_by=monitor,interval` for per-monitor time-series. Without a `monitor`
+
+        grouping, results are a single project-wide aggregate.'
+      operationId: query-mcp-performance
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceRequest_Metric___3'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceResponse_Metric___3'
+        '400':
+          description: Invalid request parameters (e.g. `to` before `from`)
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    api3__monitors__common__api_models__PerformanceGroup_Metric___3:
+      properties:
+        key:
+          $ref: '#/components/schemas/GroupKey'
+        sample_count:
+          type: integer
+          title: Sample Count
+          description: Total samples in this group
+        pass_count:
+          type: integer
+          title: Pass Count
+          description: Samples whose result_category is PASS or SLOW
+          default: 0
+        top_location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Top Location Id
+          description: Location_id with the most samples in this group; useful when the client isn't grouping by location but still needs an agent for display
+        metrics:
+          additionalProperties:
+            $ref: '#/components/schemas/MetricAggregate'
+          propertyNames:
+            $ref: '#/components/schemas/api3__monitors__mcp__stats__api_models__Metric'
+          type: object
+          title: Metrics
+      type: object
+      required:
+      - key
+      - sample_count
+      - metrics
+      title: PerformanceGroup[Metric]
+    GroupKey:
+      properties:
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        interval_start:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interval Start
+          description: UTC ISO timestamp of the bucket start when interval grouping is in use
+        monitor_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Monitor Id
+          description: Monitor ID when monitor grouping is in use
+      type: object
+      title: GroupKey
+      description: 'Identifies which slice of data this group represents.
+
+
+        Fields are present only when the request asked to group by that dimension
+
+        (or, for `interval_start`, when an interval was requested).'
+    api3__monitors__common__api_models__PerformanceResponse_Metric___3:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceGroup_Metric___3'
+          type: array
+          title: Results
+        meta:
+          $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceMeta_Metric___3'
+      type: object
+      required:
+      - results
+      - meta
+      title: PerformanceResponse[Metric]
+    ResultCategory:
+      type: string
+      enum:
+      - PASS
+      - SLOW
+      - WARNING
+      - FAIL
+      title: ResultCategory
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    GroupByDimension:
+      type: string
+      enum:
+      - location
+      - interval
+      - monitor
+      title: GroupByDimension
+    Measure:
+      type: string
+      enum:
+      - mean
+      - p50
+      - p90
+      - p95
+      - p99
+      title: Measure
+    api3__monitors__mcp__stats__api_models__Metric:
+      type: string
+      enum:
+      - total
+      - initialize
+      - dns
+      - tcp
+      - tls
+      title: Metric
+    MetricAggregate:
+      properties:
+        sample_count:
+          type: integer
+          title: Sample Count
+          description: Number of samples with a measured value for this metric
+        mean:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Mean
+          description: Arithmetic mean
+        p50:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: P50
+          description: 50th percentile (median)
+        p75:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: P75
+          description: 75th percentile
+        p90:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: P90
+          description: 90th percentile
+        p95:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: P95
+          description: 95th percentile
+        p99:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: P99
+          description: 99th percentile
+        p999:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: P999
+          description: 99.9th percentile
+        poor_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Poor Count
+          description: Number of samples whose value is worse than the poor threshold supplied via the `poor_thresholds` query param. Null when no threshold was supplied for this metric.
+      type: object
+      required:
+      - sample_count
+      title: MetricAggregate
+      description: Aggregates for one metric within one result group.
+    api3__monitors__common__api_models__PerformanceMeta_Metric___3:
+      properties:
+        monitor_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Monitor Id
+        from:
+          type: string
+          format: date-time
+          title: From
+          description: UTC ISO timestamp, inclusive
+        to:
+          type: string
+          format: date-time
+          title: To
+          description: UTC ISO timestamp, exclusive
+        interval:
+          anyOf:
+          - type: string
+            format: duration
+          - type: 'null'
+          title: Interval
+        metrics:
+          items:
+            $ref: '#/components/schemas/api3__monitors__mcp__stats__api_models__Metric'
+          type: array
+          title: Metrics
+        measures:
+          items:
+            $ref: '#/components/schemas/Measure'
+          type: array
+          title: Measures
+        group_by:
+          items:
+            $ref: '#/components/schemas/GroupByDimension'
+          type: array
+          title: Group By
+      type: object
+      required:
+      - from
+      - to
+      - interval
+      - metrics
+      - measures
+      - group_by
+      title: PerformanceMeta[Metric]
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    api3__monitors__common__api_models__PerformanceRequest_Metric___3:
+      properties:
+        from:
+          type: string
+          format: date-time
+          title: From
+          description: Window start (UTC ISO timestamp, inclusive)
+        to:
+          type: string
+          format: date-time
+          title: To
+          description: Window end (UTC ISO timestamp, exclusive)
+        interval:
+          anyOf:
+          - type: string
+            format: duration
+          - type: 'null'
+          title: Interval
+          description: Bucket size for time-series grouping (ISO 8601 duration, e.g. PT1H, PT15M). Omitted = single bucket over the whole window.
+        metrics:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/api3__monitors__mcp__stats__api_models__Metric'
+            type: array
+          - type: 'null'
+          title: Metrics
+          description: Metrics to aggregate. Defaults to the monitor type's standard set.
+        measures:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/Measure'
+            type: array
+          - type: 'null'
+          title: Measures
+          description: Statistical measures to return per metric (e.g. mean, p50, p90). Defaults to mean, p50, p90, p95, p99.
+        group_by:
+          items:
+            $ref: '#/components/schemas/GroupByDimension'
+          type: array
+          title: Group By
+          description: Dimensions to group results by.
+        locations:
+          items:
+            type: string
+          type: array
+          title: Locations
+          description: Restrict to these location IDs. Empty = all locations.
+        status:
+          items:
+            $ref: '#/components/schemas/ResultCategory'
+          type: array
+          title: Status
+          description: Restrict to these result categories. Empty = all categories.
+        poor_thresholds:
+          additionalProperties:
+            type: number
+            minimum: 0.0
+          propertyNames:
+            $ref: '#/components/schemas/api3__monitors__mcp__stats__api_models__Metric'
+          type: object
+          title: Poor Thresholds
+          description: Per-metric threshold values. When supplied, the response includes a poor_count for each matching metric counting samples whose value exceeds the threshold.
+      type: object
+      required:
+      - from
+      - to
+      title: PerformanceRequest[Metric]
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

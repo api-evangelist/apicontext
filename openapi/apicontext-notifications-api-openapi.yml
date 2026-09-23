@@ -1,9 +1,8 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: APIContext Notifications (Alerts) API
-  description: API for the APImetrics platform This document is the 'Notifications' slice of the APIContext
-    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
-  version: v2026-09-02
+  title: APImetrics Notifications API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
   contact:
     name: APIContext Support
     url: https://apicontext.io/
@@ -11,10 +10,7 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://apimetrics.io/tos/
-servers:
-- url: https://client.apimetrics.io
-  description: APIContext (APImetrics) platform API
+  version: v2026-09-02
 tags:
 - name: Notifications
   description: Issue notifications raised about monitors, results, and workflows.
@@ -208,31 +204,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
-  securitySchemes:
-    OAuth2:
-      type: oauth2
-      flows:
-        authorizationCode:
-          scopes:
-            openid: OpenID Connect identity
-            profile: User profile
-            email: User email address
-          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
-          tokenUrl: https://auth.apimetrics.io/oauth/token
-    ApiKey:
-      type: apiKey
-      in: header
-      name: X-Api-Key
   schemas:
-    HTTPValidationError:
+    UpdateNotificationBody:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        viewed:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Viewed
+          description: Mark the notification read (true) or unread (false).
       type: object
-      title: HTTPValidationError
+      title: UpdateNotificationBody
     NotificationListMeta:
       properties:
         next_cursor:
@@ -251,6 +233,15 @@ components:
       - more
       - project_id
       title: NotificationListMeta
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     NotificationListResponse:
       properties:
         meta:
@@ -265,6 +256,32 @@ components:
       - meta
       - results
       title: NotificationListResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     NotificationResponse:
       properties:
         id:
@@ -330,39 +347,18 @@ components:
       - id
       - viewed
       title: NotificationResponse
-    UpdateNotificationBody:
-      properties:
-        viewed:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Viewed
-          description: Mark the notification read (true) or unread (false).
-      type: object
-      title: UpdateNotificationBody
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

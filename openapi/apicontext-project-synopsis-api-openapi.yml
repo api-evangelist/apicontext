@@ -1,0 +1,522 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Project Synopsis API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Project Synopsis
+  description: Pre-aggregated pass/fail, timing and insight synopsis for the current project.
+paths:
+  /api/2/project/synopsis:
+    get:
+      tags:
+      - Project Synopsis
+      summary: Get-Project-Synopsis
+      description: Get the pre-aggregated synopsis for the current project.
+      operationId: get-project-synopsis
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: kind
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/SynopsisKind'
+          - type: 'null'
+          description: Aggregation period; defaults to DAY. Matched case-insensitively, and any unrecognised value falls back to DAY.
+          title: Kind
+        description: Aggregation period; defaults to DAY. Matched case-insensitively, and any unrecognised value falls back to DAY.
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Selection point as ``%Y-%m-%dT%H:%MZ``. Defaults to the most recent generated period.
+          title: Time
+        description: Selection point as ``%Y-%m-%dT%H:%MZ``. Defaults to the most recent generated period.
+      - name: tz
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          description: Optional timezone offset in minutes applied to ``time``.
+          title: Tz
+        description: Optional timezone offset in minutes applied to ``time``.
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get-Project-Synopsis
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/project/organization/{org_id}/:
+    get:
+      tags:
+      - Project Synopsis
+      summary: Get-Organization-Synopsis
+      description: Get a rolled-up synopsis for every project the caller can see in an organization.
+      operationId: get-organization-synopsis
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      - name: kind
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/SynopsisKind'
+          - type: 'null'
+          description: Aggregation period; defaults to DAY. Matched case-insensitively, and any unrecognised value falls back to DAY.
+          title: Kind
+        description: Aggregation period; defaults to DAY. Matched case-insensitively, and any unrecognised value falls back to DAY.
+      - name: time
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Selection point as ``%Y-%m-%dT%H:%MZ``. Defaults to the most recent generated period.
+          title: Time
+        description: Selection point as ``%Y-%m-%dT%H:%MZ``. Defaults to the most recent generated period.
+      - name: tz
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          description: Optional timezone offset in minutes applied to ``time``.
+          title: Tz
+        description: Optional timezone offset in minutes applied to ``time``.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgSynopsisResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ProjectSloResponse:
+      properties:
+        project_id:
+          type: string
+          title: Project Id
+        objectives:
+          items:
+            $ref: '#/components/schemas/ServiceLevelObjectiveResponse'
+          type: array
+          title: Objectives
+        thresholds:
+          items:
+            $ref: '#/components/schemas/ThresholdResponse'
+          type: array
+          title: Thresholds
+        include_tags:
+          items:
+            type: string
+          type: array
+          title: Include Tags
+        exclude_tags:
+          items:
+            type: string
+          type: array
+          title: Exclude Tags
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+      type: object
+      required:
+      - project_id
+      - objectives
+      - thresholds
+      - include_tags
+      - exclude_tags
+      - last_update
+      - created
+      title: ProjectSloResponse
+      examples:
+      - created: '2026-06-25T10:13:37.546136Z'
+        exclude_tags:
+        - apimetrics:not_monitored
+        include_tags: []
+        last_update: '2026-06-25T10:13:37.597335Z'
+        objectives:
+        - comparator: <
+          measure: mean
+          metric: dns
+          period: MONTH
+          unit: ms
+          value: 100
+        project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        thresholds:
+        - delta: 100
+          metric: latency
+          period: MONTH
+          unit: ms
+    OrgSynopsisResponse:
+      properties:
+        kind:
+          $ref: '#/components/schemas/SynopsisKind'
+          description: The aggregation period the response was resolved to.
+        period:
+          type: string
+          title: Period
+          description: The period actually read. ``YYYY-MM-DD`` for DAY/WEEK/MONTH, or an ISO-8601 UTC timestamp for HOUR.
+        latest:
+          type: boolean
+          title: Latest
+          description: True when the requested period was at or after the newest generated one and was therefore clamped back to it.
+        project_ids:
+          items:
+            type: string
+          type: array
+          title: Project Ids
+          description: Every project visible to the caller in this org, sorted by id so the order is stable between requests.
+        synopses:
+          items:
+            $ref: '#/components/schemas/ProjectRollupResponse'
+          type: array
+          title: Synopses
+          description: One entry per visible project that has a synopsis blob for the period, in ``project_ids`` order. Projects with no blob are omitted.
+      type: object
+      required:
+      - kind
+      - period
+      - latest
+      - project_ids
+      - synopses
+      title: OrgSynopsisResponse
+    SynopsisKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      title: SynopsisKind
+      description: 'The aggregation periods a synopsis blob is generated for.
+
+
+        Legacy read ``kind`` as a free string, upper-cased it and looked it up in a
+
+        dict with a ``daily`` default, so ``day``/``DAY`` were equivalent and an
+
+        unrecognised value quietly yielded daily data. ``_missing_`` reproduces both
+
+        of those, which keeps the coercion identical while still publishing the four
+
+        supported values in the OpenAPI spec.'
+    OrgSynopsisResultCounts:
+      properties:
+        PASS:
+          type: number
+          title: Pass
+          default: 0
+        SLOW:
+          type: number
+          title: Slow
+          default: 0
+        WARNING:
+          type: number
+          title: Warning
+          default: 0
+        FAIL:
+          type: number
+          title: Fail
+          default: 0
+        total:
+          type: number
+          title: Total
+          default: 0
+      type: object
+      title: OrgSynopsisResultCounts
+      description: Per-project sum of each call's pass/fail result counts.
+    ServiceLevelObjectiveResponse:
+      properties:
+        metric:
+          type: string
+          title: Metric
+        measure:
+          type: string
+          title: Measure
+        comparator:
+          type: string
+          title: Comparator
+        value:
+          type: number
+          title: Value
+        unit:
+          type: string
+          title: Unit
+        period:
+          type: string
+          title: Period
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      type: object
+      required:
+      - metric
+      - measure
+      - comparator
+      - value
+      - unit
+      - period
+      title: ServiceLevelObjectiveResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    OrgSynopsisTimings:
+      properties:
+        count:
+          type: number
+          title: Count
+          default: 0
+        handshake:
+          type: number
+          title: Handshake
+          default: 0
+        process:
+          type: number
+          title: Process
+          default: 0
+        upload:
+          type: number
+          title: Upload
+          default: 0
+        tcp:
+          type: number
+          title: Tcp
+          default: 0
+        dns:
+          type: number
+          title: Dns
+          default: 0
+        download:
+          type: number
+          title: Download
+          default: 0
+        total:
+          type: number
+          title: Total
+          default: 0
+        cwv_count:
+          type: number
+          title: Cwv Count
+          default: 0
+        first_contentful_paint:
+          type: number
+          title: First Contentful Paint
+          default: 0
+        largest_contentful_paint:
+          type: number
+          title: Largest Contentful Paint
+          default: 0
+        first_input_delay:
+          type: number
+          title: First Input Delay
+          default: 0
+        cumulative_layout_shift:
+          type: number
+          title: Cumulative Layout Shift
+          default: 0
+      type: object
+      title: OrgSynopsisTimings
+      description: 'Per-project sum of each call''s ``timings.overall`` metrics.
+
+
+        Latency values are summed, not averaged — ``count`` is the divisor callers
+
+        use to turn them into per-result means.'
+    ProjectRollupResponse:
+      properties:
+        project_id:
+          type: string
+          title: Project Id
+          description: Urlsafe project key.
+        domains:
+          items:
+            type: string
+          type: array
+          title: Domains
+          description: De-duplicated domains of the included calls, sorted.
+        timings:
+          $ref: '#/components/schemas/OrgSynopsisTimings'
+        result_counts:
+          $ref: '#/components/schemas/OrgSynopsisResultCounts'
+        insights:
+          anyOf:
+          - $ref: '#/components/schemas/OrgSynopsisInsights'
+          - type: 'null'
+          description: Mean insight metrics, or null when no call reported a score.
+        slos:
+          $ref: '#/components/schemas/ProjectSloResponse'
+          description: The project's SLO — the stored one, or the unsaved defaults when none is stored. Its tags drive which calls the rollup includes.
+      type: object
+      required:
+      - project_id
+      - domains
+      - timings
+      - result_counts
+      - insights
+      - slos
+      title: ProjectRollupResponse
+      description: One project's rolled-up synopsis for the requested period.
+    ThresholdResponse:
+      properties:
+        metric:
+          type: string
+          title: Metric
+        delta:
+          type: number
+          title: Delta
+        unit:
+          type: string
+          title: Unit
+        period:
+          type: string
+          title: Period
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      type: object
+      required:
+      - metric
+      - delta
+      - unit
+      - period
+      title: ThresholdResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    OrgSynopsisInsights:
+      properties:
+        outlier_percent:
+          type: number
+          title: Outlier Percent
+          default: 0
+        sd_test_length:
+          type: number
+          title: Sd Test Length
+          default: 0
+        score:
+          type: number
+          title: Score
+          default: 0
+        pass_percent:
+          type: number
+          title: Pass Percent
+          default: 0
+        mean_test_length:
+          type: number
+          title: Mean Test Length
+          default: 0
+      type: object
+      title: OrgSynopsisInsights
+      description: 'Per-project mean of each call''s insight metrics.
+
+
+        Null on the enclosing synopsis when no included call reported a ``score``.'
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

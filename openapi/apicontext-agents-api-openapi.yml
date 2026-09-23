@@ -1,9 +1,8 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: APIContext Agents API
-  description: API for the APImetrics platform This document is the 'Agents' slice of the APIContext (APImetrics)
-    platform OpenAPI published at https://client.apimetrics.io/openapi.json.
-  version: v2026-09-02
+  title: APImetrics Agents API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
   contact:
     name: APIContext Support
     url: https://apicontext.io/
@@ -11,10 +10,7 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://apimetrics.io/tos/
-servers:
-- url: https://client.apimetrics.io
-  description: APIContext (APImetrics) platform API
+  version: v2026-09-02
 tags:
 - name: Agents
   description: Shared / community remote agent registry (list + info + admin-only by-key operations).
@@ -220,7 +216,6 @@ paths:
       summary: Get a remote agent
       tags:
       - Agents
-      - Legacy (proxied)
       parameters:
       - $ref: '#/components/parameters/agentKey'
       responses:
@@ -235,7 +230,6 @@ paths:
       summary: Update a remote agent
       tags:
       - Agents
-      - Legacy (proxied)
       parameters:
       - $ref: '#/components/parameters/agentKey'
       requestBody:
@@ -252,104 +246,13 @@ paths:
       summary: Delete a remote agent
       tags:
       - Agents
-      - Legacy (proxied)
       parameters:
       - $ref: '#/components/parameters/agentKey'
       responses:
         '204':
           description: Deleted
 components:
-  securitySchemes:
-    OAuth2:
-      type: oauth2
-      flows:
-        authorizationCode:
-          scopes:
-            openid: OpenID Connect identity
-            profile: User profile
-            email: User email address
-          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
-          tokenUrl: https://auth.apimetrics.io/oauth/token
-    ApiKey:
-      type: apiKey
-      in: header
-      name: X-Api-Key
   schemas:
-    AgentInfoResponse:
-      properties:
-        regions:
-          items:
-            $ref: '#/components/schemas/_RegionEntry'
-          type: array
-          title: Regions
-        postman_locations:
-          items:
-            type: string
-          type: array
-          title: Postman Locations
-        locations:
-          additionalProperties:
-            type: string
-          type: object
-          title: Locations
-        agent_list:
-          items:
-            $ref: '#/components/schemas/AgentResponse'
-          type: array
-          title: Agent List
-      type: object
-      required:
-      - regions
-      - postman_locations
-      - locations
-      - agent_list
-      title: AgentInfoResponse
-    AgentListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/api2__agents__agents___ListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/AgentResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: AgentListResponse
-    AgentOutput:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/KeyStr'
-        meta:
-          type: object
-          properties:
-            name:
-              type: string
-            description:
-              type: string
-              nullable: true
-            project_id:
-              $ref: '#/components/schemas/KeyStr'
-            created:
-              type: string
-              format: date-time
-            last_update:
-              type: string
-              format: date-time
-        agent:
-          type: object
-          properties:
-            location_id:
-              type: string
-            enabled:
-              type: boolean
-            last_seen:
-              type: string
-              format: date-time
-              nullable: true
     AgentResponse:
       properties:
         meta:
@@ -365,6 +268,45 @@ components:
       - agent
       - id
       title: AgentResponse
+    KeyStr:
+      type: string
+      description: URL-safe base64 Datastore key
+      minLength: 3
+      maxLength: 400
+      pattern: ^[-A-Za-z0-9_]*={0,3}$
+    _RegionEntry:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        locations:
+          items:
+            type: string
+          type: array
+          title: Locations
+      type: object
+      required:
+      - id
+      - locations
+      title: _RegionEntry
+    api2__agents__agents___ListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+      type: object
+      title: _ListMeta
     HTTPValidationError:
       properties:
         detail:
@@ -374,21 +316,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    KeyStr:
-      type: string
-      description: URL-safe base64 Datastore key
-      minLength: 3
-      maxLength: 400
-      pattern: ^[-A-Za-z0-9_]*={0,3}$
-    UpdateAgentRequest:
-      properties:
-        agent:
-          $ref: '#/components/schemas/_UpdateAgentBody'
-      additionalProperties: false
-      type: object
-      required:
-      - agent
-      title: UpdateAgentRequest
     ValidationError:
       properties:
         loc:
@@ -415,6 +342,20 @@ components:
       - msg
       - type
       title: ValidationError
+    AgentListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api2__agents__agents___ListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/AgentResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: AgentListResponse
     _AgentDetails:
       properties:
         normalized_name:
@@ -476,56 +417,47 @@ components:
       required:
       - normalized_name
       title: _AgentDetails
-    _AgentMeta:
+    AgentOutput:
+      type: object
       properties:
         id:
-          type: string
-          title: Id
-        name:
-          type: string
-          title: Name
-        last_update:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Update
-        created:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Created
-        remote_addr:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Remote Addr
-      type: object
-      required:
-      - id
-      - name
-      title: _AgentMeta
-    _RegionEntry:
+          $ref: '#/components/schemas/KeyStr'
+        meta:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+              nullable: true
+            project_id:
+              $ref: '#/components/schemas/KeyStr'
+            created:
+              type: string
+              format: date-time
+            last_update:
+              type: string
+              format: date-time
+        agent:
+          type: object
+          properties:
+            location_id:
+              type: string
+            enabled:
+              type: boolean
+            last_seen:
+              type: string
+              format: date-time
+              nullable: true
+    UpdateAgentRequest:
       properties:
-        id:
-          type: string
-          title: Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        locations:
-          items:
-            type: string
-          type: array
-          title: Locations
+        agent:
+          $ref: '#/components/schemas/_UpdateAgentBody'
+      additionalProperties: false
       type: object
       required:
-      - id
-      - locations
-      title: _RegionEntry
+      - agent
+      title: UpdateAgentRequest
     _UpdateAgentBody:
       properties:
         name:
@@ -572,16 +504,85 @@ components:
       type: object
       title: _UpdateAgentBody
       description: Body accepted by ``POST /api/2/agents/<key>/`` (update user_* overrides).
-    api2__agents__agents___ListMeta:
+    _AgentMeta:
       properties:
-        next_cursor:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        remote_addr:
           anyOf:
           - type: string
           - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
+          title: Remote Addr
       type: object
-      title: _ListMeta
+      required:
+      - id
+      - name
+      title: _AgentMeta
+    AgentInfoResponse:
+      properties:
+        regions:
+          items:
+            $ref: '#/components/schemas/_RegionEntry'
+          type: array
+          title: Regions
+        postman_locations:
+          items:
+            type: string
+          type: array
+          title: Postman Locations
+        locations:
+          additionalProperties:
+            type: string
+          type: object
+          title: Locations
+        agent_list:
+          items:
+            $ref: '#/components/schemas/AgentResponse'
+          type: array
+          title: Agent List
+      type: object
+      required:
+      - regions
+      - postman_locations
+      - locations
+      - agent_list
+      title: AgentInfoResponse
+  parameters:
+    agentKey:
+      name: agent_key
+      in: path
+      required: true
+      description: URL-safe Datastore key for a remote agent
+      schema:
+        $ref: '#/components/schemas/KeyStr'
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: APImetrics Reports API
+  title: APImetrics Hooks API
   description: API for the APImetrics platform
   termsOfService: http://apimetrics.io/tos/
   contact:
@@ -12,16 +12,16 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: v2026-09-02
 tags:
-- name: Reports
-  description: Report (dashboard) definitions grouping API calls
+- name: Hooks
+  description: 'Manage inbound hooks: workflow triggers that run when their public URL receives a request.'
 paths:
-  /api/2/reports/:
+  /api/2/hooks/:
     get:
       tags:
-      - Reports
-      summary: List-Reports
-      description: List reports for the authenticated project.
-      operationId: list-reports
+      - Hooks
+      summary: List-Hooks
+      description: List hooks for the project, newest first.
+      operationId: list-hooks
       security:
       - OAuth2: []
       - ApiKey: []
@@ -39,7 +39,7 @@ paths:
         required: false
         schema:
           type: integer
-          maximum: 1000
+          maximum: 500
           minimum: 1
           default: 100
           title: Limit
@@ -57,83 +57,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReportListResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    post:
-      tags:
-      - Reports
-      summary: Create-Report
-      description: Create a new report.
-      operationId: create-report
-      security:
-      - OAuth2: []
-      - ApiKey: []
-      parameters:
-      - name: apimetrics-project-id
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Apimetrics-Project-Id
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReportCreateBody'
-      responses:
-        '201':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReportResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/2/reports/{report_id}/:
-    get:
-      tags:
-      - Reports
-      summary: Get-Report
-      description: Get a single report by id.
-      operationId: get-report
-      security:
-      - OAuth2: []
-      - ApiKey: []
-      parameters:
-      - name: report_id
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: ^[A-Za-z0-9_-]+$
-          title: Report ID
-      - name: apimetrics-project-id
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Apimetrics-Project-Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReportResponse'
+                $ref: '#/components/schemas/HookListResponse'
         '422':
           description: Validation Error
           content:
@@ -142,21 +66,14 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     put:
       tags:
-      - Reports
-      summary: Update-Report
-      description: Partially update a report (only supplied fields change; groups are replaced).
-      operationId: update-report
+      - Hooks
+      summary: Create-Hook
+      description: Create a hook bound to a workflow target.
+      operationId: create-hook
       security:
       - OAuth2: []
       - ApiKey: []
       parameters:
-      - name: report_id
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: ^[A-Za-z0-9_-]+$
-          title: Report ID
       - name: apimetrics-project-id
         in: header
         required: false
@@ -170,37 +87,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReportUpdateBody'
+              $ref: '#/components/schemas/CreateHookRequest'
       responses:
-        '200':
+        '201':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReportResponse'
+                $ref: '#/components/schemas/HookResponse'
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    delete:
+  /api/2/hooks/{hook_key_str}:
+    get:
       tags:
-      - Reports
-      summary: Delete-Report
-      description: Delete a report and return its last representation.
-      operationId: delete-report
+      - Hooks
+      summary: Get-Hook
+      description: Get a hook.
+      operationId: get-hook
       security:
       - OAuth2: []
       - ApiKey: []
       parameters:
-      - name: report_id
+      - name: hook_key_str
         in: path
         required: true
         schema:
           type: string
           pattern: ^[A-Za-z0-9_-]+$
-          title: Report ID
+          title: Hook ID
       - name: apimetrics-project-id
         in: header
         required: false
@@ -215,7 +133,89 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReportResponse'
+                $ref: '#/components/schemas/HookResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Hooks
+      summary: Update-Hook
+      description: Partially update a hook.
+      operationId: update-hook
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: hook_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Hook ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateHookRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HookResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Hooks
+      summary: Delete-Hook
+      description: Delete a hook, returning the deleted representation.
+      operationId: delete-hook
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: hook_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Hook ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HookResponse'
         '422':
           description: Validation Error
           content:
@@ -224,63 +224,47 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ReportGroupResponse:
+    CreateHookRequest:
       properties:
         name:
-          type: string
-          title: Name
-        rows:
-          items:
-            $ref: '#/components/schemas/ReportRowResponse'
-          type: array
-          title: Rows
-          default: []
-      type: object
-      required:
-      - name
-      title: ReportGroupResponse
-    _ReportGroupBody:
-      properties:
-        name:
-          type: string
-          title: Name
-        rows:
-          items:
-            $ref: '#/components/schemas/_ReportRowBody'
-          type: array
-          title: Rows
-          default: []
-      type: object
-      required:
-      - name
-      title: _ReportGroupBody
-    ReportAccessResponse:
-      properties:
-        public:
-          type: boolean
-          title: Public
-      type: object
-      required:
-      - public
-      title: ReportAccessResponse
-    ReportListMetaResponse:
-      properties:
-        next_cursor:
           anyOf:
           - type: string
+            maxLength: 400
           - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
+          title: Name
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        save_timestamp:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Save Timestamp
+        variables:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Variables
+        target_id:
           type: string
-          title: Project Id
+          title: Target Id
+      additionalProperties: false
       type: object
       required:
-      - more
-      - project_id
-      title: ReportListMetaResponse
+      - target_id
+      title: CreateHookRequest
     HTTPValidationError:
       properties:
         detail:
@@ -290,175 +274,56 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ReportRowResponse:
+    UpdateHookRequest:
       properties:
-        call_id:
-          type: string
-          title: Call Id
-        location_id:
-          type: string
-          title: Location Id
-      type: object
-      required:
-      - call_id
-      - location_id
-      title: ReportRowResponse
-    ReportResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/ReportMetaResponse'
-        access:
-          $ref: '#/components/schemas/ReportAccessResponse'
-        groups:
-          items:
-            $ref: '#/components/schemas/ReportGroupResponse'
-          type: array
-          title: Groups
-          default: []
-      type: object
-      required:
-      - id
-      - meta
-      - access
-      title: ReportResponse
-    ReportUpdateBody:
-      properties:
-        meta:
+        name:
           anyOf:
-          - $ref: '#/components/schemas/_ReportUpdateMeta'
+          - type: string
+            maxLength: 400
           - type: 'null'
-        access:
+          title: Name
+        description:
           anyOf:
-          - $ref: '#/components/schemas/_ReportAccessBody'
+          - type: string
+            maxLength: 1000
           - type: 'null'
-        groups:
+          title: Description
+        tags:
           anyOf:
           - items:
-              $ref: '#/components/schemas/_ReportGroupBody'
+              type: string
             type: array
           - type: 'null'
-          title: Groups
+          title: Tags
+        save_timestamp:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Save Timestamp
+        variables:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Variables
       additionalProperties: false
       type: object
-      title: ReportUpdateBody
-    ReportCreateBody:
+      title: UpdateHookRequest
+    HookListResponse:
       properties:
         meta:
-          $ref: '#/components/schemas/_ReportCreateMeta'
-        access:
-          anyOf:
-          - $ref: '#/components/schemas/_ReportAccessBody'
-          - type: 'null'
-        groups:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/_ReportGroupBody'
-            type: array
-          - type: 'null'
-          title: Groups
-      additionalProperties: false
-      type: object
-      required:
-      - meta
-      title: ReportCreateBody
-    ReportListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/ReportListMetaResponse'
+          $ref: '#/components/schemas/HookListMeta'
         results:
           items:
-            $ref: '#/components/schemas/ReportResponse'
+            $ref: '#/components/schemas/HookResponse'
           type: array
           title: Results
       type: object
       required:
       - meta
       - results
-      title: ReportListResponse
-    _ReportCreateMeta:
-      properties:
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        tags:
-          items:
-            type: string
-          type: array
-          title: Tags
-          default: []
-        branding:
-          type: boolean
-          title: Branding
-          default: false
-      type: object
-      required:
-      - name
-      title: _ReportCreateMeta
-    ReportMetaResponse:
-      properties:
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        tags:
-          items:
-            type: string
-          type: array
-          title: Tags
-          default: []
-        created:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Created
-        last_update:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Update
-        owner:
-          type: string
-          title: Owner
-        project_id:
-          type: string
-          title: Project Id
-        branding:
-          type: boolean
-          title: Branding
-      type: object
-      required:
-      - name
-      - owner
-      - project_id
-      - branding
-      title: ReportMetaResponse
-    _ReportRowBody:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        location_id:
-          type: string
-          title: Location Id
-      type: object
-      required:
-      - call_id
-      - location_id
-      title: _ReportRowBody
+      title: HookListResponse
     ValidationError:
       properties:
         loc:
@@ -485,29 +350,42 @@ components:
       - msg
       - type
       title: ValidationError
-    _ReportAccessBody:
+    HookListMeta:
       properties:
-        public:
+        next_cursor:
           anyOf:
-          - type: boolean
+          - type: string
           - type: 'null'
-          title: Public
-        org:
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
           anyOf:
-          - type: boolean
+          - type: string
           - type: 'null'
-          title: Org
-        moderated:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Moderated
+          title: Project Id
       type: object
-      title: _ReportAccessBody
-    _ReportUpdateMeta:
+      title: HookListMeta
+    HookResponse:
       properties:
-        name:
+        id:
           type: string
+          title: Id
+        guid:
+          type: string
+          title: Guid
+        url:
+          type: string
+          title: Url
+        target_id:
+          type: string
+          title: Target Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Name
         description:
           anyOf:
@@ -519,11 +397,38 @@ components:
             type: string
           type: array
           title: Tags
-        branding:
+        save_timestamp:
           type: boolean
-          title: Branding
+          title: Save Timestamp
+          default: false
+        variables:
+          additionalProperties:
+            type: string
+          type: object
+          title: Variables
+        project_id:
+          type: string
+          title: Project Id
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
       type: object
-      title: _ReportUpdateMeta
+      required:
+      - id
+      - guid
+      - url
+      - target_id
+      - project_id
+      title: HookResponse
   securitySchemes:
     OAuth2:
       type: oauth2

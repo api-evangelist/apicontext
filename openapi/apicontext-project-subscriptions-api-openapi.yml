@@ -1,0 +1,502 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Project Subscriptions API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Project Subscriptions
+  description: Per-account per-project email digest subscriptions (daily / weekly / monthly).
+paths:
+  /api/2/project-subscriptions/:
+    post:
+      tags:
+      - Project Subscriptions
+      summary: Subscribe-To-Project-Emails
+      description: 'Subscribe to email digests for the active project.
+
+
+        Sets which digest cadences (``daily``, ``weekly``, ``monthly``) the
+
+        caller receives for this project. A subsequent call replaces the
+
+        previous selection -- cadences omitted from ``options`` are
+
+        unsubscribed. Returns the current subscription state.'
+      operationId: subscribe-to-project-emails
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscribeRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Project Subscriptions
+      summary: Unsubscribe-From-Project-Emails
+      description: 'Unsubscribe from all email digests for the active project.
+
+
+        Idempotent: returns ``{"status": "OK"}`` whether or not a
+
+        subscription existed.'
+      operationId: unsubscribe-from-project-emails
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/project-subscriptions/projects:
+    get:
+      tags:
+      - Project Subscriptions
+      summary: List-Projects-Subscribed
+      description: 'List every project the caller is subscribed to across all projects.
+
+
+        Each result includes the project the subscription applies to and
+
+        which digest cadences the caller receives. Paginated via ``cursor``
+
+        and ``limit``.'
+      operationId: list-projects-subscribed
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/project-subscriptions/projects/{level}:
+    get:
+      tags:
+      - Project Subscriptions
+      summary: List-Projects-Subscribed-At-Level
+      description: 'List every project the caller is subscribed to at the given digest level.
+
+
+        ``level`` is one of ``daily``, ``weekly``, or ``monthly``. Any other
+
+        value returns an empty result set. Paginated via ``cursor`` and
+
+        ``limit``.'
+      operationId: list-projects-subscribed-at-level
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: level
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Level
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/project-subscriptions/accounts/project/{project_key_str}:
+    get:
+      tags:
+      - Project Subscriptions
+      summary: List-Accounts-Subscribed
+      description: 'List every account subscribed to this project''s email digests.
+
+
+        Requires project-admin access: the caller must be a site admin, an
+
+        admin of the project''s organisation, or the owner of the project.
+
+        Returns 404 for an unknown project id. Paginated via ``cursor``
+
+        and ``limit``.'
+      operationId: list-accounts-subscribed
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: project_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Key Str
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/project-subscriptions/accounts/project/{project_key_str}/{level}:
+    get:
+      tags:
+      - Project Subscriptions
+      summary: List-Accounts-Subscribed-At-Level
+      description: 'List every account subscribed to this project''s digests at the given level.
+
+
+        ``level`` is one of ``daily``, ``weekly``, or ``monthly``. Requires
+
+        project-admin access: the caller must be a site admin, an admin of
+
+        the project''s organisation, or the owner of the project. Returns
+
+        404 for an unknown project id. Paginated via ``cursor`` and
+
+        ``limit``.'
+      operationId: list-accounts-subscribed-at-level
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: project_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Key Str
+      - name: level
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Level
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: StatusResponse
+    SubscriptionResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        project_id:
+          type: string
+          title: Project Id
+        account_id:
+          type: string
+          title: Account Id
+        options:
+          items:
+            type: string
+          type: array
+          title: Options
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+      type: object
+      required:
+      - id
+      - project_id
+      - account_id
+      - options
+      title: SubscriptionResponse
+      description: 'One row of ``ProjectEmailSubscription``, matching Py2''s
+
+        ``convert_datastore_to_api`` output.'
+    api2__project_subscriptions__subscriptions___ListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      title: _ListMeta
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SubscriptionListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api2__project_subscriptions__subscriptions___ListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/SubscriptionResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: SubscriptionListResponse
+    SubscribeRequest:
+      properties:
+        options:
+          items:
+            type: string
+            enum:
+            - daily
+            - weekly
+            - monthly
+          type: array
+          title: Options
+          description: Which digest cadences to subscribe to.
+      additionalProperties: false
+      type: object
+      title: SubscribeRequest
+      description: 'Body for ``POST/PUT /api/2/project-subscriptions/``.
+
+
+        Options default to all three digest levels if the caller omits the
+
+        field, matching Py2''s ``options = self.request_body.get("options", VALID_OPTIONS)``.'
+      examples:
+      - options:
+        - daily
+        - weekly
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

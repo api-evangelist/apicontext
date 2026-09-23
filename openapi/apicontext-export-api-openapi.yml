@@ -1,0 +1,191 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Export API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Export
+  description: Export and re-tag a project's configuration.
+paths:
+  /api/2/export/:
+    get:
+      tags:
+      - Export
+      summary: Export-Project
+      description: Export the caller's project configuration as an import bundle.
+      operationId: export-project
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: webhooks
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Include webhook entities
+      - name: environment_values
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Include environment variable values (unredacted)
+      - name: header_values
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Include header values (unredacted)
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/export/tag:
+    post:
+      tags:
+      - Export
+      summary: Tag-Project-Entities
+      description: Assign ``importer:`` tags to any project entities that lack one.
+      operationId: tag-project-entities
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetTagsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SetTagsResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        updates:
+          items:
+            type: string
+          type: array
+          title: Updates
+      type: object
+      required:
+      - status
+      - updates
+      title: SetTagsResponse
+    ExportResponse:
+      properties:
+        $schema:
+          type: string
+          title: $Schema
+        version:
+          type: string
+          title: Version
+        project:
+          additionalProperties: true
+          type: object
+          title: Project
+      type: object
+      required:
+      - $schema
+      - version
+      - project
+      title: ExportResponse
+      description: 'The export bundle: a bare ``{$schema, version, project}`` object.'
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

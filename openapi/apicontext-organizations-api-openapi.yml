@@ -1,0 +1,493 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Organizations API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Organizations
+  description: Manage organizations and their members.
+paths:
+  /api/2/organizations/:
+    get:
+      tags:
+      - Organizations
+      summary: List-Orgs
+      description: List all organizations (site admin/analyst/viewer/quota_viewer only).
+      operationId: list-orgs
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          title: Limit
+      - name: system_tag
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: System Tag
+      - name: tag
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tag
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/organizations/{org_id}/:
+    get:
+      tags:
+      - Organizations
+      summary: Get-Org
+      description: Get an organization by ID.
+      operationId: get-org
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      - name: include_quota
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Include Quota
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Organizations
+      summary: Update-Org
+      description: Update an organization's name, tags, or security settings.
+      operationId: update-org
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrgBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/organizations/{org_id}/accounts/:
+    get:
+      tags:
+      - Organizations
+      summary: List-Accounts-In-Org
+      description: List Auth0 accounts in an organization.
+      operationId: list-accounts-in-org
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgAccountListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/organizations/{org_id}/accounts/{account_id}/:
+    get:
+      tags:
+      - Organizations
+      summary: Get-Account-In-Org
+      description: Get an Auth0 account that is a member of the organization.
+      operationId: get-account-in-org
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9._|@-]{3,400}$
+          title: Account ID
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgAccountResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Organizations
+      summary: Delete-Account-From-Org
+      description: Remove an account from an organization.
+      operationId: delete-account-from-org
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9._|@-]{3,400}$
+          title: Account ID
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgAccountDeleteResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    OrgListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: integer
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+      type: object
+      required:
+      - more
+      title: OrgListMeta
+    UpdateOrgBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        enforce_2fa:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enforce 2Fa
+        kms_enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Kms Enabled
+        password_expiry_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Password Expiry Days
+      type: object
+      title: UpdateOrgBody
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    OrgListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/OrgResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: OrgListResponse
+    OrgAccountListMeta:
+      properties:
+        more:
+          type: boolean
+          title: More
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      type: object
+      required:
+      - more
+      title: OrgAccountListMeta
+    OrgAccountListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgAccountListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/OrgAccountResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: OrgAccountListResponse
+    OrgAccountResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        permissions:
+          items:
+            type: string
+          type: array
+          title: Permissions
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      title: OrgAccountResponse
+    OrgResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        subscription_level:
+          type: string
+          title: Subscription Level
+        billing_admin_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Billing Admin Id
+        enforce_2fa:
+          type: boolean
+          title: Enforce 2Fa
+          default: false
+        kms_enabled:
+          type: boolean
+          title: Kms Enabled
+          default: false
+        password_expiry_days:
+          type: integer
+          title: Password Expiry Days
+          default: 0
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        system_tags:
+          items:
+            type: string
+          type: array
+          title: System Tags
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        sub_info:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Sub Info
+      type: object
+      required:
+      - id
+      - name
+      - subscription_level
+      title: OrgResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    OrgAccountDeleteResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: OrgAccountDeleteResponse
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

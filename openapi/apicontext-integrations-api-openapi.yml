@@ -1,0 +1,367 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Integrations API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Integrations
+paths:
+  /api/3/organizations/{org_id}/integrations/:
+    get:
+      tags:
+      - Integrations
+      summary: List-Integrations-For-Org
+      operationId: list-integrations-for-org
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadIntegration'
+                title: Response List-Integrations-For-Org
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Integrations
+      summary: Create-Integration
+      operationId: create-integration
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIntegration'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadIntegration'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/organizations/{org_id}/integrations/{id}:
+    get:
+      tags:
+      - Integrations
+      summary: Get-Integration-By-Id
+      operationId: get-integration-by-id
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadIntegration'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Integrations
+      summary: Update-Integration
+      operationId: update-integration
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIntegration'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadIntegration'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Integrations
+      summary: Delete-Integration
+      operationId: delete-integration
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/integrations/datadog/authenticate:
+    post:
+      tags:
+      - Integrations
+      summary: Authenticate-Datadog-Integration
+      operationId: authenticate-datadog-integration
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: code
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Code
+      - name: code_verifier
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Code Verifier
+      - name: domain
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Domain
+      - name: redirect_uri
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Redirect Uri
+      - name: state
+        in: query
+        required: true
+        schema:
+          type: string
+          title: State
+      responses:
+        '200':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    UpdateIntegration:
+      properties:
+        name:
+          type: string
+          title: Name
+        details:
+          additionalProperties:
+            type: string
+          type: object
+          title: Details
+      type: object
+      required:
+      - name
+      - details
+      title: UpdateIntegration
+    CreateIntegration:
+      properties:
+        name:
+          type: string
+          title: Name
+        provider:
+          type: string
+          title: Provider
+        details:
+          additionalProperties:
+            type: string
+          type: object
+          title: Details
+      type: object
+      required:
+      - name
+      - provider
+      - details
+      title: CreateIntegration
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ReadIntegration:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        provider:
+          type: string
+          title: Provider
+        details:
+          additionalProperties:
+            type: string
+          type: object
+          title: Details
+        created_by:
+          type: string
+          title: Created By
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        last_modified:
+          type: string
+          format: date-time
+          title: Last Modified
+      type: object
+      required:
+      - id
+      - name
+      - provider
+      - details
+      - created_by
+      - created_at
+      - last_modified
+      title: ReadIntegration
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

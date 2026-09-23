@@ -1,0 +1,506 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Project SLOs API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Project SLOs
+  description: Service level objectives for the current project.
+paths:
+  /api/2/project/slo/:
+    get:
+      tags:
+      - Project SLOs
+      summary: Get-Project-Slo
+      description: Get the current project's SLO (defaults when none is stored).
+      operationId: get-project-slo
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSloResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Project SLOs
+      summary: Update-Project-Slo
+      description: Create or update the current project's SLO.
+      operationId: update-project-slo
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectSloBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSloResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Project SLOs
+      summary: Delete-Project-Slo
+      description: Delete the current project's SLO (idempotent).
+      operationId: delete-project-slo
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/ProjectSloResponse'
+                - $ref: '#/components/schemas/ProjectSloDeletedStatus'
+                title: Response Delete-Project-Slo
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ProjectSloResponse:
+      properties:
+        project_id:
+          type: string
+          title: Project Id
+        objectives:
+          items:
+            $ref: '#/components/schemas/ServiceLevelObjectiveResponse'
+          type: array
+          title: Objectives
+        thresholds:
+          items:
+            $ref: '#/components/schemas/ThresholdResponse'
+          type: array
+          title: Thresholds
+        include_tags:
+          items:
+            type: string
+          type: array
+          title: Include Tags
+        exclude_tags:
+          items:
+            type: string
+          type: array
+          title: Exclude Tags
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+      type: object
+      required:
+      - project_id
+      - objectives
+      - thresholds
+      - include_tags
+      - exclude_tags
+      - last_update
+      - created
+      title: ProjectSloResponse
+      examples:
+      - created: '2026-06-25T10:13:37.546136Z'
+        exclude_tags:
+        - apimetrics:not_monitored
+        include_tags: []
+        last_update: '2026-06-25T10:13:37.597335Z'
+        objectives:
+        - comparator: <
+          measure: mean
+          metric: dns
+          period: MONTH
+          unit: ms
+          value: 100
+        project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        thresholds:
+        - delta: 100
+          metric: latency
+          period: MONTH
+          unit: ms
+    ServiceLevelObjectiveResponse:
+      properties:
+        metric:
+          type: string
+          title: Metric
+        measure:
+          type: string
+          title: Measure
+        comparator:
+          type: string
+          title: Comparator
+        value:
+          type: number
+          title: Value
+        unit:
+          type: string
+          title: Unit
+        period:
+          type: string
+          title: Period
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      type: object
+      required:
+      - metric
+      - measure
+      - comparator
+      - value
+      - unit
+      - period
+      title: ServiceLevelObjectiveResponse
+    MEASURES:
+      type: string
+      enum:
+      - mean
+      - value
+      title: MEASURES
+    METRICS:
+      type: string
+      enum:
+      - pass
+      - slow
+      - warning
+      - fail
+      - availability
+      - dns
+      - tcp
+      - handshake
+      - upload
+      - processing
+      - download
+      - total
+      - network
+      - server
+      - total_no_dns
+      - casc
+      - apdex
+      - first_contentful_paint
+      - largest_contentful_paint
+      - first_input_delay
+      - cumulative_layout_shift
+      title: METRICS
+    ThresholdBody:
+      properties:
+        metric:
+          $ref: '#/components/schemas/THRESHOLDS'
+          description: The threshold kind.
+        delta:
+          type: number
+          minimum: 0.0
+          title: Delta
+          description: The allowed change.
+        unit:
+          $ref: '#/components/schemas/UNITS'
+          description: '''pp'' for grade thresholds; ''percent'' or ''ms'' for latency.'
+        period:
+          $ref: '#/components/schemas/SloPeriod'
+          description: The evaluation period.
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Optional free-text description of the threshold.
+      type: object
+      required:
+      - metric
+      - delta
+      - unit
+      - period
+      title: ThresholdBody
+      examples:
+      - delta: 100
+        metric: latency
+        period: MONTH
+        unit: ms
+    ThresholdResponse:
+      properties:
+        metric:
+          type: string
+          title: Metric
+        delta:
+          type: number
+          title: Delta
+        unit:
+          type: string
+          title: Unit
+        period:
+          type: string
+          title: Period
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      type: object
+      required:
+      - metric
+      - delta
+      - unit
+      - period
+      title: ThresholdResponse
+    ServiceLevelObjectiveBody:
+      properties:
+        metric:
+          $ref: '#/components/schemas/METRICS'
+          description: The metric to measure.
+        measure:
+          $ref: '#/components/schemas/MEASURES'
+          description: The measure to use.
+        comparator:
+          $ref: '#/components/schemas/COMPARATORS'
+          description: '''>'' for pass/availability/casc/apdex, ''<'' otherwise.'
+        value:
+          type: number
+          maximum: 120000.0
+          minimum: 0.0
+          title: Value
+          description: The target value.
+        unit:
+          $ref: '#/components/schemas/UNITS'
+          description: '''ms'' for latency metrics, ''percent'' for grade metrics, ''value'' for computed metrics.'
+        period:
+          $ref: '#/components/schemas/SloPeriod'
+          description: The evaluation period.
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Optional free-text description of the objective.
+      type: object
+      required:
+      - metric
+      - measure
+      - comparator
+      - value
+      - unit
+      - period
+      title: ServiceLevelObjectiveBody
+      examples:
+      - comparator: <
+        measure: mean
+        metric: dns
+        period: MONTH
+        unit: ms
+        value: 100
+    UpdateProjectSloBody:
+      properties:
+        objectives:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ServiceLevelObjectiveBody'
+            type: array
+          - type: 'null'
+          title: Objectives
+          description: Replaces the whole objective list.
+        thresholds:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ThresholdBody'
+            type: array
+          - type: 'null'
+          title: Thresholds
+          description: Replaces the whole threshold list.
+        include_tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Include Tags
+          description: Only calls carrying one of these tags are evaluated.
+        exclude_tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Exclude Tags
+          description: Calls carrying any of these tags are skipped.
+      type: object
+      title: UpdateProjectSloBody
+      examples:
+      - exclude_tags: []
+        include_tags: []
+        objectives:
+        - comparator: <
+          measure: mean
+          metric: dns
+          period: MONTH
+          unit: ms
+          value: 100
+        thresholds:
+        - delta: 100
+          metric: latency
+          period: MONTH
+          unit: ms
+    COMPARATORS:
+      type: string
+      enum:
+      - <
+      - '>'
+      title: COMPARATORS
+    ProjectSloDeletedStatus:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: ok
+      type: object
+      title: ProjectSloDeletedStatus
+      description: Rendered when DELETE finds no stored SLO (idempotent delete).
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    THRESHOLDS:
+      type: string
+      enum:
+      - grade
+      - latency
+      title: THRESHOLDS
+    SloPeriod:
+      type: string
+      enum:
+      - DAY
+      - WEEK
+      - MONTH
+      title: SloPeriod
+      description: 'The evaluation periods the /api/2 project SLO accepts.
+
+
+        ``models.project_slo.PERIODS`` also defines sub-day periods for the newer
+
+        SLO configurations; ``ProjectSLO`` only supports these three.'
+    UNITS:
+      type: string
+      enum:
+      - ms
+      - percent
+      - pp
+      - value
+      title: UNITS
+      x-enum-descriptions:
+        ms: Duration in milliseconds
+        percent: Absolute percentage value, e.g. availability > 0.995
+        pp: Percentage points — the arithmetic difference between two percentages. Only valid for grade thresholds.
+        value: Dimensionless numeric value
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

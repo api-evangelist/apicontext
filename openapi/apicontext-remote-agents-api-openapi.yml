@@ -1,0 +1,379 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Remote Agents API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Remote Agents
+paths:
+  /api/3/agents/:
+    get:
+      tags:
+      - Remote Agents
+      summary: List Agents
+      operationId: _list_agents
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ReadAgentResponse'
+                type: array
+                title: Response  List Agents
+      security:
+      - OAuth2: []
+      - ApiKey: []
+    post:
+      tags:
+      - Remote Agents
+      summary: Create Agent
+      operationId: _create_agent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAgentRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadAgentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2: []
+      - ApiKey: []
+  /api/3/agents/{agent_id}:
+    get:
+      tags:
+      - Remote Agents
+      summary: Agent By Id
+      operationId: _agent_by_id
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: agent_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Agent Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadAgentResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Remote Agents
+      summary: Update Agent
+      operationId: _update_agent
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: agent_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Agent Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAgentRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Remote Agents
+      summary: Delete Agent
+      operationId: _delete_agent
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: agent_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Agent Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/agents/{agent_id}/config:
+    get:
+      tags:
+      - Remote Agents
+      summary: Agent Config By Id
+      operationId: _agent_config_by_id
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: agent_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Agent Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ReadAgentResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        agent_type:
+          type: string
+          title: Agent Type
+        display_name:
+          type: string
+          title: Display Name
+        queue_name:
+          type: string
+          title: Queue Name
+        config_key_suffix:
+          type: string
+          title: Config Key Suffix
+        access_token:
+          type: string
+          title: Access Token
+        owners:
+          items:
+            type: string
+          type: array
+          title: Owners
+        cloud:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cloud
+        meta:
+          additionalProperties: true
+          type: object
+          title: Meta
+        agent:
+          additionalProperties: true
+          type: object
+          title: Agent
+        user_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Name
+        user_cloud:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Cloud
+        user_city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User City
+        user_region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Region
+        user_country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Country
+        user_continent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Continent
+        user_geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Geography
+      type: object
+      required:
+      - id
+      - agent_type
+      - display_name
+      - queue_name
+      - config_key_suffix
+      - access_token
+      - owners
+      - cloud
+      - meta
+      - agent
+      title: ReadAgentResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CreateAgentRequest:
+      properties:
+        agent_type:
+          type: string
+          title: Agent Type
+        display_name:
+          type: string
+          title: Display Name
+        queue_name:
+          type: string
+          title: Queue Name
+        config_key_suffix:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Config Key Suffix
+        cloud:
+          type: string
+          title: Cloud
+        owners:
+          items:
+            type: string
+          type: array
+          title: Owners
+        user_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Name
+        user_city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User City
+        user_region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Region
+        user_country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Country
+        user_continent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Continent
+        user_geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Geography
+      type: object
+      required:
+      - agent_type
+      - display_name
+      - queue_name
+      - cloud
+      - owners
+      title: CreateAgentRequest
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

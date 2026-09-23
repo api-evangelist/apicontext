@@ -1,9 +1,8 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: APIContext Insights API
-  description: API for the APImetrics platform This document is the 'Insights' slice of the APIContext
-    (APImetrics) platform OpenAPI published at https://client.apimetrics.io/openapi.json.
-  version: v2026-09-02
+  title: APImetrics Insights API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
   contact:
     name: APIContext Support
     url: https://apicontext.io/
@@ -11,10 +10,7 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://apimetrics.io/tos/
-servers:
-- url: https://client.apimetrics.io
-  description: APIContext (APImetrics) platform API
+  version: v2026-09-02
 tags:
 - name: Insights
   description: Pre-computed API insights reports, rankings and outlier detail.
@@ -320,31 +316,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
-  securitySchemes:
-    OAuth2:
-      type: oauth2
-      flows:
-        authorizationCode:
-          scopes:
-            openid: OpenID Connect identity
-            profile: User profile
-            email: User email address
-          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
-          tokenUrl: https://auth.apimetrics.io/oauth/token
-    ApiKey:
-      type: apiKey
-      in: header
-      name: X-Api-Key
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     HistoryMeta:
       properties:
         weekly:
@@ -364,20 +336,6 @@ components:
       - start_date
       - end_date
       title: HistoryMeta
-    HistoryResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/HistoryMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/HistoryRow'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: HistoryResponse
     HistoryRow:
       properties:
         start:
@@ -410,6 +368,20 @@ components:
         ``exclude_none`` so an empty bucket renders as just ``{"start": ...}``,
 
         matching the legacy output.'
+    RankResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/RankMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/RankResult'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: RankResponse
     InsightsListMeta:
       properties:
         next_cursor:
@@ -428,20 +400,15 @@ components:
           title: Project Id
       type: object
       title: InsightsListMeta
-    InsightsListResponse:
+    HTTPValidationError:
       properties:
-        meta:
-          $ref: '#/components/schemas/InsightsListMeta'
-        results:
+        detail:
           items:
-            $ref: '#/components/schemas/InsightsReportApi'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Results
+          title: Detail
       type: object
-      required:
-      - meta
-      - results
-      title: InsightsListResponse
+      title: HTTPValidationError
     InsightsReportApi:
       properties:
         id:
@@ -587,20 +554,46 @@ components:
       required:
       - period
       title: RankMeta
-    RankResponse:
+    InsightsListResponse:
       properties:
         meta:
-          $ref: '#/components/schemas/RankMeta'
+          $ref: '#/components/schemas/InsightsListMeta'
         results:
           items:
-            $ref: '#/components/schemas/RankResult'
+            $ref: '#/components/schemas/InsightsReportApi'
           type: array
           title: Results
       type: object
       required:
       - meta
       - results
-      title: RankResponse
+      title: InsightsListResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     RankResult:
       properties:
         id:
@@ -687,29 +680,32 @@ components:
       description: 'A ranked monitor: its latest score plus a short ``results`` history of
 
         ``(period_start, score)`` points and the matching ``filenames``.'
-    ValidationError:
+    HistoryResponse:
       properties:
-        loc:
+        meta:
+          $ref: '#/components/schemas/HistoryMeta'
+        results:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/HistoryRow'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Results
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - meta
+      - results
+      title: HistoryResponse
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

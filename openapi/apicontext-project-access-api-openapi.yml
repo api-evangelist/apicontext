@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: APImetrics Projects API
+  title: APImetrics Project Access API
   description: API for the APImetrics platform
   termsOfService: http://apimetrics.io/tos/
   contact:
@@ -12,92 +12,16 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: v2026-09-02
 tags:
-- name: Projects
-  description: Manage a project.
+- name: Project Access
+  description: Manage direct account access grants on projects.
 paths:
-  /api/3/project/security-profiles:
+  /api/2/organizations/{org_id}/projects/access:
     get:
       tags:
-      - Projects
-      summary: List-Security-Profiles-For-Project
-      operationId: list-security-profiles-for-project
-      security:
-      - OAuth2: []
-      - ApiKey: []
-      parameters:
-      - name: apimetrics-project-id
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Apimetrics-Project-Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-                title: Response List-Security-Profiles-For-Project
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/3/project/agents:
-    get:
-      tags:
-      - Projects
-      summary: List-Agents-For-Project
-      description: 'List all agents accessible to a project.
-
-        Returns the project''s agent list (its organization''s ``agents:``
-
-        system tag, or the public list) plus agents owned by the project''s
-
-        organization or by the project itself.
-
-        Personal projects (no org) only get public and project-owned agents.'
-      operationId: list-agents-for-project
-      security:
-      - OAuth2: []
-      - ApiKey: []
-      parameters:
-      - name: apimetrics-project-id
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Apimetrics-Project-Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: true
-                title: Response List-Agents-For-Project
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/2/organizations/{org_id}/projects/:
-    get:
-      tags:
-      - Projects
-      summary: List-Projects-In-Org
-      description: List projects in an organization.
-      operationId: list-projects-in-org
+      - Project Access
+      summary: List-Project-Access-By-Org
+      description: List all direct account access grants across an organization's projects.
+      operationId: list-project-access-by-org
       security:
       - OAuth2: []
       - ApiKey: []
@@ -109,14 +33,6 @@ paths:
           type: string
           pattern: ^[a-z0-9]{3,400}$
           title: Organization ID
-      - name: include_quota
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Include Quota
       - name: cursor
         in: query
         required: false
@@ -132,116 +48,26 @@ paths:
           type: integer
           default: 25
           title: Limit
-      - name: system_tag
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: System Tag
-      - name: tag
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tag
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectListResponse'
+                $ref: '#/components/schemas/ProjectAccessListResponse'
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    post:
-      tags:
-      - Projects
-      summary: Create-Project-In-Org
-      description: Create a new project in an organization.
-      operationId: create-project-in-org
-      security:
-      - OAuth2: []
-      - ApiKey: []
-      parameters:
-      - name: org_id
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: ^[a-z0-9]{3,400}$
-          title: Organization ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProjectBody'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProjectResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/2/organizations/{org_id}/projects/{project_key_str}/:
-    delete:
-      tags:
-      - Projects
-      summary: Delete-Project-From-Org
-      description: Remove a project from an organization (re-homes it to community).
-      operationId: delete-project-from-org
-      security:
-      - OAuth2: []
-      - ApiKey: []
-      parameters:
-      - name: project_key_str
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: ^[A-Za-z0-9_-]+$
-          title: Resource ID
-      - name: org_id
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: ^[a-z0-9]{3,400}$
-          title: Organization ID
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProjectResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/2/projects/{project_key_str}/:
+  /api/2/projects/{project_key_str}/access/:
     get:
       tags:
-      - Projects
-      summary: Get-Project
-      description: Get a project by key.
-      operationId: get-project
+      - Project Access
+      summary: List-Project-Access
+      description: List direct account access grants for a project.
+      operationId: list-project-access
       security:
       - OAuth2: []
       - ApiKey: []
@@ -253,13 +79,28 @@ paths:
           type: string
           pattern: ^[A-Za-z0-9_-]+$
           title: Resource ID
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          title: Limit
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectResponse'
+                $ref: '#/components/schemas/ProjectAccessListResponse'
         '422':
           description: Validation Error
           content:
@@ -268,10 +109,10 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
-      - Projects
-      summary: Update-Project
-      description: Update a project's name, tags, email, or security profile.
-      operationId: update-project
+      - Project Access
+      summary: Create-Project-Access
+      description: Grant an account direct access to a project.
+      operationId: create-project-access
       security:
       - OAuth2: []
       - ApiKey: []
@@ -288,14 +129,132 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateProjectBody'
+              $ref: '#/components/schemas/CreateProjectAccessBody'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api2__projects__proj_access__ProjectAccessResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/projects/{project_key_str}/access/{project_access_id}/:
+    get:
+      tags:
+      - Project Access
+      summary: Get-Project-Access
+      description: Get a project access grant by id.
+      operationId: get-project-access
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: project_access_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: project_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectResponse'
+                $ref: '#/components/schemas/api2__projects__proj_access__ProjectAccessResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Project Access
+      summary: Update-Project-Access
+      description: Update a project access grant.
+      operationId: update-project-access
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: project_access_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: project_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectAccessBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api2__projects__proj_access__ProjectAccessResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Project Access
+      summary: Delete-Project-Access
+      description: Delete a project access grant.
+      operationId: delete-project-access
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: project_access_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: project_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api2__projects__proj_access__ProjectAccessResponse'
         '422':
           description: Validation Error
           content:
@@ -304,59 +263,33 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
+    CreateProjectAccessBody:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        account_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Id
+          description: The account to grant access to; defaults to the caller.
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+          description: Informational email for the account.
+        access_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Level
+          description: Defaults to VIEWER.
       type: object
-      title: HTTPValidationError
-    ProjectListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/ProjectListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/ProjectResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: ProjectListResponse
+      title: CreateProjectAccessBody
       examples:
-      - meta:
-          more: true
-          next_cursor: ClIKLgoI...
-        results:
-        - created: '2026-06-19T09:06:47.046143Z'
-          id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-          last_update: '2026-06-19T09:06:47.046170Z'
-          name: Project 1
-          org_id: apicontext
-          sub_info:
-            counts:
-              org_test_run_count: 0
-              public_report_count: 0
-              scheduled_test_count: 288
-              test_setup_count: 4
-              user_test_run_count: 0
-            month_progress: 0.814
-            quotas:
-              public_report_quota: 10
-              test_run_quota: 1000000
-              test_setup_quota: 1000
-            sub:
-              backend: azure
-              level: CONTRACT
-              name: Enterprise
-              org_id: apicontext
-              plan: enterprise
-          tags: []
-    ProjectListMeta:
+      - access_level: EDITOR
+        account_id: auth0|5f00000000000000000000aa
+        email: user@example.com
+    ProjectAccessListMeta:
       properties:
         next_cursor:
           anyOf:
@@ -376,65 +309,116 @@ components:
       required:
       - next_cursor
       - more
-      title: ProjectListMeta
-    CreateProjectBody:
+      title: ProjectAccessListMeta
+    HTTPValidationError:
       properties:
-        name:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    api2__projects__proj_access__ProjectAccessResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        project:
+          $ref: '#/components/schemas/ProjectResponse'
+        access_level:
+          type: string
+          title: Access Level
+        account_id:
+          type: string
+          title: Account Id
+        account_email:
+          type: string
+          title: Account Email
+        last_update:
+          type: string
+          format: date-time
+          title: Last Update
+        created:
+          type: string
+          format: date-time
+          title: Created
+      type: object
+      required:
+      - id
+      - project
+      - access_level
+      - account_id
+      - account_email
+      - last_update
+      - created
+      title: ProjectAccessResponse
+      examples:
+      - access_level: EDITOR
+        account_email: user@example.com
+        account_id: auth0|5f00000000000000000000aa
+        created: '2026-06-25T10:13:37.546136Z'
+        id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
+        last_update: '2026-06-25T10:13:37.597335Z'
+        project:
+          created: '2026-06-19T09:06:47.046143Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+          last_update: '2026-06-19T09:06:47.046170Z'
+          name: Project 1
+          org_id: apicontext
+          tags: []
+    ProjectAccessListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectAccessListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/api2__projects__proj_access__ProjectAccessResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ProjectAccessListResponse
+      examples:
+      - meta:
+          more: false
+        results:
+        - access_level: EDITOR
+          account_email: user@example.com
+          account_id: auth0|5f00000000000000000000aa
+          created: '2026-06-25T10:13:37.546136Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
+          last_update: '2026-06-25T10:13:37.597335Z'
+          project:
+            created: '2026-06-19T09:06:47.046143Z'
+            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+            last_update: '2026-06-19T09:06:47.046170Z'
+            name: Project 1
+            org_id: apicontext
+            tags: []
+    UpdateProjectAccessBody:
+      properties:
+        account_id:
           anyOf:
           - type: string
           - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
+          title: Account Id
         email:
           anyOf:
           - type: string
           - type: 'null'
           title: Email
-        security_profile:
+        access_level:
           anyOf:
           - type: string
           - type: 'null'
-          title: Security Profile
+          title: Access Level
       type: object
-      title: CreateProjectBody
+      title: UpdateProjectAccessBody
       examples:
-      - name: New Project
-    UpdateProjectBody:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        security_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Security Profile
-      type: object
-      title: UpdateProjectBody
-      examples:
-      - name: Renamed Project
-        tags:
-        - production
+      - access_level: OWNER
     ProjectResponse:
       properties:
         id:

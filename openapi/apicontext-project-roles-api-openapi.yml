@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: APImetrics Projects API
+  title: APImetrics Project Roles API
   description: API for the APImetrics platform
   termsOfService: http://apimetrics.io/tos/
   contact:
@@ -12,111 +12,27 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: v2026-09-02
 tags:
-- name: Projects
-  description: Manage a project.
+- name: Project Roles
+  description: Manage role-based access grants on projects.
 paths:
-  /api/3/project/security-profiles:
+  /api/2/projects/{project_key_str}/roles/:
     get:
       tags:
-      - Projects
-      summary: List-Security-Profiles-For-Project
-      operationId: list-security-profiles-for-project
+      - Project Roles
+      summary: List-Project-Roles
+      description: List roles for a project.
+      operationId: list-project-roles
       security:
       - OAuth2: []
       - ApiKey: []
       parameters:
-      - name: apimetrics-project-id
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Apimetrics-Project-Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-                title: Response List-Security-Profiles-For-Project
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/3/project/agents:
-    get:
-      tags:
-      - Projects
-      summary: List-Agents-For-Project
-      description: 'List all agents accessible to a project.
-
-        Returns the project''s agent list (its organization''s ``agents:``
-
-        system tag, or the public list) plus agents owned by the project''s
-
-        organization or by the project itself.
-
-        Personal projects (no org) only get public and project-owned agents.'
-      operationId: list-agents-for-project
-      security:
-      - OAuth2: []
-      - ApiKey: []
-      parameters:
-      - name: apimetrics-project-id
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Apimetrics-Project-Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: true
-                title: Response List-Agents-For-Project
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/2/organizations/{org_id}/projects/:
-    get:
-      tags:
-      - Projects
-      summary: List-Projects-In-Org
-      description: List projects in an organization.
-      operationId: list-projects-in-org
-      security:
-      - OAuth2: []
-      - ApiKey: []
-      parameters:
-      - name: org_id
+      - name: project_key_str
         in: path
         required: true
         schema:
           type: string
-          pattern: ^[a-z0-9]{3,400}$
-          title: Organization ID
-      - name: include_quota
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Include Quota
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
       - name: cursor
         in: query
         required: false
@@ -132,29 +48,13 @@ paths:
           type: integer
           default: 25
           title: Limit
-      - name: system_tag
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: System Tag
-      - name: tag
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tag
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectListResponse'
+                $ref: '#/components/schemas/ProjectRoleListResponse'
         '422':
           description: Validation Error
           content:
@@ -163,47 +63,10 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
-      - Projects
-      summary: Create-Project-In-Org
-      description: Create a new project in an organization.
-      operationId: create-project-in-org
-      security:
-      - OAuth2: []
-      - ApiKey: []
-      parameters:
-      - name: org_id
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: ^[a-z0-9]{3,400}$
-          title: Organization ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProjectBody'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProjectResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/2/organizations/{org_id}/projects/{project_key_str}/:
-    delete:
-      tags:
-      - Projects
-      summary: Delete-Project-From-Org
-      description: Remove a project from an organization (re-homes it to community).
-      operationId: delete-project-from-org
+      - Project Roles
+      summary: Create-Project-Role
+      description: Create a role on a project.
+      operationId: create-project-role
       security:
       - OAuth2: []
       - ApiKey: []
@@ -215,37 +78,43 @@ paths:
           type: string
           pattern: ^[A-Za-z0-9_-]+$
           title: Resource ID
-      - name: org_id
-        in: path
+      requestBody:
         required: true
-        schema:
-          type: string
-          pattern: ^[a-z0-9]{3,400}$
-          title: Organization ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRoleBody'
       responses:
-        '200':
+        '201':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectResponse'
+                $ref: '#/components/schemas/ProjectRoleResponse'
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /api/2/projects/{project_key_str}/:
+  /api/2/projects/{project_key_str}/roles/{project_role_id}/:
     get:
       tags:
-      - Projects
-      summary: Get-Project
-      description: Get a project by key.
-      operationId: get-project
+      - Project Roles
+      summary: Get-Project-Role
+      description: Get a project role by id.
+      operationId: get-project-role
       security:
       - OAuth2: []
       - ApiKey: []
       parameters:
+      - name: project_role_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
       - name: project_key_str
         in: path
         required: true
@@ -259,7 +128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectResponse'
+                $ref: '#/components/schemas/ProjectRoleResponse'
         '422':
           description: Validation Error
           content:
@@ -268,14 +137,21 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     post:
       tags:
-      - Projects
-      summary: Update-Project
-      description: Update a project's name, tags, email, or security profile.
-      operationId: update-project
+      - Project Roles
+      summary: Update-Project-Role
+      description: Update a project role.
+      operationId: update-project-role
       security:
       - OAuth2: []
       - ApiKey: []
       parameters:
+      - name: project_role_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
       - name: project_key_str
         in: path
         required: true
@@ -288,14 +164,51 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateProjectBody'
+              $ref: '#/components/schemas/UpdateProjectRoleBody'
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectResponse'
+                $ref: '#/components/schemas/ProjectRoleResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Project Roles
+      summary: Delete-Project-Role
+      description: Delete a project role.
+      operationId: delete-project-role
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: project_role_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: project_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectRoleResponse'
         '422':
           description: Validation Error
           content:
@@ -313,50 +226,101 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ProjectListResponse:
+    ProjectRoleListResponse:
       properties:
         meta:
-          $ref: '#/components/schemas/ProjectListMeta'
+          $ref: '#/components/schemas/ProjectRoleListMeta'
         results:
           items:
-            $ref: '#/components/schemas/ProjectResponse'
+            $ref: '#/components/schemas/ProjectRoleResponse'
           type: array
           title: Results
       type: object
       required:
       - meta
       - results
-      title: ProjectListResponse
+      title: ProjectRoleListResponse
       examples:
       - meta:
-          more: true
-          next_cursor: ClIKLgoI...
+          more: false
         results:
-        - created: '2026-06-19T09:06:47.046143Z'
+        - access_level: EDITOR
+          created: '2026-06-25T10:13:37.546136Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
+          last_update: '2026-06-25T10:13:37.597335Z'
+          project:
+            created: '2026-06-19T09:06:47.046143Z'
+            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+            last_update: '2026-06-19T09:06:47.046170Z'
+            name: Project 1
+            org_id: apicontext
+            tags: []
+          role_id: SRE
+    CreateProjectRoleBody:
+      properties:
+        role_id:
+          type: string
+          title: Role Id
+        access_level:
+          type: string
+          title: Access Level
+        account_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Id
+      type: object
+      required:
+      - role_id
+      - access_level
+      title: CreateProjectRoleBody
+      examples:
+      - access_level: EDITOR
+        role_id: SRE
+    ProjectRoleResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        role_id:
+          type: string
+          title: Role Id
+        project:
+          $ref: '#/components/schemas/ProjectResponse'
+        access_level:
+          type: string
+          title: Access Level
+        last_update:
+          type: string
+          format: date-time
+          title: Last Update
+        created:
+          type: string
+          format: date-time
+          title: Created
+      type: object
+      required:
+      - id
+      - role_id
+      - project
+      - access_level
+      - last_update
+      - created
+      title: ProjectRoleResponse
+      examples:
+      - access_level: EDITOR
+        created: '2026-06-25T10:13:37.546136Z'
+        id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
+        last_update: '2026-06-25T10:13:37.597335Z'
+        project:
+          created: '2026-06-19T09:06:47.046143Z'
           id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
           last_update: '2026-06-19T09:06:47.046170Z'
           name: Project 1
           org_id: apicontext
-          sub_info:
-            counts:
-              org_test_run_count: 0
-              public_report_count: 0
-              scheduled_test_count: 288
-              test_setup_count: 4
-              user_test_run_count: 0
-            month_progress: 0.814
-            quotas:
-              public_report_quota: 10
-              test_run_quota: 1000000
-              test_setup_quota: 1000
-            sub:
-              backend: azure
-              level: CONTRACT
-              name: Enterprise
-              org_id: apicontext
-              plan: enterprise
           tags: []
-    ProjectListMeta:
+        role_id: SRE
+    ProjectRoleListMeta:
       properties:
         next_cursor:
           anyOf:
@@ -376,65 +340,7 @@ components:
       required:
       - next_cursor
       - more
-      title: ProjectListMeta
-    CreateProjectBody:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        security_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Security Profile
-      type: object
-      title: CreateProjectBody
-      examples:
-      - name: New Project
-    UpdateProjectBody:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        security_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Security Profile
-      type: object
-      title: UpdateProjectBody
-      examples:
-      - name: Renamed Project
-        tags:
-        - production
+      title: ProjectRoleListMeta
     ProjectResponse:
       properties:
         id:
@@ -546,6 +452,33 @@ components:
       - msg
       - type
       title: ValidationError
+    UpdateProjectRoleBody:
+      properties:
+        role_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Role Id
+        access_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Level
+        account_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Id
+        org_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Id
+      type: object
+      title: UpdateProjectRoleBody
+      examples:
+      - access_level: OWNER
+        role_id: MANAGER
   securitySchemes:
     OAuth2:
       type: oauth2

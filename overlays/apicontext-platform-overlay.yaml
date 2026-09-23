@@ -10,7 +10,7 @@ x-source: >-
   https://client.apimetrics.io/openapi.json (info.version v2026-09-02). The harvested document in
   openapi/_original/ is never mutated, with one mandated exception: 0-working/sanitize-secrets.py
   replaced three Slack incoming-webhook example URLs inside SlackWebHookParameters.url descriptions
-  ("https://hooks.slack.com/services/T.../B.../...") with REDACTED, because GitHub push protection
+  ("https://hooks.slack.com/services/REDACTED.../B.../...") with REDACTED, because GitHub push protection
   blocks on the token SHAPE alone. No structural element of the contract was altered.
 actions:
 - target: $.info

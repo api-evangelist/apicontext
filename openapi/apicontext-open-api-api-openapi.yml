@@ -1,0 +1,322 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Open API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Open API
+  description: OpenAPI validation
+paths:
+  /api/2/openapi/tag:
+    post:
+      tags:
+      - Open API
+      summary: Tag-Project-For-Openapi
+      operationId: tag-project-for-openapi
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: strict_slash
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Strict Slash
+      - name: file_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            pattern: ^[A-Za-z0-9_-]+$
+            title: File ID
+          - type: 'null'
+          title: File Id
+      - name: force
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Force
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/openapi/validate/{result_key_str}:
+    post:
+      tags:
+      - Open API
+      summary: Validate-Openapi
+      operationId: validate-openapi
+      deprecated: true
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: result_key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^pg[a-z][a-z]-[A-Za-z0-9_-]+={0,2}$
+          title: Result ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    TagProjectError:
+      properties:
+        message:
+          type: string
+          title: Message
+        ruleId:
+          type: string
+          title: Ruleid
+        severity:
+          type: string
+          title: Severity
+        location:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location
+        instances:
+          type: integer
+          title: Instances
+      type: object
+      required:
+      - message
+      - ruleId
+      - severity
+      - instances
+      title: TagProjectError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    OpenApiFileInfo:
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/TagProjectError'
+          type: array
+          title: Errors
+        previous_error:
+          type: boolean
+          title: Previous Error
+        has_parse_errors:
+          type: boolean
+          title: Has Parse Errors
+        has_external_refs:
+          type: boolean
+          title: Has External Refs
+        is_not_oas3:
+          type: boolean
+          title: Is Not Oas3
+        was_converted:
+          type: boolean
+          title: Was Converted
+        servers:
+          items:
+            type: string
+          type: array
+          title: Servers
+      type: object
+      required:
+      - errors
+      - previous_error
+      - has_parse_errors
+      - has_external_refs
+      - is_not_oas3
+      - was_converted
+      - servers
+      title: OpenApiFileInfo
+      description: Per-file validation summary, keyed by file ID in the tagger response.
+    TagProjectMatch:
+      prefixItems:
+      - type: string
+        title: Call Id
+      - type: string
+        title: Method
+      - type: string
+        title: Path
+      - anyOf:
+        - type: string
+        - type: 'null'
+        title: File Id
+      type: array
+      maxItems: 4
+      minItems: 3
+    ValidateResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+        valid:
+          type: boolean
+          title: Valid
+          default: false
+        errors:
+          items:
+            $ref: '#/components/schemas/ValidateError'
+          type: array
+          title: Errors
+      type: object
+      required:
+      - message
+      title: ValidateResponse
+    TagProjectResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Message
+        updated:
+          items:
+            type: string
+          type: array
+          title: Updated
+        matched:
+          items:
+            $ref: '#/components/schemas/TagProjectMatch'
+          type: array
+          title: Matched
+        openapi_files:
+          additionalProperties:
+            $ref: '#/components/schemas/OpenApiFileInfo'
+          type: object
+          title: Openapi Files
+      type: object
+      required:
+      - status
+      - updated
+      - matched
+      - openapi_files
+      title: TagProjectResponse
+    ValidateError:
+      properties:
+        keyword:
+          type: string
+          title: Keyword
+        schemaPath:
+          type: string
+          title: Schemapath
+        params:
+          additionalProperties: true
+          type: object
+          title: Params
+        message:
+          type: string
+          title: Message
+        instancePaths:
+          items:
+            type: string
+          type: array
+          title: Instancepaths
+      additionalProperties: true
+      type: object
+      required:
+      - keyword
+      - schemaPath
+      - message
+      title: ValidateError
+      description: 'A single schema-validation failure, as produced by the ajv-backed
+
+        schema-validator function.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

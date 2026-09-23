@@ -1,0 +1,610 @@
+openapi: 3.2.0
+info:
+  title: APImetrics Files API
+  description: API for the APImetrics platform
+  termsOfService: http://apimetrics.io/tos/
+  contact:
+    name: APIContext Support
+    url: https://apicontext.io/
+    email: support@apicontext.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v2026-09-02
+tags:
+- name: Files
+  description: Manage OpenAPI specifications and files which can be used as API request bodies.
+paths:
+  /api/3/files/oas:
+    post:
+      tags:
+      - Files
+      summary: Upload-New-Oas
+      description: Upload a new OpenAPI spec.
+      operationId: upload-new-oas
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload-new-oas'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadFileResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/3/files/oas_url:
+    post:
+      tags:
+      - Files
+      summary: Upload-New-Oas-From-Url
+      description: Upload a new OpenAPI spec.
+      operationId: upload-new-oas-from-url
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadUrl'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadFileResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/files/:
+    get:
+      tags:
+      - Files
+      summary: List-Files
+      description: List file uploads for the project, ordered by filename ascending.
+      operationId: list-files
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_FileListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/files/file:
+    post:
+      tags:
+      - Files
+      summary: Create-File
+      description: Upload a file from the raw request body, storing it in GCS.
+      operationId: create-file
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_FileResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/files/url:
+    post:
+      tags:
+      - Files
+      summary: Upload-File-From-Url
+      description: Download a remote URL and store the content as a file in GCS.
+      operationId: upload-file-from-url
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_UploadUrlBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_FileResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/files/{key_str}/content:
+    get:
+      tags:
+      - Files
+      summary: Get-File-Content
+      description: Serve the raw GCS content of a file.
+      operationId: get-file-content
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/files/{key_str}/:
+    get:
+      tags:
+      - Files
+      summary: Get-File
+      description: Return the metadata representation of a single file.
+      operationId: get-file
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_FileResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Files
+      summary: Update-File
+      description: 'Partial-merge update of file metadata.
+
+
+        A body that parses to an empty/falsy JSON value (``{}``) with a ``url:`` tag
+
+        on the entity is a signal to re-download the file from that URL (updating the
+
+        GCS content and mimetype).'
+      operationId: update-file
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_FileResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Files
+      summary: Delete-File
+      description: Delete a file (GCS blob is NOT deleted — preserving legacy behaviour).
+      operationId: delete-file
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_FileResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/2/files/{key_str}/file:
+    post:
+      tags:
+      - Files
+      summary: Replace-File-Content
+      description: Replace the GCS content of an existing file.
+      operationId: replace-file-content
+      security:
+      - OAuth2: []
+      - ApiKey: []
+      parameters:
+      - name: key_str
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Za-z0-9_-]+$
+          title: Resource ID
+      - name: apimetrics-project-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apimetrics-Project-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_FileResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    _FileListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: _FileListMeta
+    _FileListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_FileListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/_FileResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: _FileListResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    _UploadUrlBody:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: URL to download the file from.
+      type: object
+      required:
+      - url
+      title: _UploadUrlBody
+    _FileResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/_FileMeta'
+      type: object
+      required:
+      - id
+      - meta
+      title: _FileResponse
+    UploadFileResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          additionalProperties: true
+          type: object
+          title: Meta
+        tagger_status:
+          type: string
+          title: Tagger Status
+        parse_info:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Parse Info
+      type: object
+      required:
+      - id
+      - meta
+      - tagger_status
+      - parse_info
+      title: UploadFileResponse
+    _FileMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        content_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content Type
+        content_encoding:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content Encoding
+        content_length:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Content Length
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      title: _FileMeta
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Body_upload-new-oas:
+      properties:
+        file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: File
+      type: object
+      required:
+      - file
+      title: Body_upload-new-oas
+    UploadUrl:
+      properties:
+        url:
+          type: string
+          title: Url
+      type: object
+      required:
+      - url
+      title: UploadUrl
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: OpenID Connect identity
+            profile: User profile
+            email: User email address
+          authorizationUrl: https://auth.apimetrics.io/authorize?audience=https://client.apimetrics.io
+          tokenUrl: https://auth.apimetrics.io/oauth/token
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
