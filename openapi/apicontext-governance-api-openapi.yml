@@ -484,6 +484,149 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    JsonPathValueRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-value
+          title: Type
+        value:
+          title: Value
+        flags:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - ignore_case
+              - ignore_whitespace
+            type: array
+          - type: 'null'
+          title: Flags
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - value
+      - flags
+      title: JsonPathValueRule
+    ConformanceSettingsRequest:
+      properties:
+        standards_settings:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Standards Settings
+        network_settings:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Network Settings
+        coverage_settings:
+          anyOf:
+          - $ref: '#/components/schemas/CoverageSettings'
+          - type: 'null'
+      type: object
+      required:
+      - standards_settings
+      - network_settings
+      - coverage_settings
+      title: ConformanceSettingsRequest
+    JsonPathCountRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-count
+          title: Type
+        count:
+          type: integer
+          title: Count
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - count
+      title: JsonPathCountRule
+    EndpointClassificationRequest:
+      properties:
+        method:
+          type: string
+          title: Method
+        hostname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hostname
+        path:
+          type: string
+          title: Path
+        classification:
+          type: string
+          title: Classification
+      type: object
+      required:
+      - method
+      - hostname
+      - path
+      - classification
+      title: EndpointClassificationRequest
+    ConformanceResolutionRequest:
+      properties:
+        result_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Id
+        conformance_result_id:
+          type: string
+          title: Conformance Result Id
+        status:
+          type: string
+          title: Status
+        notes:
+          type: string
+          title: Notes
+      type: object
+      required:
+      - conformance_result_id
+      - status
+      - notes
+      title: ConformanceResolutionRequest
     CoverageSettings:
       properties:
         enabled:
@@ -507,6 +650,49 @@ components:
       - test_coverage
       - endpoint_coverage
       title: CoverageSettings
+    JsonPathSubstringRule:
+      properties:
+        id:
+          type: string
+          title: Id
+        domain_type:
+          type: string
+          title: Domain Type
+        json_path:
+          type: string
+          title: Json Path
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Url
+        type:
+          type: string
+          const: jsonpath-substring
+          title: Type
+        substring_of:
+          type: string
+          title: Substring Of
+        flags:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - ignore_case
+              - ignore_whitespace
+            type: array
+          - type: 'null'
+          title: Flags
+      type: object
+      required:
+      - id
+      - domain_type
+      - json_path
+      - source_url
+      - type
+      - substring_of
+      - flags
+      title: JsonPathSubstringRule
     JsonPathRegexRule:
       properties:
         id:
@@ -601,196 +787,6 @@ components:
       - type
       - sub_rules
       title: JsonPathGroupRule
-    JsonPathValueRule:
-      properties:
-        id:
-          type: string
-          title: Id
-        domain_type:
-          type: string
-          title: Domain Type
-        json_path:
-          type: string
-          title: Json Path
-        source_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Url
-        type:
-          type: string
-          const: jsonpath-value
-          title: Type
-        value:
-          title: Value
-        flags:
-          anyOf:
-          - items:
-              type: string
-              enum:
-              - ignore_case
-              - ignore_whitespace
-            type: array
-          - type: 'null'
-          title: Flags
-      type: object
-      required:
-      - id
-      - domain_type
-      - json_path
-      - source_url
-      - type
-      - value
-      - flags
-      title: JsonPathValueRule
-    JsonPathCountRule:
-      properties:
-        id:
-          type: string
-          title: Id
-        domain_type:
-          type: string
-          title: Domain Type
-        json_path:
-          type: string
-          title: Json Path
-        source_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Url
-        type:
-          type: string
-          const: jsonpath-count
-          title: Type
-        count:
-          type: integer
-          title: Count
-      type: object
-      required:
-      - id
-      - domain_type
-      - json_path
-      - source_url
-      - type
-      - count
-      title: JsonPathCountRule
-    ConformanceSettingsRequest:
-      properties:
-        standards_settings:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Standards Settings
-        network_settings:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Network Settings
-        coverage_settings:
-          anyOf:
-          - $ref: '#/components/schemas/CoverageSettings'
-          - type: 'null'
-      type: object
-      required:
-      - standards_settings
-      - network_settings
-      - coverage_settings
-      title: ConformanceSettingsRequest
-    JsonPathSubstringRule:
-      properties:
-        id:
-          type: string
-          title: Id
-        domain_type:
-          type: string
-          title: Domain Type
-        json_path:
-          type: string
-          title: Json Path
-        source_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Url
-        type:
-          type: string
-          const: jsonpath-substring
-          title: Type
-        substring_of:
-          type: string
-          title: Substring Of
-        flags:
-          anyOf:
-          - items:
-              type: string
-              enum:
-              - ignore_case
-              - ignore_whitespace
-            type: array
-          - type: 'null'
-          title: Flags
-      type: object
-      required:
-      - id
-      - domain_type
-      - json_path
-      - source_url
-      - type
-      - substring_of
-      - flags
-      title: JsonPathSubstringRule
-    EndpointClassificationRequest:
-      properties:
-        method:
-          type: string
-          title: Method
-        hostname:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Hostname
-        path:
-          type: string
-          title: Path
-        classification:
-          type: string
-          title: Classification
-      type: object
-      required:
-      - method
-      - hostname
-      - path
-      - classification
-      title: EndpointClassificationRequest
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     DataCheckPutRequest:
       properties:
         include_tags:
@@ -819,28 +815,32 @@ components:
       - exclude_tags
       - rules
       title: DataCheckPutRequest
-    ConformanceResolutionRequest:
+    ValidationError:
       properties:
-        result_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Result Id
-        conformance_result_id:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          title: Conformance Result Id
-        status:
+          title: Message
+        type:
           type: string
-          title: Status
-        notes:
-          type: string
-          title: Notes
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - conformance_result_id
-      - status
-      - notes
-      title: ConformanceResolutionRequest
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

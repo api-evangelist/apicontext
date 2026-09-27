@@ -244,75 +244,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    UpdateIntegration:
-      properties:
-        name:
-          type: string
-          title: Name
-        details:
-          additionalProperties:
-            type: string
-          type: object
-          title: Details
-      type: object
-      required:
-      - name
-      - details
-      title: UpdateIntegration
-    CreateIntegration:
-      properties:
-        name:
-          type: string
-          title: Name
-        provider:
-          type: string
-          title: Provider
-        details:
-          additionalProperties:
-            type: string
-          type: object
-          title: Details
-      type: object
-      required:
-      - name
-      - provider
-      - details
-      title: CreateIntegration
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ReadIntegration:
       properties:
         id:
@@ -350,6 +281,75 @@ components:
       - created_at
       - last_modified
       title: ReadIntegration
+    CreateIntegration:
+      properties:
+        name:
+          type: string
+          title: Name
+        provider:
+          type: string
+          title: Provider
+        details:
+          additionalProperties:
+            type: string
+          type: object
+          title: Details
+      type: object
+      required:
+      - name
+      - provider
+      - details
+      title: CreateIntegration
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UpdateIntegration:
+      properties:
+        name:
+          type: string
+          title: Name
+        details:
+          additionalProperties:
+            type: string
+          type: object
+          title: Details
+      type: object
+      required:
+      - name
+      - details
+      title: UpdateIntegration
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -129,6 +129,57 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    CopyMoveRequest:
+      properties:
+        id:
+          items:
+            type: string
+          type: array
+          title: Id
+          description: One or more resource keys to copy or move. May be sent as a JSON array or a single string; a string is normalised to a list of one.
+        type:
+          type: string
+          enum:
+          - call
+          - workflow
+          - auth
+          - report
+          - browser
+          - mcp
+          title: Type
+          description: 'Kind of resource. One of: call, workflow, auth, report.'
+        destination:
+          type: string
+          title: Destination
+          description: Urlsafe key of the destination project.
+        dry_run:
+          type: boolean
+          title: Dry Run
+          description: If true, collect what *would* happen into errors/warnings/info without writing.
+          default: false
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - type
+      - destination
+      title: CopyMoveRequest
+      description: Body shape for both ``/api/2/manage/copy`` and ``/api/2/manage/move``.
+      examples:
+      - destination: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        dry_run: true
+        id:
+        - ahFkZXZ-YXBpbWV0cmljcy1xY3IOCxIHVGVzdFNldHVwGL9CDA
+        type: call
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     CopyMoveResponse:
       properties:
         source:
@@ -177,15 +228,6 @@ components:
         source: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
         type: call
         warnings: []
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -212,48 +254,6 @@ components:
       - msg
       - type
       title: ValidationError
-    CopyMoveRequest:
-      properties:
-        id:
-          items:
-            type: string
-          type: array
-          title: Id
-          description: One or more resource keys to copy or move. May be sent as a JSON array or a single string; a string is normalised to a list of one.
-        type:
-          type: string
-          enum:
-          - call
-          - workflow
-          - auth
-          - report
-          - browser
-          - mcp
-          title: Type
-          description: 'Kind of resource. One of: call, workflow, auth, report.'
-        destination:
-          type: string
-          title: Destination
-          description: Urlsafe key of the destination project.
-        dry_run:
-          type: boolean
-          title: Dry Run
-          description: If true, collect what *would* happen into errors/warnings/info without writing.
-          default: false
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - type
-      - destination
-      title: CopyMoveRequest
-      description: Body shape for both ``/api/2/manage/copy`` and ``/api/2/manage/move``.
-      examples:
-      - destination: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-        dry_run: true
-        id:
-        - ahFkZXZ-YXBpbWV0cmljcy1xY3IOCxIHVGVzdFNldHVwGL9CDA
-        type: call
   securitySchemes:
     OAuth2:
       type: oauth2

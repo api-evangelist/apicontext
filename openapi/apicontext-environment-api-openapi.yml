@@ -440,50 +440,66 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    WorkspaceListResponse:
+    UpdateVariableBody:
       properties:
-        meta:
-          $ref: '#/components/schemas/WorkspaceListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/WorkspaceResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: WorkspaceListResponse
-    WorkspaceListMeta:
-      properties:
-        next_cursor:
+        value:
           anyOf:
           - type: string
           - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
+          title: Value
+      type: object
+      title: UpdateVariableBody
+      examples:
+      - value: new-secret-value
+    UpdateWorkspaceBody:
+      properties:
+        title:
           anyOf:
           - type: string
           - type: 'null'
-          title: Project Id
+          title: Title
+      type: object
+      title: UpdateWorkspaceBody
+      examples:
+      - title: Staging Environment
+    WorkspaceMeta:
+      properties:
+        user:
+          type: string
+          title: User
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
       type: object
       required:
-      - more
-      title: WorkspaceListMeta
-    CreateWorkspaceBody:
+      - user
+      title: WorkspaceMeta
+    CreateVariableBody:
       properties:
         name:
           anyOf:
           - type: string
           - type: 'null'
           title: Name
+        value:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Value
       type: object
-      title: CreateWorkspaceBody
+      title: CreateVariableBody
       examples:
-      - name: staging
+      - name: API_KEY
+        value: secret-value
     VariableMeta:
       properties:
         created:
@@ -510,6 +526,20 @@ components:
       required:
       - user
       title: VariableMeta
+    WorkspaceListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/WorkspaceListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/WorkspaceResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: WorkspaceListResponse
     WorkspaceFields:
       properties:
         name:
@@ -524,32 +554,6 @@ components:
       required:
       - name
       title: WorkspaceFields
-    CreateVariableBody:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        value:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Value
-      type: object
-      title: CreateVariableBody
-      examples:
-      - name: API_KEY
-        value: secret-value
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     VariableListResponse:
       properties:
         meta:
@@ -564,6 +568,47 @@ components:
       - meta
       - results
       title: VariableListResponse
+    VariableFields:
+      properties:
+        name:
+          type: string
+          title: Name
+        value:
+          type: string
+          title: Value
+      type: object
+      required:
+      - name
+      - value
+      title: VariableFields
+    VariableListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - more
+      title: VariableListMeta
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     WorkspaceResponse:
       properties:
         id:
@@ -588,7 +633,7 @@ components:
         workspace:
           name: staging
           title: Staging
-    VariableListMeta:
+    WorkspaceListMeta:
       properties:
         next_cursor:
           anyOf:
@@ -606,41 +651,7 @@ components:
       type: object
       required:
       - more
-      title: VariableListMeta
-    WorkspaceMeta:
-      properties:
-        user:
-          type: string
-          title: User
-        created:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Created
-        last_update:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Update
-      type: object
-      required:
-      - user
-      title: WorkspaceMeta
-    VariableFields:
-      properties:
-        name:
-          type: string
-          title: Name
-        value:
-          type: string
-          title: Value
-      type: object
-      required:
-      - name
-      - value
-      title: VariableFields
+      title: WorkspaceListMeta
     VariableResponse:
       properties:
         id:
@@ -666,17 +677,17 @@ components:
         workspace_variable:
           name: API_KEY
           value: secret-value
-    UpdateVariableBody:
+    CreateWorkspaceBody:
       properties:
-        value:
+        name:
           anyOf:
           - type: string
           - type: 'null'
-          title: Value
+          title: Name
       type: object
-      title: UpdateVariableBody
+      title: CreateWorkspaceBody
       examples:
-      - value: new-secret-value
+      - name: staging
     ValidationError:
       properties:
         loc:
@@ -703,17 +714,6 @@ components:
       - msg
       - type
       title: ValidationError
-    UpdateWorkspaceBody:
-      properties:
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Title
-      type: object
-      title: UpdateWorkspaceBody
-      examples:
-      - title: Staging Environment
   securitySchemes:
     OAuth2:
       type: oauth2

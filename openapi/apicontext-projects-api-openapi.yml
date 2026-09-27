@@ -304,15 +304,34 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
+    CreateProjectBody:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        security_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Security Profile
       type: object
-      title: HTTPValidationError
+      title: CreateProjectBody
+      examples:
+      - name: New Project
     ProjectListResponse:
       properties:
         meta:
@@ -356,85 +375,6 @@ components:
               org_id: apicontext
               plan: enterprise
           tags: []
-    ProjectListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: integer
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      required:
-      - next_cursor
-      - more
-      title: ProjectListMeta
-    CreateProjectBody:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        security_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Security Profile
-      type: object
-      title: CreateProjectBody
-      examples:
-      - name: New Project
-    UpdateProjectBody:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        security_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Security Profile
-      type: object
-      title: UpdateProjectBody
-      examples:
-      - name: Renamed Project
-        tags:
-        - production
     ProjectResponse:
       properties:
         id:
@@ -520,6 +460,66 @@ components:
             org_id: apicontext
             plan: enterprise
         tags: []
+    ProjectListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: integer
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - next_cursor
+      - more
+      title: ProjectListMeta
+    UpdateProjectBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        security_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Security Profile
+      type: object
+      title: UpdateProjectBody
+      examples:
+      - name: Renamed Project
+        tags:
+        - production
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:

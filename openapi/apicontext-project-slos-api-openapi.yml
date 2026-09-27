@@ -120,112 +120,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ProjectSloResponse:
-      properties:
-        project_id:
-          type: string
-          title: Project Id
-        objectives:
-          items:
-            $ref: '#/components/schemas/ServiceLevelObjectiveResponse'
-          type: array
-          title: Objectives
-        thresholds:
-          items:
-            $ref: '#/components/schemas/ThresholdResponse'
-          type: array
-          title: Thresholds
-        include_tags:
-          items:
-            type: string
-          type: array
-          title: Include Tags
-        exclude_tags:
-          items:
-            type: string
-          type: array
-          title: Exclude Tags
-        last_update:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Update
-        created:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Created
-      type: object
-      required:
-      - project_id
-      - objectives
-      - thresholds
-      - include_tags
-      - exclude_tags
-      - last_update
-      - created
-      title: ProjectSloResponse
-      examples:
-      - created: '2026-06-25T10:13:37.546136Z'
-        exclude_tags:
-        - apimetrics:not_monitored
-        include_tags: []
-        last_update: '2026-06-25T10:13:37.597335Z'
-        objectives:
-        - comparator: <
-          measure: mean
-          metric: dns
-          period: MONTH
-          unit: ms
-          value: 100
-        project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-        thresholds:
-        - delta: 100
-          metric: latency
-          period: MONTH
-          unit: ms
-    ServiceLevelObjectiveResponse:
-      properties:
-        metric:
-          type: string
-          title: Metric
-        measure:
-          type: string
-          title: Measure
-        comparator:
-          type: string
-          title: Comparator
-        value:
-          type: number
-          title: Value
-        unit:
-          type: string
-          title: Unit
-        period:
-          type: string
-          title: Period
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-      type: object
-      required:
-      - metric
-      - measure
-      - comparator
-      - value
-      - unit
-      - period
-      title: ServiceLevelObjectiveResponse
-    MEASURES:
-      type: string
-      enum:
-      - mean
-      - value
-      title: MEASURES
     METRICS:
       type: string
       enum:
@@ -251,6 +145,57 @@ components:
       - first_input_delay
       - cumulative_layout_shift
       title: METRICS
+    UpdateProjectSloBody:
+      properties:
+        objectives:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ServiceLevelObjectiveBody'
+            type: array
+          - type: 'null'
+          title: Objectives
+          description: Replaces the whole objective list.
+        thresholds:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ThresholdBody'
+            type: array
+          - type: 'null'
+          title: Thresholds
+          description: Replaces the whole threshold list.
+        include_tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Include Tags
+          description: Only calls carrying one of these tags are evaluated.
+        exclude_tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Exclude Tags
+          description: Calls carrying any of these tags are skipped.
+      type: object
+      title: UpdateProjectSloBody
+      examples:
+      - exclude_tags: []
+        include_tags: []
+        objectives:
+        - comparator: <
+          measure: mean
+          metric: dns
+          period: MONTH
+          unit: ms
+          value: 100
+        thresholds:
+        - delta: 100
+          metric: latency
+          period: MONTH
+          unit: ms
     ThresholdBody:
       properties:
         metric:
@@ -285,6 +230,51 @@ components:
         metric: latency
         period: MONTH
         unit: ms
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    THRESHOLDS:
+      type: string
+      enum:
+      - grade
+      - latency
+      title: THRESHOLDS
+    SloPeriod:
+      type: string
+      enum:
+      - DAY
+      - WEEK
+      - MONTH
+      title: SloPeriod
+      description: 'The evaluation periods the /api/2 project SLO accepts.
+
+
+        ``models.project_slo.PERIODS`` also defines sub-day periods for the newer
+
+        SLO configurations; ``ProjectSLO`` only supports these three.'
     ThresholdResponse:
       properties:
         metric:
@@ -356,72 +346,40 @@ components:
         period: MONTH
         unit: ms
         value: 100
-    UpdateProjectSloBody:
+    ServiceLevelObjectiveResponse:
       properties:
-        objectives:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/ServiceLevelObjectiveBody'
-            type: array
-          - type: 'null'
-          title: Objectives
-          description: Replaces the whole objective list.
-        thresholds:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/ThresholdBody'
-            type: array
-          - type: 'null'
-          title: Thresholds
-          description: Replaces the whole threshold list.
-        include_tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Include Tags
-          description: Only calls carrying one of these tags are evaluated.
-        exclude_tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Exclude Tags
-          description: Calls carrying any of these tags are skipped.
-      type: object
-      title: UpdateProjectSloBody
-      examples:
-      - exclude_tags: []
-        include_tags: []
-        objectives:
-        - comparator: <
-          measure: mean
-          metric: dns
-          period: MONTH
-          unit: ms
-          value: 100
-        thresholds:
-        - delta: 100
-          metric: latency
-          period: MONTH
-          unit: ms
-    COMPARATORS:
-      type: string
-      enum:
-      - <
-      - '>'
-      title: COMPARATORS
-    ProjectSloDeletedStatus:
-      properties:
-        status:
+        metric:
           type: string
-          title: Status
-          default: ok
+          title: Metric
+        measure:
+          type: string
+          title: Measure
+        comparator:
+          type: string
+          title: Comparator
+        value:
+          type: number
+          title: Value
+        unit:
+          type: string
+          title: Unit
+        period:
+          type: string
+          title: Period
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
       type: object
-      title: ProjectSloDeletedStatus
-      description: Rendered when DELETE finds no stored SLO (idempotent delete).
+      required:
+      - metric
+      - measure
+      - comparator
+      - value
+      - unit
+      - period
+      title: ServiceLevelObjectiveResponse
     HTTPValidationError:
       properties:
         detail:
@@ -431,25 +389,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    THRESHOLDS:
-      type: string
-      enum:
-      - grade
-      - latency
-      title: THRESHOLDS
-    SloPeriod:
-      type: string
-      enum:
-      - DAY
-      - WEEK
-      - MONTH
-      title: SloPeriod
-      description: 'The evaluation periods the /api/2 project SLO accepts.
-
-
-        ``models.project_slo.PERIODS`` also defines sub-day periods for the newer
-
-        SLO configurations; ``ProjectSLO`` only supports these three.'
     UNITS:
       type: string
       enum:
@@ -463,32 +402,93 @@ components:
         percent: Absolute percentage value, e.g. availability > 0.995
         pp: Percentage points — the arithmetic difference between two percentages. Only valid for grade thresholds.
         value: Dimensionless numeric value
-    ValidationError:
+    COMPARATORS:
+      type: string
+      enum:
+      - <
+      - '>'
+      title: COMPARATORS
+    MEASURES:
+      type: string
+      enum:
+      - mean
+      - value
+      title: MEASURES
+    ProjectSloResponse:
       properties:
-        loc:
+        project_id:
+          type: string
+          title: Project Id
+        objectives:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ServiceLevelObjectiveResponse'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Objectives
+        thresholds:
+          items:
+            $ref: '#/components/schemas/ThresholdResponse'
+          type: array
+          title: Thresholds
+        include_tags:
+          items:
+            type: string
+          type: array
+          title: Include Tags
+        exclude_tags:
+          items:
+            type: string
+          type: array
+          title: Exclude Tags
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - project_id
+      - objectives
+      - thresholds
+      - include_tags
+      - exclude_tags
+      - last_update
+      - created
+      title: ProjectSloResponse
+      examples:
+      - created: '2026-06-25T10:13:37.546136Z'
+        exclude_tags:
+        - apimetrics:not_monitored
+        include_tags: []
+        last_update: '2026-06-25T10:13:37.597335Z'
+        objectives:
+        - comparator: <
+          measure: mean
+          metric: dns
+          period: MONTH
+          unit: ms
+          value: 100
+        project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        thresholds:
+        - delta: 100
+          metric: latency
+          period: MONTH
+          unit: ms
+    ProjectSloDeletedStatus:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: ok
+      type: object
+      title: ProjectSloDeletedStatus
+      description: Rendered when DELETE finds no stored SLO (idempotent delete).
   securitySchemes:
     OAuth2:
       type: oauth2

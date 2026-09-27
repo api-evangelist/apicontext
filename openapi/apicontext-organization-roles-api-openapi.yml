@@ -184,112 +184,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    OrgRoleListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-      type: object
-      required:
-      - more
-      title: OrgRoleListMeta
-    DeleteOrgRoleResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - status
-      title: DeleteOrgRoleResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    OrgRoleResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        org_id:
-          type: string
-          title: Org Id
-        description:
-          type: string
-          title: Description
-        last_update:
-          type: string
-          format: date-time
-          title: Last Update
-        created:
-          type: string
-          format: date-time
-          title: Created
-      type: object
-      required:
-      - id
-      - org_id
-      - description
-      - last_update
-      - created
-      title: OrgRoleResponse
-    ProjectRoleListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/ProjectRoleListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/ProjectRoleResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: ProjectRoleListResponse
-      examples:
-      - meta:
-          more: false
-        results:
-        - access_level: EDITOR
-          created: '2026-06-25T10:13:37.546136Z'
-          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
-          last_update: '2026-06-25T10:13:37.597335Z'
-          project:
-            created: '2026-06-19T09:06:47.046143Z'
-            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-            last_update: '2026-06-19T09:06:47.046170Z'
-            name: Project 1
-            org_id: apicontext
-            tags: []
-          role_id: SRE
-    CreateOrgRoleBody:
-      properties:
-        id:
-          type: string
-          maxLength: 400
-          minLength: 3
-          title: Id
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      title: CreateOrgRoleBody
     ProjectRoleResponse:
       properties:
         id:
@@ -333,6 +227,73 @@ components:
           org_id: apicontext
           tags: []
         role_id: SRE
+    DeleteOrgRoleResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: DeleteOrgRoleResponse
+    OrgRoleResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        org_id:
+          type: string
+          title: Org Id
+        description:
+          type: string
+          title: Description
+        last_update:
+          type: string
+          format: date-time
+          title: Last Update
+        created:
+          type: string
+          format: date-time
+          title: Created
+      type: object
+      required:
+      - id
+      - org_id
+      - description
+      - last_update
+      - created
+      title: OrgRoleResponse
+    OrgRoleListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+      type: object
+      required:
+      - more
+      title: OrgRoleListMeta
+    CreateOrgRoleBody:
+      properties:
+        id:
+          type: string
+          maxLength: 400
+          minLength: 3
+          title: Id
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      title: CreateOrgRoleBody
     ProjectRoleListMeta:
       properties:
         next_cursor:
@@ -354,6 +315,85 @@ components:
       - next_cursor
       - more
       title: ProjectRoleListMeta
+    ProjectRoleListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectRoleListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/ProjectRoleResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ProjectRoleListResponse
+      examples:
+      - meta:
+          more: false
+        results:
+        - access_level: EDITOR
+          created: '2026-06-25T10:13:37.546136Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
+          last_update: '2026-06-25T10:13:37.597335Z'
+          project:
+            created: '2026-06-19T09:06:47.046143Z'
+            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+            last_update: '2026-06-19T09:06:47.046170Z'
+            name: Project 1
+            org_id: apicontext
+            tags: []
+          role_id: SRE
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    OrgRoleListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgRoleListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/OrgRoleResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: OrgRoleListResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ProjectResponse:
       properties:
         id:
@@ -439,46 +479,6 @@ components:
             org_id: apicontext
             plan: enterprise
         tags: []
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    OrgRoleListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/OrgRoleListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/OrgRoleResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: OrgRoleListResponse
   securitySchemes:
     OAuth2:
       type: oauth2

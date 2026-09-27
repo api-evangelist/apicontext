@@ -91,41 +91,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ProjectConditionsMeta:
-      properties:
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-          description: The project the conditions belong to.
-      type: object
-      title: ProjectConditionsMeta
-    PostProjectConditionsRequest:
-      properties:
-        conditions:
-          items:
-            $ref: '#/components/schemas/ConditionalModel'
-          type: array
-          title: Conditions
-          description: The full set of conditionals; replaces any existing set.
-      type: object
-      required:
-      - conditions
-      title: PostProjectConditionsRequest
-    ProjectConditionsResponse:
-      properties:
-        conditions:
-          items:
-            $ref: '#/components/schemas/ConditionalModel'
-          type: array
-          title: Conditions
-        meta:
-          $ref: '#/components/schemas/ProjectConditionsMeta'
-      type: object
-      required:
-      - conditions
-      title: ProjectConditionsResponse
     ConditionalModel:
       properties:
         source:
@@ -163,6 +128,31 @@ components:
       - source
       - condition
       title: ConditionalModel
+    ProjectConditionsResponse:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+        meta:
+          $ref: '#/components/schemas/ProjectConditionsMeta'
+      type: object
+      required:
+      - conditions
+      title: ProjectConditionsResponse
+    PostProjectConditionsRequest:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+          description: The full set of conditionals; replaces any existing set.
+      type: object
+      required:
+      - conditions
+      title: PostProjectConditionsRequest
     HTTPValidationError:
       properties:
         detail:
@@ -172,6 +162,16 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    ProjectConditionsMeta:
+      properties:
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+          description: The project the conditions belong to.
+      type: object
+      title: ProjectConditionsMeta
     ValidationError:
       properties:
         loc:

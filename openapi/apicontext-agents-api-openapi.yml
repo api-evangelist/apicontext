@@ -212,7 +212,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
   /api/2/agents/{agent_key}/:
     get:
-      operationId: get-agent
+      operationId: getApi2AgentsByAgentKey
       summary: Get a remote agent
       tags:
       - Agents
@@ -225,8 +225,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AgentOutput'
+      x-operation-id-source: normalized
+      x-operation-id-original: get-agent
     post:
-      operationId: update-agent
+      operationId: postApi2AgentsByAgentKey
       summary: Update a remote agent
       tags:
       - Agents
@@ -241,6 +243,8 @@ paths:
       responses:
         '200':
           description: Updated agent
+      x-operation-id-source: normalized
+      x-operation-id-original: update-agent
     delete:
       operationId: delete-agent
       summary: Delete a remote agent
@@ -253,6 +257,67 @@ paths:
           description: Deleted
 components:
   schemas:
+    UpdateAgentRequest:
+      properties:
+        agent:
+          $ref: '#/components/schemas/_UpdateAgentBody'
+      additionalProperties: false
+      type: object
+      required:
+      - agent
+      title: UpdateAgentRequest
+    KeyStr:
+      type: string
+      description: URL-safe base64 Datastore key
+      minLength: 3
+      maxLength: 400
+      pattern: ^[-A-Za-z0-9_]*={0,3}$
+    _UpdateAgentBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 100
+          - type: 'null'
+          title: Name
+        cloud:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cloud
+        cloud_full_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cloud Full Name
+        continent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Continent
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+        geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Geography
+        region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Region
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+      type: object
+      title: _UpdateAgentBody
+      description: Body accepted by ``POST /api/2/agents/<key>/`` (update user_* overrides).
     AgentResponse:
       properties:
         meta:
@@ -268,12 +333,49 @@ components:
       - agent
       - id
       title: AgentResponse
-    KeyStr:
-      type: string
-      description: URL-safe base64 Datastore key
-      minLength: 3
-      maxLength: 400
-      pattern: ^[-A-Za-z0-9_]*={0,3}$
+    AgentListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api2__agents__agents___ListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/AgentResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: AgentListResponse
+    AgentInfoResponse:
+      properties:
+        regions:
+          items:
+            $ref: '#/components/schemas/_RegionEntry'
+          type: array
+          title: Regions
+        postman_locations:
+          items:
+            type: string
+          type: array
+          title: Postman Locations
+        locations:
+          additionalProperties:
+            type: string
+          type: object
+          title: Locations
+        agent_list:
+          items:
+            $ref: '#/components/schemas/AgentResponse'
+          type: array
+          title: Agent List
+      type: object
+      required:
+      - regions
+      - postman_locations
+      - locations
+      - agent_list
+      title: AgentInfoResponse
     _RegionEntry:
       properties:
         id:
@@ -294,19 +396,6 @@ components:
       - id
       - locations
       title: _RegionEntry
-    api2__agents__agents___ListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-      type: object
-      title: _ListMeta
     HTTPValidationError:
       properties:
         detail:
@@ -316,46 +405,38 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+    AgentOutput:
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    AgentListResponse:
       properties:
+        id:
+          $ref: '#/components/schemas/KeyStr'
         meta:
-          $ref: '#/components/schemas/api2__agents__agents___ListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/AgentResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: AgentListResponse
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+              nullable: true
+            project_id:
+              $ref: '#/components/schemas/KeyStr'
+            created:
+              type: string
+              format: date-time
+            last_update:
+              type: string
+              format: date-time
+        agent:
+          type: object
+          properties:
+            location_id:
+              type: string
+            enabled:
+              type: boolean
+            last_seen:
+              type: string
+              format: date-time
+              nullable: true
     _AgentDetails:
       properties:
         normalized_name:
@@ -417,93 +498,19 @@ components:
       required:
       - normalized_name
       title: _AgentDetails
-    AgentOutput:
-      type: object
+    api2__agents__agents___ListMeta:
       properties:
-        id:
-          $ref: '#/components/schemas/KeyStr'
-        meta:
-          type: object
-          properties:
-            name:
-              type: string
-            description:
-              type: string
-              nullable: true
-            project_id:
-              $ref: '#/components/schemas/KeyStr'
-            created:
-              type: string
-              format: date-time
-            last_update:
-              type: string
-              format: date-time
-        agent:
-          type: object
-          properties:
-            location_id:
-              type: string
-            enabled:
-              type: boolean
-            last_seen:
-              type: string
-              format: date-time
-              nullable: true
-    UpdateAgentRequest:
-      properties:
-        agent:
-          $ref: '#/components/schemas/_UpdateAgentBody'
-      additionalProperties: false
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
       type: object
-      required:
-      - agent
-      title: UpdateAgentRequest
-    _UpdateAgentBody:
-      properties:
-        name:
-          anyOf:
-          - type: string
-            maxLength: 100
-          - type: 'null'
-          title: Name
-        cloud:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cloud
-        cloud_full_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cloud Full Name
-        continent:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Continent
-        country:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Country
-        geography:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Geography
-        region:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Region
-        city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: City
-      type: object
-      title: _UpdateAgentBody
-      description: Body accepted by ``POST /api/2/agents/<key>/`` (update user_* overrides).
+      title: _ListMeta
     _AgentMeta:
       properties:
         id:
@@ -534,35 +541,32 @@ components:
       - id
       - name
       title: _AgentMeta
-    AgentInfoResponse:
+    ValidationError:
       properties:
-        regions:
+        loc:
           items:
-            $ref: '#/components/schemas/_RegionEntry'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Regions
-        postman_locations:
-          items:
-            type: string
-          type: array
-          title: Postman Locations
-        locations:
-          additionalProperties:
-            type: string
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
           type: object
-          title: Locations
-        agent_list:
-          items:
-            $ref: '#/components/schemas/AgentResponse'
-          type: array
-          title: Agent List
+          title: Context
       type: object
       required:
-      - regions
-      - postman_locations
-      - locations
-      - agent_list
-      title: AgentInfoResponse
+      - loc
+      - msg
+      - type
+      title: ValidationError
   parameters:
     agentKey:
       name: agent_key

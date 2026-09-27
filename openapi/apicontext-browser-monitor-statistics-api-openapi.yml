@@ -336,66 +336,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ResultCategory:
-      type: string
-      enum:
-      - PASS
-      - SLOW
-      - WARNING
-      - FAIL
-      title: ResultCategory
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    SessionsSortBy:
-      type: string
-      enum:
-      - lcp
-      - fcp
-      - cls
-      - fid
-      - ttfb
-      - total
-      - dns
-      - tcp
-      - tls
-      - resources_count
-      - page_weight
-      - timestamp
-      title: SessionsSortBy
-    ResourceTypeBreakdown:
-      properties:
-        resource_type:
-          type: string
-          title: Resource Type
-          description: Resource type as reported by the browser agent (e.g. script, stylesheet, image, font, fetch, xhr, document)
-        avg_per_page:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Avg Per Page
-          description: Mean count of this resource type per page load
-        avg_size_bytes_per_page:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Avg Size Bytes Per Page
-          description: Mean total encoded body size of this resource type per page (bytes)
-        total_count:
-          type: integer
-          title: Total Count
-          description: Total number of resources of this type observed across all pages
-          default: 0
-      type: object
-      required:
-      - resource_type
-      title: ResourceTypeBreakdown
     Measure:
       type: string
       enum:
@@ -405,6 +345,30 @@ components:
       - p95
       - p99
       title: Measure
+    ResourcesRequest:
+      properties:
+        from:
+          type: string
+          format: date-time
+          title: From
+          description: Window start (UTC ISO timestamp, inclusive)
+        to:
+          type: string
+          format: date-time
+          title: To
+          description: Window end (UTC ISO timestamp, exclusive)
+        interval:
+          anyOf:
+          - type: string
+            format: duration
+          - type: 'null'
+          title: Interval
+          description: Bucket size for the third-party time series (ISO 8601 duration, e.g. PT1H, PT15M). Omitted = third_party_timeseries is empty.
+      type: object
+      required:
+      - from
+      - to
+      title: ResourcesRequest
     SessionRow:
       properties:
         monitor_id:
@@ -454,53 +418,39 @@ components:
       - timestamp
       - location_id
       title: SessionRow
-    api3__monitors__common__api_models__PerformanceMeta_Metric___2:
+    GroupKey:
       properties:
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        interval_start:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interval Start
+          description: UTC ISO timestamp of the bucket start when interval grouping is in use
         monitor_id:
           anyOf:
           - type: string
           - type: 'null'
           title: Monitor Id
-        from:
-          type: string
-          format: date-time
-          title: From
-          description: UTC ISO timestamp, inclusive
-        to:
-          type: string
-          format: date-time
-          title: To
-          description: UTC ISO timestamp, exclusive
-        interval:
-          anyOf:
-          - type: string
-            format: duration
-          - type: 'null'
-          title: Interval
-        metrics:
-          items:
-            $ref: '#/components/schemas/api3__monitors__browser__stats__api_models__Metric'
-          type: array
-          title: Metrics
-        measures:
-          items:
-            $ref: '#/components/schemas/Measure'
-          type: array
-          title: Measures
-        group_by:
-          items:
-            $ref: '#/components/schemas/GroupByDimension'
-          type: array
-          title: Group By
+          description: Monitor ID when monitor grouping is in use
       type: object
-      required:
-      - from
-      - to
-      - interval
-      - metrics
-      - measures
-      - group_by
-      title: PerformanceMeta[Metric]
+      title: GroupKey
+      description: 'Identifies which slice of data this group represents.
+
+
+        Fields are present only when the request asked to group by that dimension
+
+        (or, for `interval_start`, when an interval was requested).'
+    SortOrder:
+      type: string
+      enum:
+      - asc
+      - desc
+      title: SortOrder
     SessionsMeta:
       properties:
         monitor_id:
@@ -533,107 +483,6 @@ components:
       - order
       - limit
       title: SessionsMeta
-    SessionsRequest:
-      properties:
-        from:
-          type: string
-          format: date-time
-          title: From
-          description: Window start (UTC ISO timestamp, inclusive)
-        to:
-          type: string
-          format: date-time
-          title: To
-          description: Window end (UTC ISO timestamp, exclusive)
-        sort_by:
-          $ref: '#/components/schemas/SessionsSortBy'
-          description: Metric to sort by.
-          default: lcp
-        order:
-          $ref: '#/components/schemas/SortOrder'
-          description: Sort order.
-          default: desc
-        limit:
-          type: integer
-          maximum: 200.0
-          minimum: 1.0
-          title: Limit
-          description: Maximum rows to return.
-          default: 10
-      type: object
-      required:
-      - from
-      - to
-      title: SessionsRequest
-    SessionsResponse:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/SessionRow'
-          type: array
-          title: Results
-        meta:
-          $ref: '#/components/schemas/SessionsMeta'
-      type: object
-      required:
-      - results
-      - meta
-      title: SessionsResponse
-    ThirdPartyBucket:
-      properties:
-        interval_start:
-          type: string
-          title: Interval Start
-          description: UTC ISO timestamp of the bucket start
-        first_party_avg_ms:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: First Party Avg Ms
-          description: Mean total time per page spent loading first-party resources
-        third_party_avg_ms:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Third Party Avg Ms
-          description: Mean total time per page spent loading third-party resources
-        first_party_avg_count:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: First Party Avg Count
-          description: Mean count of first-party resources per page in this bucket
-        third_party_avg_count:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Third Party Avg Count
-          description: Mean count of third-party resources per page in this bucket
-      type: object
-      required:
-      - interval_start
-      title: ThirdPartyBucket
-    GroupByDimension:
-      type: string
-      enum:
-      - location
-      - interval
-      - monitor
-      title: GroupByDimension
-    api3__monitors__common__api_models__PerformanceResponse_Metric___2:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceGroup_Metric___2'
-          type: array
-          title: Results
-        meta:
-          $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceMeta_Metric___2'
-      type: object
-      required:
-      - results
-      - meta
-      title: PerformanceResponse[Metric]
     MetricAggregate:
       properties:
         sample_count:
@@ -693,6 +542,229 @@ components:
       - sample_count
       title: MetricAggregate
       description: Aggregates for one metric within one result group.
+    ResourceTypeBreakdown:
+      properties:
+        resource_type:
+          type: string
+          title: Resource Type
+          description: Resource type as reported by the browser agent (e.g. script, stylesheet, image, font, fetch, xhr, document)
+        avg_per_page:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Avg Per Page
+          description: Mean count of this resource type per page load
+        avg_size_bytes_per_page:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Avg Size Bytes Per Page
+          description: Mean total encoded body size of this resource type per page (bytes)
+        total_count:
+          type: integer
+          title: Total Count
+          description: Total number of resources of this type observed across all pages
+          default: 0
+      type: object
+      required:
+      - resource_type
+      title: ResourceTypeBreakdown
+    api3__monitors__common__api_models__PerformanceResponse_Metric___2:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceGroup_Metric___2'
+          type: array
+          title: Results
+        meta:
+          $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceMeta_Metric___2'
+      type: object
+      required:
+      - results
+      - meta
+      title: PerformanceResponse[Metric]
+    SessionsSortBy:
+      type: string
+      enum:
+      - lcp
+      - fcp
+      - cls
+      - fid
+      - ttfb
+      - total
+      - dns
+      - tcp
+      - tls
+      - resources_count
+      - page_weight
+      - timestamp
+      title: SessionsSortBy
+    ThirdPartyBucket:
+      properties:
+        interval_start:
+          type: string
+          title: Interval Start
+          description: UTC ISO timestamp of the bucket start
+        first_party_avg_ms:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: First Party Avg Ms
+          description: Mean total time per page spent loading first-party resources
+        third_party_avg_ms:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Third Party Avg Ms
+          description: Mean total time per page spent loading third-party resources
+        first_party_avg_count:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: First Party Avg Count
+          description: Mean count of first-party resources per page in this bucket
+        third_party_avg_count:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Third Party Avg Count
+          description: Mean count of third-party resources per page in this bucket
+      type: object
+      required:
+      - interval_start
+      title: ThirdPartyBucket
+    api3__monitors__common__api_models__PerformanceGroup_Metric___2:
+      properties:
+        key:
+          $ref: '#/components/schemas/GroupKey'
+        sample_count:
+          type: integer
+          title: Sample Count
+          description: Total samples in this group
+        pass_count:
+          type: integer
+          title: Pass Count
+          description: Samples whose result_category is PASS or SLOW
+          default: 0
+        top_location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Top Location Id
+          description: Location_id with the most samples in this group; useful when the client isn't grouping by location but still needs an agent for display
+        metrics:
+          additionalProperties:
+            $ref: '#/components/schemas/MetricAggregate'
+          propertyNames:
+            $ref: '#/components/schemas/api3__monitors__browser__stats__api_models__Metric'
+          type: object
+          title: Metrics
+      type: object
+      required:
+      - key
+      - sample_count
+      - metrics
+      title: PerformanceGroup[Metric]
+    api3__monitors__browser__stats__api_models__Metric:
+      type: string
+      enum:
+      - lcp
+      - fcp
+      - cls
+      - fid
+      - ttfb
+      - total
+      - dns
+      - tcp
+      - tls
+      - request
+      - response
+      - dom_processing
+      - dom_content_loaded
+      - load_event_end
+      - resources_count
+      - page_weight
+      title: Metric
+    ResourcesMeta:
+      properties:
+        monitor_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Monitor Id
+        from:
+          type: string
+          format: date-time
+          title: From
+        to:
+          type: string
+          format: date-time
+          title: To
+        interval:
+          anyOf:
+          - type: string
+            format: duration
+          - type: 'null'
+          title: Interval
+      type: object
+      required:
+      - from
+      - to
+      title: ResourcesMeta
+    ResourcesResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/ResourceTypeBreakdown'
+          type: array
+          title: Results
+          description: Per-resource-type breakdown across pages in the window
+        third_party_timeseries:
+          items:
+            $ref: '#/components/schemas/ThirdPartyBucket'
+          type: array
+          title: Third Party Timeseries
+          description: First-vs-third-party load-time series bucketed by the requested interval. Empty when no `interval` is supplied.
+        meta:
+          $ref: '#/components/schemas/ResourcesMeta'
+      type: object
+      required:
+      - results
+      - meta
+      title: ResourcesResponse
+    GroupByDimension:
+      type: string
+      enum:
+      - location
+      - interval
+      - monitor
+      title: GroupByDimension
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     api3__monitors__common__api_models__PerformanceRequest_Metric___2:
       properties:
         from:
@@ -760,7 +832,29 @@ components:
       - from
       - to
       title: PerformanceRequest[Metric]
-    ResourcesMeta:
+    SessionsResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/SessionRow'
+          type: array
+          title: Results
+        meta:
+          $ref: '#/components/schemas/SessionsMeta'
+      type: object
+      required:
+      - results
+      - meta
+      title: SessionsResponse
+    ResultCategory:
+      type: string
+      enum:
+      - PASS
+      - SLOW
+      - WARNING
+      - FAIL
+      title: ResultCategory
+    api3__monitors__common__api_models__PerformanceMeta_Metric___2:
       properties:
         monitor_id:
           anyOf:
@@ -771,22 +865,52 @@ components:
           type: string
           format: date-time
           title: From
+          description: UTC ISO timestamp, inclusive
         to:
           type: string
           format: date-time
           title: To
+          description: UTC ISO timestamp, exclusive
         interval:
           anyOf:
           - type: string
             format: duration
           - type: 'null'
           title: Interval
+        metrics:
+          items:
+            $ref: '#/components/schemas/api3__monitors__browser__stats__api_models__Metric'
+          type: array
+          title: Metrics
+        measures:
+          items:
+            $ref: '#/components/schemas/Measure'
+          type: array
+          title: Measures
+        group_by:
+          items:
+            $ref: '#/components/schemas/GroupByDimension'
+          type: array
+          title: Group By
       type: object
       required:
       - from
       - to
-      title: ResourcesMeta
-    ResourcesRequest:
+      - interval
+      - metrics
+      - measures
+      - group_by
+      title: PerformanceMeta[Metric]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SessionsRequest:
       properties:
         from:
           type: string
@@ -798,150 +922,26 @@ components:
           format: date-time
           title: To
           description: Window end (UTC ISO timestamp, exclusive)
-        interval:
-          anyOf:
-          - type: string
-            format: duration
-          - type: 'null'
-          title: Interval
-          description: Bucket size for the third-party time series (ISO 8601 duration, e.g. PT1H, PT15M). Omitted = third_party_timeseries is empty.
+        sort_by:
+          $ref: '#/components/schemas/SessionsSortBy'
+          description: Metric to sort by.
+          default: lcp
+        order:
+          $ref: '#/components/schemas/SortOrder'
+          description: Sort order.
+          default: desc
+        limit:
+          type: integer
+          maximum: 200.0
+          minimum: 1.0
+          title: Limit
+          description: Maximum rows to return.
+          default: 10
       type: object
       required:
       - from
       - to
-      title: ResourcesRequest
-    ResourcesResponse:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/ResourceTypeBreakdown'
-          type: array
-          title: Results
-          description: Per-resource-type breakdown across pages in the window
-        third_party_timeseries:
-          items:
-            $ref: '#/components/schemas/ThirdPartyBucket'
-          type: array
-          title: Third Party Timeseries
-          description: First-vs-third-party load-time series bucketed by the requested interval. Empty when no `interval` is supplied.
-        meta:
-          $ref: '#/components/schemas/ResourcesMeta'
-      type: object
-      required:
-      - results
-      - meta
-      title: ResourcesResponse
-    api3__monitors__browser__stats__api_models__Metric:
-      type: string
-      enum:
-      - lcp
-      - fcp
-      - cls
-      - fid
-      - ttfb
-      - total
-      - dns
-      - tcp
-      - tls
-      - request
-      - response
-      - dom_processing
-      - dom_content_loaded
-      - load_event_end
-      - resources_count
-      - page_weight
-      title: Metric
-    SortOrder:
-      type: string
-      enum:
-      - asc
-      - desc
-      title: SortOrder
-    GroupKey:
-      properties:
-        location_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Location Id
-        interval_start:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Interval Start
-          description: UTC ISO timestamp of the bucket start when interval grouping is in use
-        monitor_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Monitor Id
-          description: Monitor ID when monitor grouping is in use
-      type: object
-      title: GroupKey
-      description: 'Identifies which slice of data this group represents.
-
-
-        Fields are present only when the request asked to group by that dimension
-
-        (or, for `interval_start`, when an interval was requested).'
-    api3__monitors__common__api_models__PerformanceGroup_Metric___2:
-      properties:
-        key:
-          $ref: '#/components/schemas/GroupKey'
-        sample_count:
-          type: integer
-          title: Sample Count
-          description: Total samples in this group
-        pass_count:
-          type: integer
-          title: Pass Count
-          description: Samples whose result_category is PASS or SLOW
-          default: 0
-        top_location_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Top Location Id
-          description: Location_id with the most samples in this group; useful when the client isn't grouping by location but still needs an agent for display
-        metrics:
-          additionalProperties:
-            $ref: '#/components/schemas/MetricAggregate'
-          propertyNames:
-            $ref: '#/components/schemas/api3__monitors__browser__stats__api_models__Metric'
-          type: object
-          title: Metrics
-      type: object
-      required:
-      - key
-      - sample_count
-      - metrics
-      title: PerformanceGroup[Metric]
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: SessionsRequest
   securitySchemes:
     OAuth2:
       type: oauth2

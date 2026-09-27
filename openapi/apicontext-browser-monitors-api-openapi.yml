@@ -314,18 +314,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    api3__monitors__browser__api_models__UpdateRequest:
-      properties:
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/UpdateRequestMeta'
-          - type: 'null'
-        setup:
-          anyOf:
-          - $ref: '#/components/schemas/UpdateRequestSetup'
-          - type: 'null'
-      type: object
-      title: UpdateRequest
     UpdateRequestMeta:
       properties:
         name:
@@ -356,87 +344,6 @@ components:
           description: Workspace to assign the monitor to
       type: object
       title: UpdateRequestMeta
-    models__browser_call___SetupRepr:
-      properties:
-        url:
-          type: string
-          title: Url
-          description: Target URL for this monitor
-        browser_types:
-          items:
-            type: string
-            enum:
-            - chromium
-            - firefox
-            - webkit
-            - camoufox
-          type: array
-          title: Browser Types
-          description: Browsers which this monitor is permitted to run on
-        user_agent:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Agent
-          description: User-Agent header value for the monitor
-      type: object
-      required:
-      - url
-      - browser_types
-      title: _SetupRepr
-    BrowserTestSetupRepr:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/models__browser_call___MetaRepr'
-        setup:
-          $ref: '#/components/schemas/models__browser_call___SetupRepr'
-      type: object
-      required:
-      - id
-      - meta
-      - setup
-      title: BrowserTestSetupRepr
-    UpdateRequestSetup:
-      properties:
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-          description: Target URL for the monitor
-        browser_types:
-          anyOf:
-          - items:
-              type: string
-              enum:
-              - chromium
-              - firefox
-              - webkit
-              - camoufox
-            type: array
-          - type: 'null'
-          title: Browser Types
-          description: Browsers which the monitor is permitted to run on
-        user_agent:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Agent
-          description: User-Agent header value for the monitor
-      type: object
-      title: UpdateRequestSetup
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     models__browser_call___MetaRepr:
       properties:
         monitor_type:
@@ -490,6 +397,98 @@ components:
       - owner
       - workspace
       title: _MetaRepr
+    BrowserTestSetupListResults:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/BrowserTestSetupRepr'
+          type: array
+          title: Results
+      type: object
+      required:
+      - results
+      title: BrowserTestSetupListResults
+    UpdateRequestSetup:
+      properties:
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: Target URL for the monitor
+        browser_types:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - chromium
+              - firefox
+              - webkit
+              - camoufox
+            type: array
+          - type: 'null'
+          title: Browser Types
+          description: Browsers which the monitor is permitted to run on
+        user_agent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Agent
+          description: User-Agent header value for the monitor
+      type: object
+      title: UpdateRequestSetup
+    BrowserTestSetupRepr:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/models__browser_call___MetaRepr'
+        setup:
+          $ref: '#/components/schemas/models__browser_call___SetupRepr'
+      type: object
+      required:
+      - id
+      - meta
+      - setup
+      title: BrowserTestSetupRepr
+    models__browser_call___SetupRepr:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: Target URL for this monitor
+        browser_types:
+          items:
+            type: string
+            enum:
+            - chromium
+            - firefox
+            - webkit
+            - camoufox
+          type: array
+          title: Browser Types
+          description: Browsers which this monitor is permitted to run on
+        user_agent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Agent
+          description: User-Agent header value for the monitor
+      type: object
+      required:
+      - url
+      - browser_types
+      title: _SetupRepr
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     api3__monitors__browser__api_models__CreateRequest:
       properties:
         name:
@@ -541,6 +540,18 @@ components:
       - name
       - url
       title: CreateRequest
+    api3__monitors__browser__api_models__UpdateRequest:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/UpdateRequestMeta'
+          - type: 'null'
+        setup:
+          anyOf:
+          - $ref: '#/components/schemas/UpdateRequestSetup'
+          - type: 'null'
+      type: object
+      title: UpdateRequest
     ValidationError:
       properties:
         loc:
@@ -567,17 +578,6 @@ components:
       - msg
       - type
       title: ValidationError
-    BrowserTestSetupListResults:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/BrowserTestSetupRepr'
-          type: array
-          title: Results
-      type: object
-      required:
-      - results
-      title: BrowserTestSetupListResults
   securitySchemes:
     OAuth2:
       type: oauth2

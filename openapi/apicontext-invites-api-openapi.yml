@@ -363,44 +363,39 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    CreateOrgInviteBody:
+    ProjectInviteListMeta:
       properties:
-        email:
-          type: string
-          title: Email
-        name:
+        more:
+          type: boolean
+          title: More
+        next_cursor:
           anyOf:
           - type: string
           - type: 'null'
-          title: Name
-        access_level:
+          title: Next Cursor
+        project_id:
           anyOf:
           - type: string
           - type: 'null'
-          title: Access Level
-        roles:
-          items:
-            type: string
-          type: array
-          title: Roles
+          title: Project Id
       type: object
       required:
-      - email
-      title: CreateOrgInviteBody
-    ProjectInviteListResponse:
+      - more
+      title: ProjectInviteListMeta
+    InviteListMeta:
       properties:
-        meta:
-          $ref: '#/components/schemas/ProjectInviteListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/InviteResponse'
-          type: array
-          title: Results
+        more:
+          type: boolean
+          title: More
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
       type: object
       required:
-      - meta
-      - results
-      title: ProjectInviteListResponse
+      - more
+      title: InviteListMeta
     InviteResponse:
       properties:
         id:
@@ -481,6 +476,53 @@ components:
       required:
       - email
       title: CreateProjectInviteBody
+    CreateOrgInviteBody:
+      properties:
+        email:
+          type: string
+          title: Email
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        access_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Level
+        roles:
+          items:
+            type: string
+          type: array
+          title: Roles
+      type: object
+      required:
+      - email
+      title: CreateOrgInviteBody
+    ProjectInviteListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectInviteListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/InviteResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ProjectInviteListResponse
+    InviteStatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: InviteStatusResponse
     HTTPValidationError:
       properties:
         detail:
@@ -504,34 +546,6 @@ components:
       - meta
       - results
       title: InviteListResponse
-    ProjectInviteListMeta:
-      properties:
-        more:
-          type: boolean
-          title: More
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      required:
-      - more
-      title: ProjectInviteListMeta
-    InviteStatusResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - status
-      title: InviteStatusResponse
     ValidationError:
       properties:
         loc:
@@ -558,20 +572,6 @@ components:
       - msg
       - type
       title: ValidationError
-    InviteListMeta:
-      properties:
-        more:
-          type: boolean
-          title: More
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-      type: object
-      required:
-      - more
-      title: InviteListMeta
   securitySchemes:
     OAuth2:
       type: oauth2

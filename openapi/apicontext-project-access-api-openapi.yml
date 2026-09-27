@@ -263,32 +263,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    CreateProjectAccessBody:
-      properties:
-        account_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Account Id
-          description: The account to grant access to; defaults to the caller.
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-          description: Informational email for the account.
-        access_level:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Access Level
-          description: Defaults to VIEWER.
-      type: object
-      title: CreateProjectAccessBody
-      examples:
-      - access_level: EDITOR
-        account_id: auth0|5f00000000000000000000aa
-        email: user@example.com
     ProjectAccessListMeta:
       properties:
         next_cursor:
@@ -310,115 +284,6 @@ components:
       - next_cursor
       - more
       title: ProjectAccessListMeta
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    api2__projects__proj_access__ProjectAccessResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        project:
-          $ref: '#/components/schemas/ProjectResponse'
-        access_level:
-          type: string
-          title: Access Level
-        account_id:
-          type: string
-          title: Account Id
-        account_email:
-          type: string
-          title: Account Email
-        last_update:
-          type: string
-          format: date-time
-          title: Last Update
-        created:
-          type: string
-          format: date-time
-          title: Created
-      type: object
-      required:
-      - id
-      - project
-      - access_level
-      - account_id
-      - account_email
-      - last_update
-      - created
-      title: ProjectAccessResponse
-      examples:
-      - access_level: EDITOR
-        account_email: user@example.com
-        account_id: auth0|5f00000000000000000000aa
-        created: '2026-06-25T10:13:37.546136Z'
-        id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
-        last_update: '2026-06-25T10:13:37.597335Z'
-        project:
-          created: '2026-06-19T09:06:47.046143Z'
-          id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-          last_update: '2026-06-19T09:06:47.046170Z'
-          name: Project 1
-          org_id: apicontext
-          tags: []
-    ProjectAccessListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/ProjectAccessListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/api2__projects__proj_access__ProjectAccessResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: ProjectAccessListResponse
-      examples:
-      - meta:
-          more: false
-        results:
-        - access_level: EDITOR
-          account_email: user@example.com
-          account_id: auth0|5f00000000000000000000aa
-          created: '2026-06-25T10:13:37.546136Z'
-          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
-          last_update: '2026-06-25T10:13:37.597335Z'
-          project:
-            created: '2026-06-19T09:06:47.046143Z'
-            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-            last_update: '2026-06-19T09:06:47.046170Z'
-            name: Project 1
-            org_id: apicontext
-            tags: []
-    UpdateProjectAccessBody:
-      properties:
-        account_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Account Id
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        access_level:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Access Level
-      type: object
-      title: UpdateProjectAccessBody
-      examples:
-      - access_level: OWNER
     ProjectResponse:
       properties:
         id:
@@ -504,6 +369,141 @@ components:
             org_id: apicontext
             plan: enterprise
         tags: []
+    api2__projects__proj_access__ProjectAccessResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        project:
+          $ref: '#/components/schemas/ProjectResponse'
+        access_level:
+          type: string
+          title: Access Level
+        account_id:
+          type: string
+          title: Account Id
+        account_email:
+          type: string
+          title: Account Email
+        last_update:
+          type: string
+          format: date-time
+          title: Last Update
+        created:
+          type: string
+          format: date-time
+          title: Created
+      type: object
+      required:
+      - id
+      - project
+      - access_level
+      - account_id
+      - account_email
+      - last_update
+      - created
+      title: ProjectAccessResponse
+      examples:
+      - access_level: EDITOR
+        account_email: user@example.com
+        account_id: auth0|5f00000000000000000000aa
+        created: '2026-06-25T10:13:37.546136Z'
+        id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
+        last_update: '2026-06-25T10:13:37.597335Z'
+        project:
+          created: '2026-06-19T09:06:47.046143Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+          last_update: '2026-06-19T09:06:47.046170Z'
+          name: Project 1
+          org_id: apicontext
+          tags: []
+    CreateProjectAccessBody:
+      properties:
+        account_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Id
+          description: The account to grant access to; defaults to the caller.
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+          description: Informational email for the account.
+        access_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Level
+          description: Defaults to VIEWER.
+      type: object
+      title: CreateProjectAccessBody
+      examples:
+      - access_level: EDITOR
+        account_id: auth0|5f00000000000000000000aa
+        email: user@example.com
+    ProjectAccessListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectAccessListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/api2__projects__proj_access__ProjectAccessResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ProjectAccessListResponse
+      examples:
+      - meta:
+          more: false
+        results:
+        - access_level: EDITOR
+          account_email: user@example.com
+          account_id: auth0|5f00000000000000000000aa
+          created: '2026-06-25T10:13:37.546136Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
+          last_update: '2026-06-25T10:13:37.597335Z'
+          project:
+            created: '2026-06-19T09:06:47.046143Z'
+            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+            last_update: '2026-06-19T09:06:47.046170Z'
+            name: Project 1
+            org_id: apicontext
+            tags: []
+    UpdateProjectAccessBody:
+      properties:
+        account_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Id
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        access_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Level
+      type: object
+      title: UpdateProjectAccessBody
+      examples:
+      - access_level: OWNER
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:

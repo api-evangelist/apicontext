@@ -105,6 +105,25 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ExportResponse:
+      properties:
+        $schema:
+          type: string
+          title: $Schema
+        version:
+          type: string
+          title: Version
+        project:
+          additionalProperties: true
+          type: object
+          title: Project
+      type: object
+      required:
+      - $schema
+      - version
+      - project
+      title: ExportResponse
+      description: 'The export bundle: a bare ``{$schema, version, project}`` object.'
     HTTPValidationError:
       properties:
         detail:
@@ -114,6 +133,21 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    SetTagsResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        updates:
+          items:
+            type: string
+          type: array
+          title: Updates
+      type: object
+      required:
+      - status
+      - updates
+      title: SetTagsResponse
     ValidationError:
       properties:
         loc:
@@ -140,40 +174,6 @@ components:
       - msg
       - type
       title: ValidationError
-    SetTagsResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-        updates:
-          items:
-            type: string
-          type: array
-          title: Updates
-      type: object
-      required:
-      - status
-      - updates
-      title: SetTagsResponse
-    ExportResponse:
-      properties:
-        $schema:
-          type: string
-          title: $Schema
-        version:
-          type: string
-          title: Version
-        project:
-          additionalProperties: true
-          type: object
-          title: Project
-      type: object
-      required:
-      - $schema
-      - version
-      - project
-      title: ExportResponse
-      description: 'The export bundle: a bare ``{$schema, version, project}`` object.'
   securitySchemes:
     OAuth2:
       type: oauth2

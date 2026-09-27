@@ -239,131 +239,6 @@ components:
       required:
       - name
       title: ReportGroupResponse
-    _ReportGroupBody:
-      properties:
-        name:
-          type: string
-          title: Name
-        rows:
-          items:
-            $ref: '#/components/schemas/_ReportRowBody'
-          type: array
-          title: Rows
-          default: []
-      type: object
-      required:
-      - name
-      title: _ReportGroupBody
-    ReportAccessResponse:
-      properties:
-        public:
-          type: boolean
-          title: Public
-      type: object
-      required:
-      - public
-      title: ReportAccessResponse
-    ReportListMetaResponse:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          type: string
-          title: Project Id
-      type: object
-      required:
-      - more
-      - project_id
-      title: ReportListMetaResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ReportRowResponse:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        location_id:
-          type: string
-          title: Location Id
-      type: object
-      required:
-      - call_id
-      - location_id
-      title: ReportRowResponse
-    ReportResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/ReportMetaResponse'
-        access:
-          $ref: '#/components/schemas/ReportAccessResponse'
-        groups:
-          items:
-            $ref: '#/components/schemas/ReportGroupResponse'
-          type: array
-          title: Groups
-          default: []
-      type: object
-      required:
-      - id
-      - meta
-      - access
-      title: ReportResponse
-    ReportUpdateBody:
-      properties:
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/_ReportUpdateMeta'
-          - type: 'null'
-        access:
-          anyOf:
-          - $ref: '#/components/schemas/_ReportAccessBody'
-          - type: 'null'
-        groups:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/_ReportGroupBody'
-            type: array
-          - type: 'null'
-          title: Groups
-      additionalProperties: false
-      type: object
-      title: ReportUpdateBody
-    ReportCreateBody:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_ReportCreateMeta'
-        access:
-          anyOf:
-          - $ref: '#/components/schemas/_ReportAccessBody'
-          - type: 'null'
-        groups:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/_ReportGroupBody'
-            type: array
-          - type: 'null'
-          title: Groups
-      additionalProperties: false
-      type: object
-      required:
-      - meta
-      title: ReportCreateBody
     ReportListResponse:
       properties:
         meta:
@@ -378,7 +253,26 @@ components:
       - meta
       - results
       title: ReportListResponse
-    _ReportCreateMeta:
+    _ReportAccessBody:
+      properties:
+        public:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Public
+        org:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Org
+        moderated:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Moderated
+      type: object
+      title: _ReportAccessBody
+    _ReportUpdateMeta:
       properties:
         name:
           type: string
@@ -393,15 +287,33 @@ components:
             type: string
           type: array
           title: Tags
-          default: []
         branding:
           type: boolean
           title: Branding
-          default: false
+      type: object
+      title: _ReportUpdateMeta
+    ReportAccessResponse:
+      properties:
+        public:
+          type: boolean
+          title: Public
       type: object
       required:
-      - name
-      title: _ReportCreateMeta
+      - public
+      title: ReportAccessResponse
+    _ReportRowBody:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        location_id:
+          type: string
+          title: Location Id
+      type: object
+      required:
+      - call_id
+      - location_id
+      title: _ReportRowBody
     ReportMetaResponse:
       properties:
         name:
@@ -446,7 +358,63 @@ components:
       - project_id
       - branding
       title: ReportMetaResponse
-    _ReportRowBody:
+    ReportUpdateBody:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/_ReportUpdateMeta'
+          - type: 'null'
+        access:
+          anyOf:
+          - $ref: '#/components/schemas/_ReportAccessBody'
+          - type: 'null'
+        groups:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/_ReportGroupBody'
+            type: array
+          - type: 'null'
+          title: Groups
+      additionalProperties: false
+      type: object
+      title: ReportUpdateBody
+    ReportResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/ReportMetaResponse'
+        access:
+          $ref: '#/components/schemas/ReportAccessResponse'
+        groups:
+          items:
+            $ref: '#/components/schemas/ReportGroupResponse'
+          type: array
+          title: Groups
+          default: []
+      type: object
+      required:
+      - id
+      - meta
+      - access
+      title: ReportResponse
+    _ReportGroupBody:
+      properties:
+        name:
+          type: string
+          title: Name
+        rows:
+          items:
+            $ref: '#/components/schemas/_ReportRowBody'
+          type: array
+          title: Rows
+          default: []
+      type: object
+      required:
+      - name
+      title: _ReportGroupBody
+    ReportRowResponse:
       properties:
         call_id:
           type: string
@@ -458,7 +426,78 @@ components:
       required:
       - call_id
       - location_id
-      title: _ReportRowBody
+      title: ReportRowResponse
+    _ReportCreateMeta:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          default: []
+        branding:
+          type: boolean
+          title: Branding
+          default: false
+      type: object
+      required:
+      - name
+      title: _ReportCreateMeta
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ReportListMetaResponse:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: ReportListMetaResponse
+    ReportCreateBody:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_ReportCreateMeta'
+        access:
+          anyOf:
+          - $ref: '#/components/schemas/_ReportAccessBody'
+          - type: 'null'
+        groups:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/_ReportGroupBody'
+            type: array
+          - type: 'null'
+          title: Groups
+      additionalProperties: false
+      type: object
+      required:
+      - meta
+      title: ReportCreateBody
     ValidationError:
       properties:
         loc:
@@ -485,45 +524,6 @@ components:
       - msg
       - type
       title: ValidationError
-    _ReportAccessBody:
-      properties:
-        public:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Public
-        org:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Org
-        moderated:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Moderated
-      type: object
-      title: _ReportAccessBody
-    _ReportUpdateMeta:
-      properties:
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        tags:
-          items:
-            type: string
-          type: array
-          title: Tags
-        branding:
-          type: boolean
-          title: Branding
-      type: object
-      title: _ReportUpdateMeta
   securitySchemes:
     OAuth2:
       type: oauth2

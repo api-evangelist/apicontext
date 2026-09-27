@@ -346,15 +346,24 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    StatusResponse:
+    api2__project_subscriptions__subscriptions___ListMeta:
       properties:
-        status:
-          type: string
-          title: Status
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
       type: object
-      required:
-      - status
-      title: StatusResponse
+      title: _ListMeta
     SubscriptionResponse:
       properties:
         id:
@@ -393,24 +402,6 @@ components:
       description: 'One row of ``ProjectEmailSubscription``, matching Py2''s
 
         ``convert_datastore_to_api`` output.'
-    api2__project_subscriptions__subscriptions___ListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      title: _ListMeta
     HTTPValidationError:
       properties:
         detail:
@@ -420,20 +411,15 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    SubscriptionListResponse:
+    StatusResponse:
       properties:
-        meta:
-          $ref: '#/components/schemas/api2__project_subscriptions__subscriptions___ListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/SubscriptionResponse'
-          type: array
-          title: Results
+        status:
+          type: string
+          title: Status
       type: object
       required:
-      - meta
-      - results
-      title: SubscriptionListResponse
+      - status
+      title: StatusResponse
     SubscribeRequest:
       properties:
         options:
@@ -459,6 +445,20 @@ components:
       - options:
         - daily
         - weekly
+    SubscriptionListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api2__project_subscriptions__subscriptions___ListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/SubscriptionResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: SubscriptionListResponse
     ValidationError:
       properties:
         loc:

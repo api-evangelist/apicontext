@@ -282,6 +282,81 @@ components:
       required:
       - more
       title: OrgListMeta
+    OrgAccountResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        permissions:
+          items:
+            type: string
+          type: array
+          title: Permissions
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      title: OrgAccountResponse
+    OrgListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/OrgResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: OrgListResponse
+    OrgAccountListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgAccountListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/OrgAccountResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: OrgAccountListResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    OrgAccountListMeta:
+      properties:
+        more:
+          type: boolean
+          title: More
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      type: object
+      required:
+      - more
+      title: OrgAccountListMeta
+    OrgAccountDeleteResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: OrgAccountDeleteResponse
     UpdateOrgBody:
       properties:
         name:
@@ -313,72 +388,6 @@ components:
           title: Password Expiry Days
       type: object
       title: UpdateOrgBody
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    OrgListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/OrgListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/OrgResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: OrgListResponse
-    OrgAccountListMeta:
-      properties:
-        more:
-          type: boolean
-          title: More
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-      type: object
-      required:
-      - more
-      title: OrgAccountListMeta
-    OrgAccountListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/OrgAccountListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/OrgAccountResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: OrgAccountListResponse
-    OrgAccountResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        permissions:
-          items:
-            type: string
-          type: array
-          title: Permissions
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      title: OrgAccountResponse
     OrgResponse:
       properties:
         id:
@@ -467,15 +476,6 @@ components:
       - msg
       - type
       title: ValidationError
-    OrgAccountDeleteResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - status
-      title: OrgAccountDeleteResponse
   securitySchemes:
     OAuth2:
       type: oauth2

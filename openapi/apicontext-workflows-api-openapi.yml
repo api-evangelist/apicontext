@@ -522,20 +522,25 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    WorkflowListResponse:
+    WorkflowDataResponse:
       properties:
-        meta:
-          $ref: '#/components/schemas/WorkflowListMetaResponse'
-        results:
+        call_ids:
           items:
-            $ref: '#/components/schemas/WorkflowResponse'
+            type: string
           type: array
-          title: Results
+          title: Call Ids
+        stop_on_failure:
+          type: boolean
+          title: Stop On Failure
+        handle_cookies:
+          type: boolean
+          title: Handle Cookies
       type: object
       required:
-      - meta
-      - results
-      title: WorkflowListResponse
+      - call_ids
+      - stop_on_failure
+      - handle_cookies
+      title: WorkflowDataResponse
     WorkflowResultMeta:
       properties:
         workflow_id:
@@ -609,87 +614,22 @@ components:
       type: object
       title: WorkflowResultMeta
       description: Per-result ``meta`` block, matching ``convert_datastore_to_api``.
-    WorkflowUpdateBody:
-      properties:
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/_WorkflowUpdateMeta'
-          - type: 'null'
-        workflow:
-          anyOf:
-          - $ref: '#/components/schemas/_WorkflowBodyWorkflow'
-          - type: 'null'
-        access:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Access
-      additionalProperties: false
-      type: object
-      title: WorkflowUpdateBody
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    _WorkflowCreateMeta:
-      properties:
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        workspace:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Workspace
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      title: _WorkflowCreateMeta
-    WorkflowResultResponse:
-      properties:
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        meta:
-          $ref: '#/components/schemas/WorkflowResultMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/WorkflowSubResult'
-          type: array
-          title: Results
-          default: []
-        post_context:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Post Context
-      type: object
-      required:
-      - meta
-      title: WorkflowResultResponse
-      description: A single workflow result (``TestRunResult``).
+    AgentLocation:
+      prefixItems:
+      - anyOf:
+        - type: string
+        - type: 'null'
+        title: Api
+      - anyOf:
+        - type: string
+        - type: 'null'
+        title: Www
+      - anyOf:
+        - type: string
+        - type: 'null'
+        title: Mcp
+      type: array
+      maxItems: 3
     WorkflowResultListResponse:
       properties:
         meta:
@@ -705,105 +645,6 @@ components:
       - results
       title: WorkflowResultListResponse
       description: Paginated list of workflow results.
-    _WorkflowUpdateMeta:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        workspace:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Workspace
-      additionalProperties: false
-      type: object
-      title: _WorkflowUpdateMeta
-    WorkflowResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/WorkflowMetaResponse'
-        workflow:
-          $ref: '#/components/schemas/WorkflowDataResponse'
-      type: object
-      required:
-      - id
-      - meta
-      - workflow
-      title: WorkflowResponse
-    WorkflowSubResult:
-      properties:
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        result:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Result
-        result_category:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Result Category
-        total_time:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Total Time
-        start_time:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Start Time
-      type: object
-      title: WorkflowSubResult
-      description: One test result inside a workflow run.
-    WorkflowRunRequest:
-      properties:
-        locations:
-          $ref: '#/components/schemas/AgentLocation'
-        run_delay:
-          type: integer
-          maximum: 86400.0
-          minimum: 0.0
-          title: Run Delay
-          default: 0
-        between_calls_delay:
-          type: integer
-          maximum: 86400.0
-          minimum: 0.0
-          title: Between Calls Delay
-          default: 0
-        context:
-          anyOf:
-          - additionalProperties:
-              type: string
-            type: object
-          - type: 'null'
-          title: Context
-      type: object
-      required:
-      - locations
-      title: WorkflowRunRequest
     WorkflowResultListMeta:
       properties:
         next_cursor:
@@ -822,24 +663,6 @@ components:
       - more
       - project_id
       title: WorkflowResultListMeta
-    WorkflowListMetaResponse:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          type: string
-          title: Project Id
-      type: object
-      required:
-      - more
-      - project_id
-      title: WorkflowListMetaResponse
     _RunWorkflowBody:
       properties:
         location_id:
@@ -877,10 +700,12 @@ components:
           ACCESS_TOKEN: mytoken
         location_id: us-west-2
         run_delay: 0
-    WorkflowMetaResponse:
+    _WorkflowUpdateMeta:
       properties:
         name:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Name
         description:
           anyOf:
@@ -888,37 +713,39 @@ components:
           - type: 'null'
           title: Description
         tags:
-          items:
-            type: string
-          type: array
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
           title: Tags
-          default: []
         workspace:
           anyOf:
           - type: string
           - type: 'null'
           title: Workspace
-        created:
-          type: string
-          title: Created
-        last_update:
-          type: string
-          title: Last Update
-        owner:
-          type: string
-          title: Owner
-        deployments:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Deployments
+      additionalProperties: false
       type: object
-      required:
-      - name
-      - created
-      - last_update
-      - owner
-      title: WorkflowMetaResponse
+      title: _WorkflowUpdateMeta
+    WorkflowUpdateBody:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/_WorkflowUpdateMeta'
+          - type: 'null'
+        workflow:
+          anyOf:
+          - $ref: '#/components/schemas/_WorkflowBodyWorkflow'
+          - type: 'null'
+        access:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access
+      additionalProperties: false
+      type: object
+      title: WorkflowUpdateBody
     WorkflowCreateBody:
       properties:
         meta:
@@ -938,6 +765,36 @@ components:
       required:
       - meta
       title: WorkflowCreateBody
+    WorkflowSubResult:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result
+        result_category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+        total_time:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Time
+        start_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start Time
+      type: object
+      title: WorkflowSubResult
+      description: One test result inside a workflow run.
     WorkflowRunPayload:
       properties:
         workflow_id:
@@ -1040,63 +897,20 @@ components:
       - www
       - mcp
       title: WorkflowLocationOptions
-    _WorkflowBodyWorkflow:
+    WorkflowListResponse:
       properties:
-        call_ids:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Call Ids
-        stop_on_failure:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Stop On Failure
-        handle_cookies:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Handle Cookies
-      additionalProperties: false
-      type: object
-      title: _WorkflowBodyWorkflow
-    WorkflowDataResponse:
-      properties:
-        call_ids:
+        meta:
+          $ref: '#/components/schemas/WorkflowListMetaResponse'
+        results:
           items:
-            type: string
+            $ref: '#/components/schemas/WorkflowResponse'
           type: array
-          title: Call Ids
-        stop_on_failure:
-          type: boolean
-          title: Stop On Failure
-        handle_cookies:
-          type: boolean
-          title: Handle Cookies
+          title: Results
       type: object
       required:
-      - call_ids
-      - stop_on_failure
-      - handle_cookies
-      title: WorkflowDataResponse
-    AgentLocation:
-      prefixItems:
-      - anyOf:
-        - type: string
-        - type: 'null'
-        title: Api
-      - anyOf:
-        - type: string
-        - type: 'null'
-        title: Www
-      - anyOf:
-        - type: string
-        - type: 'null'
-        title: Mcp
-      type: array
-      maxItems: 3
+      - meta
+      - results
+      title: WorkflowListResponse
     ValidationError:
       properties:
         loc:
@@ -1123,6 +937,192 @@ components:
       - msg
       - type
       title: ValidationError
+    WorkflowResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/WorkflowMetaResponse'
+        workflow:
+          $ref: '#/components/schemas/WorkflowDataResponse'
+      type: object
+      required:
+      - id
+      - meta
+      - workflow
+      title: WorkflowResponse
+    _WorkflowBodyWorkflow:
+      properties:
+        call_ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Call Ids
+        stop_on_failure:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Stop On Failure
+        handle_cookies:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Handle Cookies
+      additionalProperties: false
+      type: object
+      title: _WorkflowBodyWorkflow
+    WorkflowListMetaResponse:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: WorkflowListMetaResponse
+    WorkflowRunRequest:
+      properties:
+        locations:
+          $ref: '#/components/schemas/AgentLocation'
+        run_delay:
+          type: integer
+          maximum: 86400.0
+          minimum: 0.0
+          title: Run Delay
+          default: 0
+        between_calls_delay:
+          type: integer
+          maximum: 86400.0
+          minimum: 0.0
+          title: Between Calls Delay
+          default: 0
+        context:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Context
+      type: object
+      required:
+      - locations
+      title: WorkflowRunRequest
+    WorkflowResultResponse:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        meta:
+          $ref: '#/components/schemas/WorkflowResultMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/WorkflowSubResult'
+          type: array
+          title: Results
+          default: []
+        post_context:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Post Context
+      type: object
+      required:
+      - meta
+      title: WorkflowResultResponse
+      description: A single workflow result (``TestRunResult``).
+    _WorkflowCreateMeta:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      title: _WorkflowCreateMeta
+    WorkflowMetaResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          default: []
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+        created:
+          type: string
+          title: Created
+        last_update:
+          type: string
+          title: Last Update
+        owner:
+          type: string
+          title: Owner
+        deployments:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Deployments
+      type: object
+      required:
+      - name
+      - created
+      - last_update
+      - owner
+      title: WorkflowMetaResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

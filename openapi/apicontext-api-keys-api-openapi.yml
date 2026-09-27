@@ -185,6 +185,15 @@ components:
         defaults the key to VIEWER (but see ``create_api_key`` for the owner guard).'
       examples:
       - access_level: EDITOR
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ApiKeyResponse:
       properties:
         id:
@@ -238,15 +247,6 @@ components:
         api_key: aB3dE6gH9jK2mN5pQ8sT1vW4xY7zC0eF
         id: ahFkZXZ-YXBpbWV0cmljcy1xY3IZCxIHQXBpQXV0aBI...
         project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3IUCxIEVXNlchiAgIC...
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ApiKeyListResponse:
       properties:
         meta:

@@ -388,7 +388,7 @@ paths:
       - Results
       summary: Get-Result-Content
       description: Download the raw response body for a result.
-      operationId: get-result-content
+      operationId: getApi2ResultsByResultKeyStrContent
       security:
       - OAuth2: []
       - ApiKey: []
@@ -417,6 +417,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+      x-operation-id-source: normalized
+      x-operation-id-original: get-result-content
   /api/2/results/{result_key_str}/pcap:
     get:
       tags:
@@ -687,15 +689,6 @@ components:
       - results
       title: ResultListResponse
       description: Paginated list of result synopses.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ResultDetailMeta:
       properties:
         result:
@@ -827,6 +820,47 @@ components:
       additionalProperties: true
       type: object
       title: ResultSynopsisMeta
+    ResultSynopsisItem:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        meta:
+          $ref: '#/components/schemas/ResultSynopsisMeta'
+        timing:
+          anyOf:
+          - $ref: '#/components/schemas/ResultSynopsisTiming'
+          - type: 'null'
+      type: object
+      required:
+      - meta
+      title: ResultSynopsisItem
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ResultDetailResponse:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/ResultDetailMeta'
+          - type: 'null'
+      additionalProperties: true
+      type: object
+      title: ResultDetailResponse
+      description: Full result detail as returned by to_api().
     ValidationError:
       properties:
         loc:
@@ -853,38 +887,6 @@ components:
       - msg
       - type
       title: ValidationError
-    ResultDetailResponse:
-      properties:
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/ResultDetailMeta'
-          - type: 'null'
-      additionalProperties: true
-      type: object
-      title: ResultDetailResponse
-      description: Full result detail as returned by to_api().
-    ResultSynopsisItem:
-      properties:
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        meta:
-          $ref: '#/components/schemas/ResultSynopsisMeta'
-        timing:
-          anyOf:
-          - $ref: '#/components/schemas/ResultSynopsisTiming'
-          - type: 'null'
-      type: object
-      required:
-      - meta
-      title: ResultSynopsisItem
   securitySchemes:
     OAuth2:
       type: oauth2

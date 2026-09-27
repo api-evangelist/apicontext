@@ -427,51 +427,25 @@ components:
       - more
       - project_id
       title: _FileListMeta
-    _FileListResponse:
+    Body_upload-new-oas:
       properties:
-        meta:
-          $ref: '#/components/schemas/_FileListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/_FileResponse'
-          type: array
-          title: Results
+        file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: File
       type: object
       required:
-      - meta
-      - results
-      title: _FileListResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    _UploadUrlBody:
+      - file
+      title: Body_upload-new-oas
+    UploadUrl:
       properties:
         url:
           type: string
           title: Url
-          description: URL to download the file from.
       type: object
       required:
       - url
-      title: _UploadUrlBody
-    _FileResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/_FileMeta'
-      type: object
-      required:
-      - id
-      - meta
-      title: _FileResponse
+      title: UploadUrl
     UploadFileResponse:
       properties:
         id:
@@ -497,6 +471,51 @@ components:
       - tagger_status
       - parse_info
       title: UploadFileResponse
+    _FileListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_FileListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/_FileResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: _FileListResponse
+    _UploadUrlBody:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: URL to download the file from.
+      type: object
+      required:
+      - url
+      title: _UploadUrlBody
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    _FileResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/_FileMeta'
+      type: object
+      required:
+      - id
+      - meta
+      title: _FileResponse
     _FileMeta:
       properties:
         name:
@@ -574,25 +593,6 @@ components:
       - msg
       - type
       title: ValidationError
-    Body_upload-new-oas:
-      properties:
-        file:
-          type: string
-          contentMediaType: application/octet-stream
-          title: File
-      type: object
-      required:
-      - file
-      title: Body_upload-new-oas
-    UploadUrl:
-      properties:
-        url:
-          type: string
-          title: Url
-      type: object
-      required:
-      - url
-      title: UploadUrl
   securitySchemes:
     OAuth2:
       type: oauth2
