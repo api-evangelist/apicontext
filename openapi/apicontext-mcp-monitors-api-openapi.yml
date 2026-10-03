@@ -430,21 +430,32 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    McpTestSetupRepr:
+    ValidationError:
       properties:
-        id:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/models__mcp_test_setup___MetaRepr'
-        setup:
-          $ref: '#/components/schemas/models__mcp_test_setup___SetupRepr'
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - id
-      - meta
-      - setup
-      title: McpTestSetupRepr
+      - loc
+      - msg
+      - type
+      title: ValidationError
     McpGetPromptStepRepr:
       properties:
         timeout_ms:
@@ -482,6 +493,174 @@ components:
       - wait_ms
       - prompt_name
       title: McpGetPromptStepRepr
+    McpListResourcesStepRepr:
+      properties:
+        timeout_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Timeout Ms
+          description: Step timeout (milliseconds)
+        wait_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Wait Ms
+          description: Time to wait after finishing step (milliseconds)
+        step_type:
+          type: string
+          const: list_resources
+          title: Step Type
+          default: list_resources
+      additionalProperties: false
+      type: object
+      required:
+      - timeout_ms
+      - wait_ms
+      title: McpListResourcesStepRepr
+    McpReadResourceStepRepr:
+      properties:
+        timeout_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Timeout Ms
+          description: Step timeout (milliseconds)
+        wait_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Wait Ms
+          description: Time to wait after finishing step (milliseconds)
+        step_type:
+          type: string
+          const: read_resource
+          title: Step Type
+          default: read_resource
+        resource_uri:
+          type: string
+          title: Resource Uri
+          description: URI of the resource to read
+      additionalProperties: false
+      type: object
+      required:
+      - timeout_ms
+      - wait_ms
+      - resource_uri
+      title: McpReadResourceStepRepr
+    api3__monitors__mcp__api_models__CreateRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Display name for the monitor
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Optional description for the monitor
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          description: Tags to apply to the monitor for grouping or advanced features
+        workspace:
+          type: string
+          title: Workspace
+          description: Workspace to assign the monitor to
+          default: global
+        url:
+          type: string
+          title: Url
+          description: Target URL for the monitor
+        overall_timeout_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Overall Timeout Ms
+          description: Session timeout for the monitor (milliseconds)
+          default: 30000
+        steps:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/McpListToolsStepRepr'
+            - $ref: '#/components/schemas/McpCallToolStepRepr'
+            - $ref: '#/components/schemas/McpListResourcesStepRepr'
+            - $ref: '#/components/schemas/McpListResourceTemplatesStepRepr'
+            - $ref: '#/components/schemas/McpReadResourceStepRepr'
+            - $ref: '#/components/schemas/McpListPromptsStepRepr'
+            - $ref: '#/components/schemas/McpGetPromptStepRepr'
+            - $ref: '#/components/schemas/McpWaitStepRepr'
+            discriminator:
+              propertyName: step_type
+              mapping:
+                call_tool: '#/components/schemas/McpCallToolStepRepr'
+                get_prompt: '#/components/schemas/McpGetPromptStepRepr'
+                list_prompts: '#/components/schemas/McpListPromptsStepRepr'
+                list_resource_templates: '#/components/schemas/McpListResourceTemplatesStepRepr'
+                list_resources: '#/components/schemas/McpListResourcesStepRepr'
+                list_tools: '#/components/schemas/McpListToolsStepRepr'
+                read_resource: '#/components/schemas/McpReadResourceStepRepr'
+                wait: '#/components/schemas/McpWaitStepRepr'
+          type: array
+          minItems: 1
+          title: Steps
+          description: Steps to execute during MCP session
+        auth_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Id
+          description: Auth Settings to use with the monitor
+        token_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Token Id
+          description: Auth Token to use with the monitor
+      type: object
+      required:
+      - name
+      - url
+      title: CreateRequest
+    McpTestSetupListResults:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/McpTestSetupRepr'
+          type: array
+          title: Results
+      type: object
+      required:
+      - results
+      title: McpTestSetupListResults
+    McpListResourceTemplatesStepRepr:
+      properties:
+        timeout_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Timeout Ms
+          description: Step timeout (milliseconds)
+        wait_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Wait Ms
+          description: Time to wait after finishing step (milliseconds)
+        step_type:
+          type: string
+          const: list_resource_templates
+          title: Step Type
+          default: list_resource_templates
+      additionalProperties: false
+      type: object
+      required:
+      - timeout_ms
+      - wait_ms
+      title: McpListResourceTemplatesStepRepr
     McpCallToolStepRepr:
       properties:
         timeout_ms:
@@ -519,61 +698,6 @@ components:
       - wait_ms
       - tool_name
       title: McpCallToolStepRepr
-    McpReadResourceStepRepr:
-      properties:
-        timeout_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Timeout Ms
-          description: Step timeout (milliseconds)
-        wait_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Wait Ms
-          description: Time to wait after finishing step (milliseconds)
-        step_type:
-          type: string
-          const: read_resource
-          title: Step Type
-          default: read_resource
-        resource_uri:
-          type: string
-          title: Resource Uri
-          description: URI of the resource to read
-      additionalProperties: false
-      type: object
-      required:
-      - timeout_ms
-      - wait_ms
-      - resource_uri
-      title: McpReadResourceStepRepr
-    McpListResourceTemplatesStepRepr:
-      properties:
-        timeout_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Timeout Ms
-          description: Step timeout (milliseconds)
-        wait_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Wait Ms
-          description: Time to wait after finishing step (milliseconds)
-        step_type:
-          type: string
-          const: list_resource_templates
-          title: Step Type
-          default: list_resource_templates
-      additionalProperties: false
-      type: object
-      required:
-      - timeout_ms
-      - wait_ms
-      title: McpListResourceTemplatesStepRepr
     models__mcp_test_setup___MetaRepr:
       properties:
         monitor_type:
@@ -628,121 +752,6 @@ components:
       - owner
       - workspace
       title: _MetaRepr
-    McpListPromptsStepRepr:
-      properties:
-        timeout_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Timeout Ms
-          description: Step timeout (milliseconds)
-        wait_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Wait Ms
-          description: Time to wait after finishing step (milliseconds)
-        step_type:
-          type: string
-          const: list_prompts
-          title: Step Type
-          default: list_prompts
-      additionalProperties: false
-      type: object
-      required:
-      - timeout_ms
-      - wait_ms
-      title: McpListPromptsStepRepr
-    models__mcp_test_setup___SetupRepr:
-      properties:
-        url:
-          type: string
-          title: Url
-          description: Target URL for this monitor
-        overall_timeout_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Overall Timeout Ms
-          description: Session timeout for the monitor (milliseconds)
-        steps:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/McpListToolsStepRepr'
-            - $ref: '#/components/schemas/McpCallToolStepRepr'
-            - $ref: '#/components/schemas/McpListResourcesStepRepr'
-            - $ref: '#/components/schemas/McpListResourceTemplatesStepRepr'
-            - $ref: '#/components/schemas/McpReadResourceStepRepr'
-            - $ref: '#/components/schemas/McpListPromptsStepRepr'
-            - $ref: '#/components/schemas/McpGetPromptStepRepr'
-            - $ref: '#/components/schemas/McpWaitStepRepr'
-            discriminator:
-              propertyName: step_type
-              mapping:
-                call_tool: '#/components/schemas/McpCallToolStepRepr'
-                get_prompt: '#/components/schemas/McpGetPromptStepRepr'
-                list_prompts: '#/components/schemas/McpListPromptsStepRepr'
-                list_resource_templates: '#/components/schemas/McpListResourceTemplatesStepRepr'
-                list_resources: '#/components/schemas/McpListResourcesStepRepr'
-                list_tools: '#/components/schemas/McpListToolsStepRepr'
-                read_resource: '#/components/schemas/McpReadResourceStepRepr'
-                wait: '#/components/schemas/McpWaitStepRepr'
-          type: array
-          minItems: 1
-          title: Steps
-          description: Steps to execute during MCP session
-        auth_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Auth Id
-          description: Auth Settings to use with the monitor
-        token_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Token Id
-          description: Auth Token to use with the monitor
-      type: object
-      required:
-      - url
-      - overall_timeout_ms
-      - steps
-      title: _SetupRepr
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    McpListToolsStepRepr:
-      properties:
-        timeout_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Timeout Ms
-          description: Step timeout (milliseconds)
-        wait_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Wait Ms
-          description: Time to wait after finishing step (milliseconds)
-        step_type:
-          type: string
-          const: list_tools
-          title: Step Type
-          default: list_tools
-      additionalProperties: false
-      type: object
-      required:
-      - timeout_ms
-      - wait_ms
-      title: McpListToolsStepRepr
     api3__monitors__mcp__api_models__UpdateRequest:
       properties:
         name:
@@ -826,7 +835,7 @@ components:
           description: Auth Token to use with the monitor
       type: object
       title: UpdateRequest
-    McpListResourcesStepRepr:
+    McpListToolsStepRepr:
       properties:
         timeout_ms:
           type: integer
@@ -842,75 +851,51 @@ components:
           description: Time to wait after finishing step (milliseconds)
         step_type:
           type: string
-          const: list_resources
+          const: list_tools
           title: Step Type
-          default: list_resources
+          default: list_tools
       additionalProperties: false
       type: object
       required:
       - timeout_ms
       - wait_ms
-      title: McpListResourcesStepRepr
-    ValidationError:
+      title: McpListToolsStepRepr
+    McpTestSetupRepr:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        id:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Id
+        meta:
+          $ref: '#/components/schemas/models__mcp_test_setup___MetaRepr'
+        setup:
+          $ref: '#/components/schemas/models__mcp_test_setup___SetupRepr'
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    api3__monitors__mcp__api_models__CreateRequest:
+      - id
+      - meta
+      - setup
+      title: McpTestSetupRepr
+    HTTPValidationError:
       properties:
-        name:
-          type: string
-          title: Name
-          description: Display name for the monitor
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-          description: Optional description for the monitor
-        tags:
+        detail:
           items:
-            type: string
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Tags
-          description: Tags to apply to the monitor for grouping or advanced features
-        workspace:
-          type: string
-          title: Workspace
-          description: Workspace to assign the monitor to
-          default: global
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    models__mcp_test_setup___SetupRepr:
+      properties:
         url:
           type: string
           title: Url
-          description: Target URL for the monitor
+          description: Target URL for this monitor
         overall_timeout_ms:
           type: integer
           maximum: 120000.0
           minimum: 0.0
           title: Overall Timeout Ms
           description: Session timeout for the monitor (milliseconds)
-          default: 30000
         steps:
           items:
             oneOf:
@@ -951,9 +936,35 @@ components:
           description: Auth Token to use with the monitor
       type: object
       required:
-      - name
       - url
-      title: CreateRequest
+      - overall_timeout_ms
+      - steps
+      title: _SetupRepr
+    McpListPromptsStepRepr:
+      properties:
+        timeout_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Timeout Ms
+          description: Step timeout (milliseconds)
+        wait_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Wait Ms
+          description: Time to wait after finishing step (milliseconds)
+        step_type:
+          type: string
+          const: list_prompts
+          title: Step Type
+          default: list_prompts
+      additionalProperties: false
+      type: object
+      required:
+      - timeout_ms
+      - wait_ms
+      title: McpListPromptsStepRepr
     McpWaitStepRepr:
       properties:
         timeout_ms:
@@ -979,17 +990,6 @@ components:
       - timeout_ms
       - wait_ms
       title: McpWaitStepRepr
-    McpTestSetupListResults:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/McpTestSetupRepr'
-          type: array
-          title: Results
-      type: object
-      required:
-      - results
-      title: McpTestSetupListResults
   securitySchemes:
     OAuth2:
       type: oauth2

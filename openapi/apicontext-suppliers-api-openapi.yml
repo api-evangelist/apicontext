@@ -139,26 +139,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ProjectSuppliersRequestBody:
-      properties:
-        project_key_strs:
-          items:
-            type: string
-          type: array
-          title: Project Key Strs
-      type: object
-      required:
-      - project_key_strs
-      title: ProjectSuppliersRequestBody
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -185,6 +165,26 @@ components:
       - msg
       - type
       title: ValidationError
+    ProjectSuppliersRequestBody:
+      properties:
+        project_key_strs:
+          items:
+            type: string
+          type: array
+          title: Project Key Strs
+      type: object
+      required:
+      - project_key_strs
+      title: ProjectSuppliersRequestBody
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

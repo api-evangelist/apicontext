@@ -999,6 +999,102 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    QuantileResponse:
+      properties:
+        columns:
+          items:
+            type: string
+          type: array
+          title: Columns
+        index:
+          items:
+            items: {}
+            type: array
+          type: array
+          title: Index
+        data:
+          items:
+            items:
+              type: number
+            type: array
+          type: array
+          title: Data
+      type: object
+      required:
+      - columns
+      - index
+      - data
+      title: QuantileResponse
+      description: pandas-``to_dict('split')``-style payload (columns / index / data).
+    PassFailRangeResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailRangeMeta'
+        results:
+          additionalProperties:
+            $ref: '#/components/schemas/_PassFailCounts'
+          type: object
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: PassFailRangeResponse
+    _StatMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        type:
+          type: string
+          title: Type
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Time
+      type: object
+      required:
+      - call_id
+      - type
+      - kind
+      - location_id
+      title: _StatMeta
+    _CategoryBreakdown:
+      properties:
+        totals:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Totals
+        totals_grouped:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Totals Grouped
+      type: object
+      title: _CategoryBreakdown
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     LegacyPassFailResponse:
       properties:
         meta:
@@ -1010,6 +1106,136 @@ components:
       - meta
       - stat
       title: LegacyPassFailResponse
+    PassFailResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailMeta'
+        stat:
+          $ref: '#/components/schemas/_PassFailCounts'
+      type: object
+      required:
+      - meta
+      - stat
+      title: PassFailResponse
+    _PassFailMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+        kind:
+          type: string
+          title: Kind
+      type: object
+      required:
+      - call_id
+      - location_id
+      - kind
+      title: _PassFailMeta
+    LegacyPassFailRangeResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_LegacyPassFailMeta'
+        results:
+          additionalProperties:
+            $ref: '#/components/schemas/_PassFailCounts'
+          type: object
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: LegacyPassFailRangeResponse
+    _HttpBreakdownMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+      type: object
+      required:
+      - call_id
+      - kind
+      - location_id
+      title: _HttpBreakdownMeta
+    HttpBreakdownResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_HttpBreakdownMeta'
+        stat:
+          $ref: '#/components/schemas/_HttpBreakdownStat'
+      type: object
+      required:
+      - meta
+      - stat
+      title: HttpBreakdownResponse
+    StatsKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      - YEAR
+      title: StatsKind
+      description: Aggregation period for ``stats/`` and ``metrics/`` (StatsApiHandler.VALID_KINDS).
+    _PassFailCounts:
+      properties:
+        pass:
+          type: integer
+          title: Pass
+          default: 0
+        warning:
+          type: integer
+          title: Warning
+          default: 0
+        failure:
+          type: integer
+          title: Failure
+          default: 0
+      type: object
+      title: _PassFailCounts
     _StatItem:
       properties:
         time:
@@ -1065,96 +1291,15 @@ components:
       - count
       title: _StatItem
       description: One bucket (aggregated) or one result (RAW).
-    PassFailTotalResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_PassFailTotalMeta'
-        stat:
-          additionalProperties: true
-          type: object
-          title: Stat
-      type: object
-      required:
-      - meta
-      - stat
-      title: PassFailTotalResponse
-    _CategoryBreakdown:
-      properties:
-        totals:
-          additionalProperties:
-            type: integer
-          type: object
-          title: Totals
-        totals_grouped:
-          additionalProperties:
-            type: integer
-          type: object
-          title: Totals Grouped
-      type: object
-      title: _CategoryBreakdown
-    _StatValues:
-      properties:
-        min_latency:
-          type: number
-          title: Min Latency
-        max_latency:
-          type: number
-          title: Max Latency
-        avg_latency:
-          type: number
-          title: Avg Latency
-        standard_deviation:
-          type: number
-          title: Standard Deviation
-        count:
-          type: integer
-          title: Count
-        time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Time
-      type: object
-      required:
-      - min_latency
-      - max_latency
-      - avg_latency
-      - standard_deviation
-      - count
-      title: _StatValues
-    _StatMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        type:
-          type: string
-          title: Type
-        kind:
-          type: string
-          title: Kind
-        location_id:
-          type: string
-          title: Location Id
-        time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Time
-      type: object
-      required:
-      - call_id
-      - type
-      - kind
-      - location_id
-      title: _StatMeta
+    StatsCategory:
+      type: string
+      enum:
+      - PASS
+      - SLOW
+      - WARNING
+      - FAIL
+      title: StatsCategory
+      description: Result category filter for the quantile ``metrics/`` endpoint.
     ListStatsKind:
       type: string
       enum:
@@ -1166,20 +1311,39 @@ components:
       - YEAR
       title: ListStatsKind
       description: As ``StatsKind`` plus ``RAW`` (per-result rows) for ``since``/``before``.
-    _HttpBreakdownStat:
-      properties:
-        overall:
-          $ref: '#/components/schemas/_HttpBreakdownOverall'
-        pass:
-          $ref: '#/components/schemas/_CategoryBreakdown'
-        warning:
-          $ref: '#/components/schemas/_CategoryBreakdown'
-        failure:
-          $ref: '#/components/schemas/_CategoryBreakdown'
-      type: object
-      required:
-      - overall
-      title: _HttpBreakdownStat
+    StatsType:
+      type: string
+      enum:
+      - ALL
+      - UNABLE_TO_RUN
+      - STARTED
+      - ENDED
+      - QUEUED
+      - PROCESSING
+      - SKIPPED
+      - AGENT_ERROR
+      - CONNECTION_WARNING
+      - HTTP_REDIRECT_ERROR
+      - HTTP_CLIENT_ERROR
+      - CONTENT_WARNING
+      - SLA_WARNING
+      - HTTP_SERVER_ERROR
+      - CONNECTION_ERROR
+      - HEADER_ERROR
+      - CONTENT_ERROR
+      - SLA_ERROR
+      - COMPLETE
+      - SLOW_COMPLETE
+      title: StatsType
+    BreakdownKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      title: BreakdownKind
+      description: '``http_codes`` / ``legacy/passfail*`` — no YEAR.'
     _LegacyPassFailMeta:
       properties:
         call_id:
@@ -1214,190 +1378,51 @@ components:
       - kind
       - location_id
       title: _LegacyPassFailMeta
-    _PassFailRangeMeta:
+    _HttpBreakdownStat:
       properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        min_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-        kind:
-          type: string
-          title: Kind
-        location_id:
-          type: string
-          title: Location Id
-      type: object
-      required:
-      - call_id
-      - kind
-      - location_id
-      title: _PassFailRangeMeta
-    PassFailResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_PassFailMeta'
-        stat:
-          $ref: '#/components/schemas/_PassFailCounts'
-      type: object
-      required:
-      - meta
-      - stat
-      title: PassFailResponse
-    _PassFailCounts:
-      properties:
+        overall:
+          $ref: '#/components/schemas/_HttpBreakdownOverall'
         pass:
-          type: integer
-          title: Pass
-          default: 0
+          $ref: '#/components/schemas/_CategoryBreakdown'
         warning:
-          type: integer
-          title: Warning
-          default: 0
+          $ref: '#/components/schemas/_CategoryBreakdown'
         failure:
+          $ref: '#/components/schemas/_CategoryBreakdown'
+      type: object
+      required:
+      - overall
+      title: _HttpBreakdownStat
+    _StatValues:
+      properties:
+        min_latency:
+          type: number
+          title: Min Latency
+        max_latency:
+          type: number
+          title: Max Latency
+        avg_latency:
+          type: number
+          title: Avg Latency
+        standard_deviation:
+          type: number
+          title: Standard Deviation
+        count:
           type: integer
-          title: Failure
-          default: 0
-      type: object
-      title: _PassFailCounts
-    HttpBreakdownResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_HttpBreakdownMeta'
-        stat:
-          $ref: '#/components/schemas/_HttpBreakdownStat'
-      type: object
-      required:
-      - meta
-      - stat
-      title: HttpBreakdownResponse
-    QuantileResponse:
-      properties:
-        columns:
-          items:
-            type: string
-          type: array
-          title: Columns
-        index:
-          items:
-            items: {}
-            type: array
-          type: array
-          title: Index
-        data:
-          items:
-            items:
-              type: number
-            type: array
-          type: array
-          title: Data
-      type: object
-      required:
-      - columns
-      - index
-      - data
-      title: QuantileResponse
-      description: pandas-``to_dict('split')``-style payload (columns / index / data).
-    StatsCategory:
-      type: string
-      enum:
-      - PASS
-      - SLOW
-      - WARNING
-      - FAIL
-      title: StatsCategory
-      description: Result category filter for the quantile ``metrics/`` endpoint.
-    BreakdownKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      title: BreakdownKind
-      description: '``http_codes`` / ``legacy/passfail*`` — no YEAR.'
-    _PassFailMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        location_id:
-          type: string
-          title: Location Id
-        min_time:
+          title: Count
+        time:
           anyOf:
           - type: string
             format: date-time
           - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-        kind:
-          type: string
-          title: Kind
+          title: Time
       type: object
       required:
-      - call_id
-      - location_id
-      - kind
-      title: _PassFailMeta
-    StatsKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      - YEAR
-      title: StatsKind
-      description: Aggregation period for ``stats/`` and ``metrics/`` (StatsApiHandler.VALID_KINDS).
-    LegacyPassFailRangeResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_LegacyPassFailMeta'
-        results:
-          additionalProperties:
-            $ref: '#/components/schemas/_PassFailCounts'
-          type: object
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: LegacyPassFailRangeResponse
-    PassFailKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - MONTH
-      - YEAR
-      title: PassFailKind
-      description: '``passfail`` / ``passfail_range`` (KIND_CLASS_MAP) — no WEEK.'
+      - min_latency
+      - max_latency
+      - avg_latency
+      - standard_deviation
+      - count
+      title: _StatValues
     StatsMetric:
       type: string
       enum:
@@ -1416,38 +1441,6 @@ components:
       - network_time_no_dns
       - time_to_last_byte
       title: StatsMetric
-    StatResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_StatMeta'
-        stat:
-          anyOf:
-          - $ref: '#/components/schemas/_StatValues'
-          - type: 'null'
-        adv_stat:
-          anyOf:
-          - $ref: '#/components/schemas/_StatValues'
-          - type: 'null'
-      type: object
-      required:
-      - meta
-      title: StatResponse
-    _HttpBreakdownOverall:
-      properties:
-        pass:
-          type: integer
-          title: Pass
-          default: 0
-        warning:
-          type: integer
-          title: Warning
-          default: 0
-        failure:
-          type: integer
-          title: Failure
-          default: 0
-      type: object
-      title: _HttpBreakdownOverall
     ValidationError:
       properties:
         loc:
@@ -1474,21 +1467,23 @@ components:
       - msg
       - type
       title: ValidationError
-    PassFailRangeResponse:
+    StatResponse:
       properties:
         meta:
-          $ref: '#/components/schemas/_PassFailRangeMeta'
-        results:
-          additionalProperties:
-            $ref: '#/components/schemas/_PassFailCounts'
-          type: object
-          title: Results
+          $ref: '#/components/schemas/_StatMeta'
+        stat:
+          anyOf:
+          - $ref: '#/components/schemas/_StatValues'
+          - type: 'null'
+        adv_stat:
+          anyOf:
+          - $ref: '#/components/schemas/_StatValues'
+          - type: 'null'
       type: object
       required:
       - meta
-      - results
-      title: PassFailRangeResponse
-    _HttpBreakdownMeta:
+      title: StatResponse
+    _PassFailTotalMeta:
       properties:
         call_id:
           type: string
@@ -1498,12 +1493,6 @@ components:
           - type: string
           - type: 'null'
           title: Name
-        kind:
-          type: string
-          title: Kind
-        location_id:
-          type: string
-          title: Location Id
         min_time:
           anyOf:
           - type: string
@@ -1519,23 +1508,16 @@ components:
       type: object
       required:
       - call_id
-      - kind
-      - location_id
-      title: _HttpBreakdownMeta
-    StatListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_StatListMeta'
-        stats:
-          items:
-            $ref: '#/components/schemas/_StatItem'
-          type: array
-          title: Stats
-      type: object
-      required:
-      - meta
-      - stats
-      title: StatListResponse
+      title: _PassFailTotalMeta
+    PassFailKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - MONTH
+      - YEAR
+      title: PassFailKind
+      description: '``passfail`` / ``passfail_range`` (KIND_CLASS_MAP) — no WEEK.'
     _StatListMeta:
       properties:
         call_id:
@@ -1583,16 +1565,50 @@ components:
       - kind
       - location_id
       title: _StatListMeta
-    HTTPValidationError:
+    StatListResponse:
       properties:
-        detail:
+        meta:
+          $ref: '#/components/schemas/_StatListMeta'
+        stats:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/_StatItem'
           type: array
-          title: Detail
+          title: Stats
       type: object
-      title: HTTPValidationError
-    _PassFailTotalMeta:
+      required:
+      - meta
+      - stats
+      title: StatListResponse
+    _HttpBreakdownOverall:
+      properties:
+        pass:
+          type: integer
+          title: Pass
+          default: 0
+        warning:
+          type: integer
+          title: Warning
+          default: 0
+        failure:
+          type: integer
+          title: Failure
+          default: 0
+      type: object
+      title: _HttpBreakdownOverall
+    PassFailTotalResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailTotalMeta'
+        stat:
+          additionalProperties: true
+          type: object
+          title: Stat
+      type: object
+      required:
+      - meta
+      - stat
+      title: PassFailTotalResponse
+    _PassFailRangeMeta:
       properties:
         call_id:
           type: string
@@ -1614,34 +1630,18 @@ components:
             format: date-time
           - type: 'null'
           title: Max Time
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
       type: object
       required:
       - call_id
-      title: _PassFailTotalMeta
-    StatsType:
-      type: string
-      enum:
-      - ALL
-      - UNABLE_TO_RUN
-      - STARTED
-      - ENDED
-      - QUEUED
-      - PROCESSING
-      - SKIPPED
-      - AGENT_ERROR
-      - CONNECTION_WARNING
-      - HTTP_REDIRECT_ERROR
-      - HTTP_CLIENT_ERROR
-      - CONTENT_WARNING
-      - SLA_WARNING
-      - HTTP_SERVER_ERROR
-      - CONNECTION_ERROR
-      - HEADER_ERROR
-      - CONTENT_ERROR
-      - SLA_ERROR
-      - COMPLETE
-      - SLOW_COMPLETE
-      title: StatsType
+      - kind
+      - location_id
+      title: _PassFailRangeMeta
   securitySchemes:
     OAuth2:
       type: oauth2

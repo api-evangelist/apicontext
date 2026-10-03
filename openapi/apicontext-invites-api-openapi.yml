@@ -363,39 +363,74 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ProjectInviteListMeta:
+    ProjectInviteListResponse:
       properties:
-        more:
-          type: boolean
-          title: More
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
+        meta:
+          $ref: '#/components/schemas/ProjectInviteListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/InviteResponse'
+          type: array
+          title: Results
       type: object
       required:
-      - more
-      title: ProjectInviteListMeta
-    InviteListMeta:
+      - meta
+      - results
+      title: ProjectInviteListResponse
+    InviteStatusResponse:
       properties:
-        more:
-          type: boolean
-          title: More
-        next_cursor:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: InviteStatusResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CreateProjectInviteBody:
+      properties:
+        email:
+          type: string
+          title: Email
+        name:
           anyOf:
           - type: string
           - type: 'null'
-          title: Next Cursor
+          title: Name
+        access_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Level
       type: object
       required:
-      - more
-      title: InviteListMeta
+      - email
+      title: CreateProjectInviteBody
     InviteResponse:
       properties:
         id:
@@ -457,25 +492,6 @@ components:
           title: Created
       type: object
       title: InviteResponse
-    CreateProjectInviteBody:
-      properties:
-        email:
-          type: string
-          title: Email
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        access_level:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Access Level
-      type: object
-      required:
-      - email
-      title: CreateProjectInviteBody
     CreateOrgInviteBody:
       properties:
         email:
@@ -500,29 +516,20 @@ components:
       required:
       - email
       title: CreateOrgInviteBody
-    ProjectInviteListResponse:
+    InviteListMeta:
       properties:
-        meta:
-          $ref: '#/components/schemas/ProjectInviteListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/InviteResponse'
-          type: array
-          title: Results
+        more:
+          type: boolean
+          title: More
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
       type: object
       required:
-      - meta
-      - results
-      title: ProjectInviteListResponse
-    InviteStatusResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - status
-      title: InviteStatusResponse
+      - more
+      title: InviteListMeta
     HTTPValidationError:
       properties:
         detail:
@@ -546,32 +553,25 @@ components:
       - meta
       - results
       title: InviteListResponse
-    ValidationError:
+    ProjectInviteListMeta:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+        more:
+          type: boolean
+          title: More
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - more
+      title: ProjectInviteListMeta
   securitySchemes:
     OAuth2:
       type: oauth2

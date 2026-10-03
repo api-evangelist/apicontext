@@ -105,15 +105,6 @@ components:
       type: object
       title: ImportResponse
       description: The (mutated) import bundle echoed back on a successful import.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ImportSampleResponse:
       properties:
         project_ids:
@@ -151,6 +142,15 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -427,6 +427,32 @@ components:
       - more
       - project_id
       title: _FileListMeta
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     Body_upload-new-oas:
       properties:
         file:
@@ -437,6 +463,16 @@ components:
       required:
       - file
       title: Body_upload-new-oas
+    _UploadUrlBody:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: URL to download the file from.
+      type: object
+      required:
+      - url
+      title: _UploadUrlBody
     UploadUrl:
       properties:
         url:
@@ -471,6 +507,18 @@ components:
       - tagger_status
       - parse_info
       title: UploadFileResponse
+    _FileResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/_FileMeta'
+      type: object
+      required:
+      - id
+      - meta
+      title: _FileResponse
     _FileListResponse:
       properties:
         meta:
@@ -485,16 +533,6 @@ components:
       - meta
       - results
       title: _FileListResponse
-    _UploadUrlBody:
-      properties:
-        url:
-          type: string
-          title: Url
-          description: URL to download the file from.
-      type: object
-      required:
-      - url
-      title: _UploadUrlBody
     HTTPValidationError:
       properties:
         detail:
@@ -504,18 +542,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    _FileResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/_FileMeta'
-      type: object
-      required:
-      - id
-      - meta
-      title: _FileResponse
     _FileMeta:
       properties:
         name:
@@ -567,32 +593,6 @@ components:
           title: Project Id
       type: object
       title: _FileMeta
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

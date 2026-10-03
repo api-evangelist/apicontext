@@ -224,56 +224,50 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HookListResponse:
+    ValidationError:
       properties:
-        meta:
-          $ref: '#/components/schemas/HookListMeta'
-        results:
+        loc:
           items:
-            $ref: '#/components/schemas/HookResponse'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Results
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - meta
-      - results
-      title: HookListResponse
-    UpdateHookRequest:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HookListMeta:
       properties:
-        name:
+        next_cursor:
           anyOf:
           - type: string
-            maxLength: 400
           - type: 'null'
-          title: Name
-        description:
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
           anyOf:
           - type: string
-            maxLength: 1000
           - type: 'null'
-          title: Description
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        save_timestamp:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Save Timestamp
-        variables:
-          anyOf:
-          - additionalProperties:
-              type: string
-            type: object
-          - type: 'null'
-          title: Variables
-      additionalProperties: false
+          title: Project Id
       type: object
-      title: UpdateHookRequest
+      title: HookListMeta
     HookResponse:
       properties:
         id:
@@ -335,6 +329,65 @@ components:
       - target_id
       - project_id
       title: HookResponse
+    UpdateHookRequest:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 400
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        save_timestamp:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Save Timestamp
+        variables:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Variables
+      additionalProperties: false
+      type: object
+      title: UpdateHookRequest
+    HookListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/HookListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/HookResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: HookListResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     CreateHookRequest:
       properties:
         name:
@@ -376,59 +429,6 @@ components:
       required:
       - target_id
       title: CreateHookRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    HookListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      title: HookListMeta
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

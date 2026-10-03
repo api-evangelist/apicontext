@@ -156,53 +156,120 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    api3__billing__models__SubInfo:
+    ValidationError:
       properties:
-        level:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          title: Level
-        name:
+          title: Message
+        type:
           type: string
-          title: Name
-        plan:
-          type: string
-          title: Plan
-        start:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Start
-        end:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: End
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        org_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org Id
-        backend:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Backend
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - level
-      - name
-      - plan
-      - start
-      - end
-      - state
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    MonthlyResultCounts:
+      properties:
+        month:
+          type: string
+          title: Month
+        api_count:
+          type: integer
+          title: Api Count
+        browser_count:
+          type: integer
+          title: Browser Count
+        mcp_count:
+          type: integer
+          title: Mcp Count
+        total_count:
+          type: integer
+          title: Total Count
+      type: object
+      required:
+      - month
+      - api_count
+      - browser_count
+      - mcp_count
+      - total_count
+      title: MonthlyResultCounts
+    UsageWeights:
+      properties:
+        api:
+          type: integer
+          title: Api
+          default: 1
+        browser:
+          type: integer
+          title: Browser
+          default: 50
+        mcp:
+          type: integer
+          title: Mcp
+          default: 1
+      type: object
+      title: UsageWeights
+    UsageCountsResponse:
+      properties:
+        org_id:
+          type: string
+          title: Org Id
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        months:
+          items:
+            $ref: '#/components/schemas/MonthlyResultCounts'
+          type: array
+          title: Months
+      type: object
+      required:
       - org_id
-      - backend
-      title: SubInfo
+      - project_id
+      - months
+      title: UsageCountsResponse
+    Quotas:
+      properties:
+        test_run_quota:
+          type: integer
+          title: Test Run Quota
+        test_setup_quota:
+          type: integer
+          title: Test Setup Quota
+        public_report_quota:
+          type: integer
+          title: Public Report Quota
+      type: object
+      required:
+      - test_run_quota
+      - test_setup_quota
+      - public_report_quota
+      title: Quotas
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     api3__billing__models__QuotaResponse:
       properties:
         sub:
@@ -261,120 +328,53 @@ components:
       - public_report_count
       - scheduled_test_count
       title: Usage
-    HTTPValidationError:
+    api3__billing__models__SubInfo:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    MonthlyResultCounts:
-      properties:
-        month:
+        level:
           type: string
-          title: Month
-        api_count:
-          type: integer
-          title: Api Count
-        browser_count:
-          type: integer
-          title: Browser Count
-        mcp_count:
-          type: integer
-          title: Mcp Count
-        total_count:
-          type: integer
-          title: Total Count
-      type: object
-      required:
-      - month
-      - api_count
-      - browser_count
-      - mcp_count
-      - total_count
-      title: MonthlyResultCounts
-    UsageCountsResponse:
-      properties:
-        org_id:
+          title: Level
+        name:
           type: string
-          title: Org Id
-        project_id:
+          title: Name
+        plan:
+          type: string
+          title: Plan
+        start:
           anyOf:
           - type: string
           - type: 'null'
-          title: Project Id
-        months:
-          items:
-            $ref: '#/components/schemas/MonthlyResultCounts'
-          type: array
-          title: Months
+          title: Start
+        end:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: End
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        org_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Id
+        backend:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Backend
       type: object
       required:
+      - level
+      - name
+      - plan
+      - start
+      - end
+      - state
       - org_id
-      - project_id
-      - months
-      title: UsageCountsResponse
-    Quotas:
-      properties:
-        test_run_quota:
-          type: integer
-          title: Test Run Quota
-        test_setup_quota:
-          type: integer
-          title: Test Setup Quota
-        public_report_quota:
-          type: integer
-          title: Public Report Quota
-      type: object
-      required:
-      - test_run_quota
-      - test_setup_quota
-      - public_report_quota
-      title: Quotas
-    UsageWeights:
-      properties:
-        api:
-          type: integer
-          title: Api
-          default: 1
-        browser:
-          type: integer
-          title: Browser
-          default: 50
-        mcp:
-          type: integer
-          title: Mcp
-          default: 1
-      type: object
-      title: UsageWeights
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - backend
+      title: SubInfo
   securitySchemes:
     OAuth2:
       type: oauth2

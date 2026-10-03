@@ -1092,56 +1092,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ScheduleListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/ScheduleListMetaResponse'
-        results:
-          items:
-            $ref: '#/components/schemas/ScheduleResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: ScheduleListResponse
-    DowntimeListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/DowntimeListMetaResponse'
-        results:
-          items:
-            $ref: '#/components/schemas/DowntimeResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: DowntimeListResponse
-    ScheduleCreateBody:
-      properties:
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/_ScheduleBodyMeta'
-          - type: 'null'
-        schedule:
-          anyOf:
-          - $ref: '#/components/schemas/_ScheduleBodySchedule'
-          - type: 'null'
-      additionalProperties: false
-      type: object
-      title: ScheduleCreateBody
-    DowntimeUpdateBody:
-      properties:
-        downtime:
-          anyOf:
-          - $ref: '#/components/schemas/_DowntimeBodyFields'
-          - type: 'null'
-      additionalProperties: false
-      type: object
-      title: DowntimeUpdateBody
     ScheduleMetaResponse:
       properties:
         name:
@@ -1174,77 +1124,6 @@ components:
       required:
       - owner
       title: ScheduleMetaResponse
-    _ScheduleBodyMeta:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-      additionalProperties: false
-      type: object
-      title: _ScheduleBodyMeta
-    _DowntimeBodyFields:
-      properties:
-        start_time:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Start Time
-        end_time:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: End Time
-        zone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Zone
-        repeated:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Repeated
-        repeat_days:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Repeat Days
-      additionalProperties: false
-      type: object
-      title: _DowntimeBodyFields
-    DowntimeCreateBody:
-      properties:
-        downtime:
-          anyOf:
-          - $ref: '#/components/schemas/_DowntimeBodyFields'
-          - type: 'null'
-      additionalProperties: false
-      type: object
-      title: DowntimeCreateBody
-    DowntimeResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/DowntimeMetaResponse'
-        schedule:
-          $ref: '#/components/schemas/DowntimeBodyResponse'
-      type: object
-      required:
-      - id
-      - meta
-      - schedule
-      title: DowntimeResponse
     EditableScheduleBody:
       properties:
         name:
@@ -1298,245 +1177,6 @@ components:
           description: Retry backoff strategy applied on failure
       type: object
       title: EditableScheduleBody
-    _ScheduleBodySchedule:
-      properties:
-        target_ids:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Target Ids
-        regions:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Regions
-        locations:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Locations
-        frequency:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Frequency
-        backoff_method:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Backoff Method
-      additionalProperties: false
-      type: object
-      title: _ScheduleBodySchedule
-    ApiScheduleMeta:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: Unique identifier for the schedule
-        name:
-          type: string
-          title: Name
-          description: Display name for the schedule
-        owner:
-          type: string
-          title: Owner
-          description: ID of the project that owns the schedule
-        created:
-          type: string
-          format: date-time
-          title: Created
-          description: When the schedule was first created
-        last_update:
-          type: string
-          format: date-time
-          title: Last Update
-          description: When the schedule was most recently modified
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-          description: Tags applied to the schedule
-      type: object
-      required:
-      - id
-      - name
-      - owner
-      - created
-      - last_update
-      - tags
-      title: ApiScheduleMeta
-    DowntimeListMetaResponse:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          type: string
-          title: Project Id
-      type: object
-      required:
-      - more
-      - project_id
-      title: DowntimeListMetaResponse
-    ApiSchedule:
-      properties:
-        meta:
-          $ref: '#/components/schemas/ApiScheduleMeta'
-        schedule:
-          $ref: '#/components/schemas/ApiScheduleSpec'
-      type: object
-      required:
-      - meta
-      - schedule
-      title: ApiSchedule
-    ApiScheduleSpec:
-      properties:
-        frequency:
-          type: integer
-          title: Frequency
-          description: Run interval in seconds
-        target_ids:
-          items:
-            type: string
-          type: array
-          title: Target Ids
-          description: IDs of the monitors run on this schedule
-        regions:
-          items:
-            type: string
-          type: array
-          title: Regions
-          description: Regions and clouds the schedule runs from (['all'] when worldwide)
-        locations:
-          items:
-            type: string
-          type: array
-          title: Locations
-          description: Specific agent locations the schedule runs from
-        backoff_method:
-          anyOf:
-          - $ref: '#/components/schemas/BackoffMethod'
-          - type: 'null'
-          description: Retry backoff strategy applied on failure
-      type: object
-      required:
-      - frequency
-      - target_ids
-      - regions
-      - locations
-      - backoff_method
-      title: ApiScheduleSpec
-    ScheduleUpdateBody:
-      properties:
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/_ScheduleBodyMeta'
-          - type: 'null'
-        schedule:
-          anyOf:
-          - $ref: '#/components/schemas/_ScheduleBodySchedule'
-          - type: 'null'
-      additionalProperties: false
-      type: object
-      title: ScheduleUpdateBody
-    api3__schedules__router___ListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/api3__schedules__router___ListResponseMeta'
-        data:
-          items:
-            $ref: '#/components/schemas/ApiSchedule'
-          type: array
-          title: Data
-      type: object
-      required:
-      - meta
-      - data
-      title: _ListResponse
-    DowntimeMetaResponse:
-      properties:
-        last_update:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Update
-        created:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Created
-        state:
-          type: string
-          title: State
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-        org_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org Id
-        schedule_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Schedule Id
-        project_ids:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Project Ids
-      type: object
-      required:
-      - state
-      title: DowntimeMetaResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ScheduleBodyResponse:
       properties:
         target_ids:
@@ -1580,6 +1220,95 @@ components:
       required:
       - worldwide
       title: ScheduleBodyResponse
+    DowntimeMetaResponse:
+      properties:
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        state:
+          type: string
+          title: State
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        org_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Id
+        schedule_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Schedule Id
+        project_ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Project Ids
+      type: object
+      required:
+      - state
+      title: DowntimeMetaResponse
+    ScheduleCreateBody:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/_ScheduleBodyMeta'
+          - type: 'null'
+        schedule:
+          anyOf:
+          - $ref: '#/components/schemas/_ScheduleBodySchedule'
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      title: ScheduleCreateBody
+    DowntimeResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/DowntimeMetaResponse'
+        schedule:
+          $ref: '#/components/schemas/DowntimeBodyResponse'
+      type: object
+      required:
+      - id
+      - meta
+      - schedule
+      title: DowntimeResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DowntimeCreateBody:
+      properties:
+        downtime:
+          anyOf:
+          - $ref: '#/components/schemas/_DowntimeBodyFields'
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      title: DowntimeCreateBody
     api3__schedules__router___ListResponseMeta:
       properties:
         project_id:
@@ -1602,14 +1331,42 @@ components:
       - next_cursor
       - more
       title: _ListResponseMeta
-    BackoffMethod:
-      type: string
-      enum:
-      - fibo
-      - expo
-      - constant
-      - none
-      title: BackoffMethod
+    _ScheduleBodySchedule:
+      properties:
+        target_ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Target Ids
+        regions:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Regions
+        locations:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Locations
+        frequency:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Frequency
+        backoff_method:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Backoff Method
+      additionalProperties: false
+      type: object
+      title: _ScheduleBodySchedule
     DowntimeBodyResponse:
       properties:
         start_time:
@@ -1635,6 +1392,182 @@ components:
       - repeated
       - repeat_days
       title: DowntimeBodyResponse
+    ApiScheduleMeta:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the schedule
+        name:
+          type: string
+          title: Name
+          description: Display name for the schedule
+        owner:
+          type: string
+          title: Owner
+          description: ID of the project that owns the schedule
+        created:
+          type: string
+          format: date-time
+          title: Created
+          description: When the schedule was first created
+        last_update:
+          type: string
+          format: date-time
+          title: Last Update
+          description: When the schedule was most recently modified
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+          description: Tags applied to the schedule
+      type: object
+      required:
+      - id
+      - name
+      - owner
+      - created
+      - last_update
+      - tags
+      title: ApiScheduleMeta
+    _DowntimeBodyFields:
+      properties:
+        start_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start Time
+        end_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: End Time
+        zone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zone
+        repeated:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Repeated
+        repeat_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Repeat Days
+      additionalProperties: false
+      type: object
+      title: _DowntimeBodyFields
+    DowntimeListMetaResponse:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: DowntimeListMetaResponse
+    DowntimeListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/DowntimeListMetaResponse'
+        results:
+          items:
+            $ref: '#/components/schemas/DowntimeResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: DowntimeListResponse
+    ScheduleUpdateBody:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/_ScheduleBodyMeta'
+          - type: 'null'
+        schedule:
+          anyOf:
+          - $ref: '#/components/schemas/_ScheduleBodySchedule'
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      title: ScheduleUpdateBody
+    ApiSchedule:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ApiScheduleMeta'
+        schedule:
+          $ref: '#/components/schemas/ApiScheduleSpec'
+      type: object
+      required:
+      - meta
+      - schedule
+      title: ApiSchedule
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ScheduleListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ScheduleListMetaResponse'
+        results:
+          items:
+            $ref: '#/components/schemas/ScheduleResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ScheduleListResponse
+    DowntimeUpdateBody:
+      properties:
+        downtime:
+          anyOf:
+          - $ref: '#/components/schemas/_DowntimeBodyFields'
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      title: DowntimeUpdateBody
     ScheduleResponse:
       properties:
         id:
@@ -1650,15 +1583,20 @@ components:
       - meta
       - schedule
       title: ScheduleResponse
-    HTTPValidationError:
+    api3__schedules__router___ListResponse:
       properties:
-        detail:
+        meta:
+          $ref: '#/components/schemas/api3__schedules__router___ListResponseMeta'
+        data:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/ApiSchedule'
           type: array
-          title: Detail
+          title: Data
       type: object
-      title: HTTPValidationError
+      required:
+      - meta
+      - data
+      title: _ListResponse
     ScheduleListMetaResponse:
       properties:
         next_cursor:
@@ -1677,6 +1615,68 @@ components:
       - more
       - project_id
       title: ScheduleListMetaResponse
+    _ScheduleBodyMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+      additionalProperties: false
+      type: object
+      title: _ScheduleBodyMeta
+    ApiScheduleSpec:
+      properties:
+        frequency:
+          type: integer
+          title: Frequency
+          description: Run interval in seconds
+        target_ids:
+          items:
+            type: string
+          type: array
+          title: Target Ids
+          description: IDs of the monitors run on this schedule
+        regions:
+          items:
+            type: string
+          type: array
+          title: Regions
+          description: Regions and clouds the schedule runs from (['all'] when worldwide)
+        locations:
+          items:
+            type: string
+          type: array
+          title: Locations
+          description: Specific agent locations the schedule runs from
+        backoff_method:
+          anyOf:
+          - $ref: '#/components/schemas/BackoffMethod'
+          - type: 'null'
+          description: Retry backoff strategy applied on failure
+      type: object
+      required:
+      - frequency
+      - target_ids
+      - regions
+      - locations
+      - backoff_method
+      title: ApiScheduleSpec
+    BackoffMethod:
+      type: string
+      enum:
+      - fibo
+      - expo
+      - constant
+      - none
+      title: BackoffMethod
   securitySchemes:
     OAuth2:
       type: oauth2

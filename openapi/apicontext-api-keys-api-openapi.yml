@@ -148,25 +148,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ApiKeyListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      required:
-      - more
-      title: ApiKeyListMeta
     CreateApiKeyBody:
       properties:
         access_level:
@@ -185,15 +166,46 @@ components:
         defaults the key to VIEWER (but see ``create_api_key`` for the owner guard).'
       examples:
       - access_level: EDITOR
-    HTTPValidationError:
+    ValidationError:
       properties:
-        detail:
+        loc:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Detail
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
-      title: HTTPValidationError
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ApiKeyListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ApiKeyListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/ApiKeyResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ApiKeyListResponse
     ApiKeyResponse:
       properties:
         id:
@@ -247,46 +259,34 @@ components:
         api_key: aB3dE6gH9jK2mN5pQ8sT1vW4xY7zC0eF
         id: ahFkZXZ-YXBpbWV0cmljcy1xY3IZCxIHQXBpQXV0aBI...
         project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3IUCxIEVXNlchiAgIC...
-    ApiKeyListResponse:
+    HTTPValidationError:
       properties:
-        meta:
-          $ref: '#/components/schemas/ApiKeyListMeta'
-        results:
+        detail:
           items:
-            $ref: '#/components/schemas/ApiKeyResponse'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Results
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ApiKeyListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
       type: object
       required:
-      - meta
-      - results
-      title: ApiKeyListResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - more
+      title: ApiKeyListMeta
   securitySchemes:
     OAuth2:
       type: oauth2

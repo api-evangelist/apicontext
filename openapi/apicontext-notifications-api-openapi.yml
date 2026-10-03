@@ -205,6 +205,32 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     NotificationListResponse:
       properties:
         meta:
@@ -219,16 +245,6 @@ components:
       - meta
       - results
       title: NotificationListResponse
-    UpdateNotificationBody:
-      properties:
-        viewed:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Viewed
-          description: Mark the notification read (true) or unread (false).
-      type: object
-      title: UpdateNotificationBody
     NotificationResponse:
       properties:
         id:
@@ -294,15 +310,16 @@ components:
       - id
       - viewed
       title: NotificationResponse
-    HTTPValidationError:
+    UpdateNotificationBody:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        viewed:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Viewed
+          description: Mark the notification read (true) or unread (false).
       type: object
-      title: HTTPValidationError
+      title: UpdateNotificationBody
     NotificationListMeta:
       properties:
         next_cursor:
@@ -321,32 +338,15 @@ components:
       - more
       - project_id
       title: NotificationListMeta
-    ValidationError:
+    HTTPValidationError:
       properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

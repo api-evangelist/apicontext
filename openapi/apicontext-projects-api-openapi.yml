@@ -304,77 +304,32 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    CreateProjectBody:
+    ValidationError:
       properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        security_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Security Profile
-      type: object
-      title: CreateProjectBody
-      examples:
-      - name: New Project
-    ProjectListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/ProjectListMeta'
-        results:
+        loc:
           items:
-            $ref: '#/components/schemas/ProjectResponse'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Results
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - meta
-      - results
-      title: ProjectListResponse
-      examples:
-      - meta:
-          more: true
-          next_cursor: ClIKLgoI...
-        results:
-        - created: '2026-06-19T09:06:47.046143Z'
-          id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-          last_update: '2026-06-19T09:06:47.046170Z'
-          name: Project 1
-          org_id: apicontext
-          sub_info:
-            counts:
-              org_test_run_count: 0
-              public_report_count: 0
-              scheduled_test_count: 288
-              test_setup_count: 4
-              user_test_run_count: 0
-            month_progress: 0.814
-            quotas:
-              public_report_quota: 10
-              test_run_quota: 1000000
-              test_setup_quota: 1000
-            sub:
-              backend: azure
-              level: CONTRACT
-              name: Enterprise
-              org_id: apicontext
-              plan: enterprise
-          tags: []
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ProjectResponse:
       properties:
         id:
@@ -481,6 +436,77 @@ components:
       - next_cursor
       - more
       title: ProjectListMeta
+    CreateProjectBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        security_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Security Profile
+      type: object
+      title: CreateProjectBody
+      examples:
+      - name: New Project
+    ProjectListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/ProjectResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ProjectListResponse
+      examples:
+      - meta:
+          more: true
+          next_cursor: ClIKLgoI...
+        results:
+        - created: '2026-06-19T09:06:47.046143Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+          last_update: '2026-06-19T09:06:47.046170Z'
+          name: Project 1
+          org_id: apicontext
+          sub_info:
+            counts:
+              org_test_run_count: 0
+              public_report_count: 0
+              scheduled_test_count: 288
+              test_setup_count: 4
+              user_test_run_count: 0
+            month_progress: 0.814
+            quotas:
+              public_report_quota: 10
+              test_run_quota: 1000000
+              test_setup_quota: 1000
+            sub:
+              backend: azure
+              level: CONTRACT
+              name: Enterprise
+              org_id: apicontext
+              plan: enterprise
+          tags: []
     UpdateProjectBody:
       properties:
         name:
@@ -520,32 +546,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -136,93 +136,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    RsaSignRequest:
-      properties:
-        alg:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Alg
-          description: RSA algorithm (e.g. 'rs256'); case-insensitive.
-        key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Key
-          description: PEM RSA private key.
-        msg:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Msg
-          description: Message to sign.
-      type: object
-      title: RsaSignRequest
-      description: Input for an RSA signature. Fields are optional; see ``HmacRequest``.
-      examples:
-      - alg: rs256
-        key: '-----BEGIN RSA PRIVATE KEY-----
-
-          ...'
-        msg: hello
-    HmacResponse:
-      properties:
-        alg:
-          type: string
-          title: Alg
-        digest:
-          type: string
-          title: Digest
-          description: Standard base64 of the raw digest.
-        hex_digest:
-          type: string
-          title: Hex Digest
-          description: Hex digest.
-      type: object
-      required:
-      - alg
-      - digest
-      - hex_digest
-      title: HmacResponse
-    JwtDecodeResponse:
-      properties:
-        headers:
-          additionalProperties: true
-          type: object
-          title: Headers
-        payload:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Payload
-        error:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Error
-        signature:
-          type: string
-          title: Signature
-      type: object
-      required:
-      - headers
-      - signature
-      title: JwtDecodeResponse
-      description: 'The decoded (but *unverified*) parts of a JWT. Exactly one of ``payload``
-
-        or ``error`` is present: ``error`` replaces ``payload`` when the claims
-
-        segment cannot be decoded.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     RsaSignResponse:
       properties:
         alg:
@@ -237,35 +150,32 @@ components:
       - alg
       - signed
       title: RsaSignResponse
-    HmacRequest:
+    ValidationError:
       properties:
-        alg:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Alg
-          description: Hash algorithm name (e.g. 'sha256'); case-insensitive.
-        key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Key
-          description: HMAC key.
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
         msg:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Msg
-          description: Message to authenticate.
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
-      title: HmacRequest
-      description: 'Input for an HMAC digest. Fields are optional so the legacy validation
-
-        order and 400 messages are reproduced in code rather than surfaced as 422s.'
-      examples:
-      - alg: sha256
-        key: my-secret
-        msg: hello
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     JwtEncodeRequest:
       properties:
         claims:
@@ -330,32 +240,122 @@ components:
           alg: HS256
           typ: JWT
         key: your-shared-secret
-    ValidationError:
+    JwtDecodeResponse:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
+        headers:
+          additionalProperties: true
           type: object
-          title: Context
+          title: Headers
+        payload:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Payload
+        error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error
+        signature:
+          type: string
+          title: Signature
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - headers
+      - signature
+      title: JwtDecodeResponse
+      description: 'The decoded (but *unverified*) parts of a JWT. Exactly one of ``payload``
+
+        or ``error`` is present: ``error`` replaces ``payload`` when the claims
+
+        segment cannot be decoded.'
+    HmacResponse:
+      properties:
+        alg:
+          type: string
+          title: Alg
+        digest:
+          type: string
+          title: Digest
+          description: Standard base64 of the raw digest.
+        hex_digest:
+          type: string
+          title: Hex Digest
+          description: Hex digest.
+      type: object
+      required:
+      - alg
+      - digest
+      - hex_digest
+      title: HmacResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HmacRequest:
+      properties:
+        alg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alg
+          description: Hash algorithm name (e.g. 'sha256'); case-insensitive.
+        key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key
+          description: HMAC key.
+        msg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Msg
+          description: Message to authenticate.
+      type: object
+      title: HmacRequest
+      description: 'Input for an HMAC digest. Fields are optional so the legacy validation
+
+        order and 400 messages are reproduced in code rather than surfaced as 422s.'
+      examples:
+      - alg: sha256
+        key: my-secret
+        msg: hello
+    RsaSignRequest:
+      properties:
+        alg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alg
+          description: RSA algorithm (e.g. 'rs256'); case-insensitive.
+        key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key
+          description: PEM RSA private key.
+        msg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Msg
+          description: Message to sign.
+      type: object
+      title: RsaSignRequest
+      description: Input for an RSA signature. Fields are optional; see ``HmacRequest``.
+      examples:
+      - alg: rs256
+        key: '-----BEGIN RSA PRIVATE KEY-----
+
+          ...'
+        msg: hello
   securitySchemes:
     OAuth2:
       type: oauth2

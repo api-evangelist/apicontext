@@ -197,6 +197,70 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    KidAlg:
+      type: string
+      enum:
+      - manual
+      - rfc7638-sha1
+      - rfc7638-sha256
+      title: KidAlg
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CertificateListResults:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/CertificateMetadata'
+          type: array
+          title: Results
+        meta:
+          $ref: '#/components/schemas/CertificateListMeta'
+      type: object
+      required:
+      - results
+      - meta
+      title: CertificateListResults
+    IntendedUse:
+      type: string
+      enum:
+      - mtls
+      - signing
+      - signing-pss
+      title: IntendedUse
+    CertificateListMeta:
+      properties:
+        org_id:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      type: object
+      required:
+      - org_id
+      title: CertificateListMeta
     CertificateMetadata:
       properties:
         id:
@@ -278,23 +342,15 @@ components:
       - projects
       title: CertificateMetadata
       description: Certificate metadata for responses which don't need the actual values.
-    CertificateListMeta:
+    HTTPValidationError:
       properties:
-        org_id:
-          type: string
-          pattern: ^[a-z0-9]{3,400}$
-          title: Organization ID
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - org_id
-      title: CertificateListMeta
-    KidAlg:
-      type: string
-      enum:
-      - manual
-      - rfc7638-sha1
-      - rfc7638-sha256
-      title: KidAlg
+      title: HTTPValidationError
     api3__certificates__api_models__CreateRequest:
       properties:
         name:
@@ -336,48 +392,6 @@ components:
       - certificate
       - private_key
       title: CreateRequest
-    IntendedUse:
-      type: string
-      enum:
-      - mtls
-      - signing
-      - signing-pss
-      title: IntendedUse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     api3__certificates__api_models__UpdateRequest:
       properties:
         name:
@@ -422,20 +436,6 @@ components:
           title: Projects
       type: object
       title: UpdateRequest
-    CertificateListResults:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/CertificateMetadata'
-          type: array
-          title: Results
-        meta:
-          $ref: '#/components/schemas/CertificateListMeta'
-      type: object
-      required:
-      - results
-      - meta
-      title: CertificateListResults
   securitySchemes:
     OAuth2:
       type: oauth2

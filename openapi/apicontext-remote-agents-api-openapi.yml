@@ -179,101 +179,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ReadAgentResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        agent_type:
-          type: string
-          title: Agent Type
-        display_name:
-          type: string
-          title: Display Name
-        queue_name:
-          type: string
-          title: Queue Name
-        config_key_suffix:
-          type: string
-          title: Config Key Suffix
-        access_token:
-          type: string
-          title: Access Token
-        owners:
-          items:
-            type: string
-          type: array
-          title: Owners
-        cloud:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cloud
-        meta:
-          additionalProperties: true
-          type: object
-          title: Meta
-        agent:
-          additionalProperties: true
-          type: object
-          title: Agent
-        user_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Name
-        user_cloud:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Cloud
-        user_city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User City
-        user_region:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Region
-        user_country:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Country
-        user_continent:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Continent
-        user_geography:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Geography
-      type: object
-      required:
-      - id
-      - agent_type
-      - display_name
-      - queue_name
-      - config_key_suffix
-      - access_token
-      - owners
-      - cloud
-      - meta
-      - agent
-      title: ReadAgentResponse
     CreateAgentRequest:
       properties:
         agent_type:
@@ -362,6 +267,101 @@ components:
       - msg
       - type
       title: ValidationError
+    ReadAgentResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        agent_type:
+          type: string
+          title: Agent Type
+        display_name:
+          type: string
+          title: Display Name
+        queue_name:
+          type: string
+          title: Queue Name
+        config_key_suffix:
+          type: string
+          title: Config Key Suffix
+        access_token:
+          type: string
+          title: Access Token
+        owners:
+          items:
+            type: string
+          type: array
+          title: Owners
+        cloud:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cloud
+        meta:
+          additionalProperties: true
+          type: object
+          title: Meta
+        agent:
+          additionalProperties: true
+          type: object
+          title: Agent
+        user_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Name
+        user_cloud:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Cloud
+        user_city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User City
+        user_region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Region
+        user_country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Country
+        user_continent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Continent
+        user_geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Geography
+      type: object
+      required:
+      - id
+      - agent_type
+      - display_name
+      - queue_name
+      - config_key_suffix
+      - access_token
+      - owners
+      - cloud
+      - meta
+      - agent
+      title: ReadAgentResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

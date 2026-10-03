@@ -317,34 +317,50 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    InsightsListResponse:
+    InsightsListMeta:
       properties:
-        meta:
-          $ref: '#/components/schemas/InsightsListMeta'
-        results:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      title: InsightsListMeta
+    ValidationError:
+      properties:
+        loc:
           items:
-            $ref: '#/components/schemas/InsightsReportApi'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Results
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - meta
-      - results
-      title: InsightsListResponse
-    HistoryResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/HistoryMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/HistoryRow'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: HistoryResponse
+      - loc
+      - msg
+      - type
+      title: ValidationError
     RankResponse:
       properties:
         meta:
@@ -391,41 +407,39 @@ components:
         ``exclude_none`` so an empty bucket renders as just ``{"start": ...}``,
 
         matching the legacy output.'
-    RankMeta:
+    HistoryMeta:
       properties:
-        user:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        period:
+        weekly:
+          type: boolean
+          title: Weekly
+        start_date:
           type: string
-          title: Period
-        start:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: Start
-        org:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org
-        org_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org Name
+          format: date-time
+          title: Start Date
+        end_date:
+          type: string
+          format: date-time
+          title: End Date
       type: object
       required:
-      - period
-      title: RankMeta
+      - weekly
+      - start_date
+      - end_date
+      title: HistoryMeta
+    InsightsListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/InsightsListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/InsightsReportApi'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: InsightsListResponse
     RankResult:
       properties:
         id:
@@ -512,6 +526,20 @@ components:
       description: 'A ranked monitor: its latest score plus a short ``results`` history of
 
         ``(period_start, score)`` points and the matching ``filenames``.'
+    HistoryResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/HistoryMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/HistoryRow'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: HistoryResponse
     HTTPValidationError:
       properties:
         detail:
@@ -521,43 +549,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    HistoryMeta:
-      properties:
-        weekly:
-          type: boolean
-          title: Weekly
-        start_date:
-          type: string
-          format: date-time
-          title: Start Date
-        end_date:
-          type: string
-          format: date-time
-          title: End Date
-      type: object
-      required:
-      - weekly
-      - start_date
-      - end_date
-      title: HistoryMeta
-    InsightsListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      title: InsightsListMeta
     InsightsReportApi:
       properties:
         id:
@@ -668,32 +659,41 @@ components:
         ``project_id``, and ``start`` / ``end`` are renamed to
 
         ``start_date`` / ``end_date``.'
-    ValidationError:
+    RankMeta:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        user:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        period:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Period
+        start:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start
+        org:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org
+        org_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Name
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - period
+      title: RankMeta
   securitySchemes:
     OAuth2:
       type: oauth2

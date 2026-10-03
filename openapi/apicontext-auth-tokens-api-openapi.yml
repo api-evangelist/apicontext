@@ -285,6 +285,32 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     TokenMeta:
       properties:
         name:
@@ -331,70 +357,6 @@ components:
           title: Owner
       type: object
       title: TokenMeta
-    TokenData:
-      properties:
-        expire_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Expire Time
-        expired:
-          type: boolean
-          title: Expired
-          default: false
-      additionalProperties: true
-      type: object
-      title: TokenData
-    TokenListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/TokenListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/TokenResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: TokenListResponse
-    TokenResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/TokenMeta'
-        token:
-          $ref: '#/components/schemas/TokenData'
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      - meta
-      - token
-      title: TokenResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    CreateTokenRequest:
-      properties:
-        meta:
-          $ref: '#/components/schemas/TokenMetaInput'
-        token:
-          anyOf:
-          - $ref: '#/components/schemas/TokenDataInput'
-          - type: 'null'
-      type: object
-      title: CreateTokenRequest
     TokenMetaInput:
       properties:
         name:
@@ -424,6 +386,37 @@ components:
           description: Plain hostname the token applies to, e.g. api.example.com
       type: object
       title: TokenMetaInput
+    TokenResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/TokenMeta'
+        token:
+          $ref: '#/components/schemas/TokenData'
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - meta
+      - token
+      title: TokenResponse
+    TokenData:
+      properties:
+        expire_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expire Time
+        expired:
+          type: boolean
+          title: Expired
+          default: false
+      additionalProperties: true
+      type: object
+      title: TokenData
     TokenListMeta:
       properties:
         next_cursor:
@@ -442,32 +435,6 @@ components:
       required:
       - project_id
       title: TokenListMeta
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     TokenDataInput:
       properties:
         expire_time:
@@ -478,6 +445,30 @@ components:
       additionalProperties: true
       type: object
       title: TokenDataInput
+    CreateTokenRequest:
+      properties:
+        meta:
+          $ref: '#/components/schemas/TokenMetaInput'
+        token:
+          anyOf:
+          - $ref: '#/components/schemas/TokenDataInput'
+          - type: 'null'
+      type: object
+      title: CreateTokenRequest
+    TokenListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/TokenListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/TokenResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: TokenListResponse
     UpdateTokenRequest:
       properties:
         meta:
@@ -490,6 +481,15 @@ components:
           - type: 'null'
       type: object
       title: UpdateTokenRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

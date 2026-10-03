@@ -197,20 +197,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ProjectCallsMonthly:
-      properties:
-        meta:
-          $ref: '#/components/schemas/ProjectCallsMetadata'
-        data:
-          items:
-            $ref: '#/components/schemas/ProjectCall'
-          type: array
-          title: Data
-      type: object
-      required:
-      - meta
-      - data
-      title: ProjectCallsMonthly
     ProjectCall:
       properties:
         day:
@@ -257,6 +243,137 @@ components:
       - sum_server_time
       - url
       title: ProjectCall
+    ProjectCallsMonthly:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectCallsMetadata'
+        data:
+          items:
+            $ref: '#/components/schemas/ProjectCall'
+          type: array
+          title: Data
+      type: object
+      required:
+      - meta
+      - data
+      title: ProjectCallsMonthly
+    OrgSlowCallsDaily:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgSlowCallsMetadata'
+        data:
+          items:
+            $ref: '#/components/schemas/OrgSlowCallDaily'
+          type: array
+          title: Data
+      type: object
+      required:
+      - meta
+      - data
+      title: OrgSlowCallsDaily
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    OrgSlowCallDaily:
+      properties:
+        day:
+          type: string
+          format: date
+          title: Day
+        project_id:
+          type: string
+          title: Project Id
+        pass_count:
+          type: integer
+          title: Pass Count
+        warn_count:
+          type: integer
+          title: Warn Count
+        fail_count:
+          type: integer
+          title: Fail Count
+        total:
+          type: integer
+          title: Total
+        slow_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Slow Counts
+      type: object
+      required:
+      - day
+      - project_id
+      - pass_count
+      - warn_count
+      - fail_count
+      - total
+      - slow_counts
+      title: OrgSlowCallDaily
+    ProjectCallsMetadata:
+      properties:
+        report_type:
+          type: string
+          title: Report Type
+        version:
+          type: integer
+          title: Version
+        project_id:
+          type: string
+          title: Project Id
+        month:
+          type: string
+          format: date
+          title: Month
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - report_type
+      - version
+      - project_id
+      - month
+      - created_at
+      title: ProjectCallsMetadata
+    OrgSlowCallsMonthly:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgSlowCallsMetadata'
+        data:
+          items:
+            $ref: '#/components/schemas/OrgSlowCallMonthly'
+          type: array
+          title: Data
+      type: object
+      required:
+      - meta
+      - data
+      title: OrgSlowCallsMonthly
     OrgSlowCallsMetadata:
       properties:
         report_type:
@@ -285,33 +402,6 @@ components:
       - end_date
       - created_at
       title: OrgSlowCallsMetadata
-    ProjectCallsMetadata:
-      properties:
-        report_type:
-          type: string
-          title: Report Type
-        version:
-          type: integer
-          title: Version
-        project_id:
-          type: string
-          title: Project Id
-        month:
-          type: string
-          format: date
-          title: Month
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-      type: object
-      required:
-      - report_type
-      - version
-      - project_id
-      - month
-      - created_at
-      title: ProjectCallsMetadata
     HTTPValidationError:
       properties:
         detail:
@@ -321,34 +411,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    OrgSlowCallsMonthly:
-      properties:
-        meta:
-          $ref: '#/components/schemas/OrgSlowCallsMetadata'
-        data:
-          items:
-            $ref: '#/components/schemas/OrgSlowCallMonthly'
-          type: array
-          title: Data
-      type: object
-      required:
-      - meta
-      - data
-      title: OrgSlowCallsMonthly
-    OrgSlowCallsDaily:
-      properties:
-        meta:
-          $ref: '#/components/schemas/OrgSlowCallsMetadata'
-        data:
-          items:
-            $ref: '#/components/schemas/OrgSlowCallDaily'
-          type: array
-          title: Data
-      type: object
-      required:
-      - meta
-      - data
-      title: OrgSlowCallsDaily
     OrgSlowCallMonthly:
       properties:
         month:
@@ -393,68 +455,6 @@ components:
       - url
       - slow_counts
       title: OrgSlowCallMonthly
-    OrgSlowCallDaily:
-      properties:
-        day:
-          type: string
-          format: date
-          title: Day
-        project_id:
-          type: string
-          title: Project Id
-        pass_count:
-          type: integer
-          title: Pass Count
-        warn_count:
-          type: integer
-          title: Warn Count
-        fail_count:
-          type: integer
-          title: Fail Count
-        total:
-          type: integer
-          title: Total
-        slow_counts:
-          additionalProperties:
-            type: integer
-          type: object
-          title: Slow Counts
-      type: object
-      required:
-      - day
-      - project_id
-      - pass_count
-      - warn_count
-      - fail_count
-      - total
-      - slow_counts
-      title: OrgSlowCallDaily
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

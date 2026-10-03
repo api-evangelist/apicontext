@@ -142,26 +142,132 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    SynopsisKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      title: SynopsisKind
-      description: 'The aggregation periods a synopsis blob is generated for.
-
-
-        Legacy read ``kind`` as a free string, upper-cased it and looked it up in a
-
-        dict with a ``daily`` default, so ``day``/``DAY`` were equivalent and an
-
-        unrecognised value quietly yielded daily data. ``_missing_`` reproduces both
-
-        of those, which keeps the coercion identical while still publishing the four
-
-        supported values in the OpenAPI spec.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ProjectSloResponse:
+      properties:
+        project_id:
+          type: string
+          title: Project Id
+        objectives:
+          items:
+            $ref: '#/components/schemas/ServiceLevelObjectiveResponse'
+          type: array
+          title: Objectives
+        thresholds:
+          items:
+            $ref: '#/components/schemas/ThresholdResponse'
+          type: array
+          title: Thresholds
+        include_tags:
+          items:
+            type: string
+          type: array
+          title: Include Tags
+        exclude_tags:
+          items:
+            type: string
+          type: array
+          title: Exclude Tags
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+      type: object
+      required:
+      - project_id
+      - objectives
+      - thresholds
+      - include_tags
+      - exclude_tags
+      - last_update
+      - created
+      title: ProjectSloResponse
+      examples:
+      - created: '2026-06-25T10:13:37.546136Z'
+        exclude_tags:
+        - apimetrics:not_monitored
+        include_tags: []
+        last_update: '2026-06-25T10:13:37.597335Z'
+        objectives:
+        - comparator: <
+          measure: mean
+          metric: dns
+          period: MONTH
+          unit: ms
+          value: 100
+        project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        thresholds:
+        - delta: 100
+          metric: latency
+          period: MONTH
+          unit: ms
+    ServiceLevelObjectiveResponse:
+      properties:
+        metric:
+          type: string
+          title: Metric
+        measure:
+          type: string
+          title: Measure
+        comparator:
+          type: string
+          title: Comparator
+        value:
+          type: number
+          title: Value
+        unit:
+          type: string
+          title: Unit
+        period:
+          type: string
+          title: Period
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      type: object
+      required:
+      - metric
+      - measure
+      - comparator
+      - value
+      - unit
+      - period
+      title: ServiceLevelObjectiveResponse
     ProjectRollupResponse:
       properties:
         project_id:
@@ -255,6 +361,88 @@ components:
       - project_ids
       - synopses
       title: OrgSynopsisResponse
+    OrgSynopsisResultCounts:
+      properties:
+        PASS:
+          type: number
+          title: Pass
+          default: 0
+        SLOW:
+          type: number
+          title: Slow
+          default: 0
+        WARNING:
+          type: number
+          title: Warning
+          default: 0
+        FAIL:
+          type: number
+          title: Fail
+          default: 0
+        total:
+          type: number
+          title: Total
+          default: 0
+      type: object
+      title: OrgSynopsisResultCounts
+      description: Per-project sum of each call's pass/fail result counts.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    OrgSynopsisInsights:
+      properties:
+        outlier_percent:
+          type: number
+          title: Outlier Percent
+          default: 0
+        sd_test_length:
+          type: number
+          title: Sd Test Length
+          default: 0
+        score:
+          type: number
+          title: Score
+          default: 0
+        pass_percent:
+          type: number
+          title: Pass Percent
+          default: 0
+        mean_test_length:
+          type: number
+          title: Mean Test Length
+          default: 0
+      type: object
+      title: OrgSynopsisInsights
+      description: 'Per-project mean of each call''s insight metrics.
+
+
+        Null on the enclosing synopsis when no included call reported a ``score``.'
+    SynopsisKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      title: SynopsisKind
+      description: 'The aggregation periods a synopsis blob is generated for.
+
+
+        Legacy read ``kind`` as a free string, upper-cased it and looked it up in a
+
+        dict with a ``daily`` default, so ``day``/``DAY`` were equivalent and an
+
+        unrecognised value quietly yielded daily data. ``_missing_`` reproduces both
+
+        of those, which keeps the coercion identical while still publishing the four
+
+        supported values in the OpenAPI spec.'
     OrgSynopsisTimings:
       properties:
         count:
@@ -317,194 +505,6 @@ components:
         Latency values are summed, not averaged — ``count`` is the divisor callers
 
         use to turn them into per-result means.'
-    ServiceLevelObjectiveResponse:
-      properties:
-        metric:
-          type: string
-          title: Metric
-        measure:
-          type: string
-          title: Measure
-        comparator:
-          type: string
-          title: Comparator
-        value:
-          type: number
-          title: Value
-        unit:
-          type: string
-          title: Unit
-        period:
-          type: string
-          title: Period
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-      type: object
-      required:
-      - metric
-      - measure
-      - comparator
-      - value
-      - unit
-      - period
-      title: ServiceLevelObjectiveResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    OrgSynopsisResultCounts:
-      properties:
-        PASS:
-          type: number
-          title: Pass
-          default: 0
-        SLOW:
-          type: number
-          title: Slow
-          default: 0
-        WARNING:
-          type: number
-          title: Warning
-          default: 0
-        FAIL:
-          type: number
-          title: Fail
-          default: 0
-        total:
-          type: number
-          title: Total
-          default: 0
-      type: object
-      title: OrgSynopsisResultCounts
-      description: Per-project sum of each call's pass/fail result counts.
-    OrgSynopsisInsights:
-      properties:
-        outlier_percent:
-          type: number
-          title: Outlier Percent
-          default: 0
-        sd_test_length:
-          type: number
-          title: Sd Test Length
-          default: 0
-        score:
-          type: number
-          title: Score
-          default: 0
-        pass_percent:
-          type: number
-          title: Pass Percent
-          default: 0
-        mean_test_length:
-          type: number
-          title: Mean Test Length
-          default: 0
-      type: object
-      title: OrgSynopsisInsights
-      description: 'Per-project mean of each call''s insight metrics.
-
-
-        Null on the enclosing synopsis when no included call reported a ``score``.'
-    ProjectSloResponse:
-      properties:
-        project_id:
-          type: string
-          title: Project Id
-        objectives:
-          items:
-            $ref: '#/components/schemas/ServiceLevelObjectiveResponse'
-          type: array
-          title: Objectives
-        thresholds:
-          items:
-            $ref: '#/components/schemas/ThresholdResponse'
-          type: array
-          title: Thresholds
-        include_tags:
-          items:
-            type: string
-          type: array
-          title: Include Tags
-        exclude_tags:
-          items:
-            type: string
-          type: array
-          title: Exclude Tags
-        last_update:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Update
-        created:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Created
-      type: object
-      required:
-      - project_id
-      - objectives
-      - thresholds
-      - include_tags
-      - exclude_tags
-      - last_update
-      - created
-      title: ProjectSloResponse
-      examples:
-      - created: '2026-06-25T10:13:37.546136Z'
-        exclude_tags:
-        - apimetrics:not_monitored
-        include_tags: []
-        last_update: '2026-06-25T10:13:37.597335Z'
-        objectives:
-        - comparator: <
-          measure: mean
-          metric: dns
-          period: MONTH
-          unit: ms
-          value: 100
-        project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-        thresholds:
-        - delta: 100
-          metric: latency
-          period: MONTH
-          unit: ms
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -595,74 +595,59 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ConditionalModel:
+    PostConditionsRequest:
       properties:
-        source:
-          type: string
-          title: Source
-        source_index:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+        meta:
           anyOf:
-          - type: integer
+          - $ref: '#/components/schemas/ConditionsMeta'
           - type: 'null'
-          title: Source Index
-        variable_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Variable Name
-        variable_path:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Variable Path
-        condition:
-          type: string
-          title: Condition
-        val:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Val
-        test_result_on_true:
-          title: Test Result On True
-        test_result_on_false:
-          title: Test Result On False
       type: object
       required:
-      - source
-      - condition
-      title: ConditionalModel
-    _CallCreateRequest:
+      - conditions
+      title: PostConditionsRequest
+    CallListMetaResponse:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: CallListMetaResponse
+    CallRequestResponse:
       properties:
         method:
           type: string
           title: Method
         url:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
+          type: string
           title: Url
         parameters:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/CallParameterResponse'
-            type: array
-          - additionalProperties:
-              type: string
-            type: object
-          - type: 'null'
+          items:
+            $ref: '#/components/schemas/CallParameterResponse'
+          type: array
           title: Parameters
+          default: []
         headers:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/CallParameterResponse'
-            type: array
-          - additionalProperties:
-              type: string
-            type: object
-          - type: 'null'
+          items:
+            $ref: '#/components/schemas/CallParameterResponse'
+          type: array
           title: Headers
+          default: []
         body:
           anyOf:
           - type: string
@@ -683,119 +668,11 @@ components:
           - type: string
           - type: 'null'
           title: File Id
-      additionalProperties: false
       type: object
       required:
       - method
       - url
-      title: _CallCreateRequest
-    CallRunBody:
-      properties:
-        location_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Location Id
-        run_delay:
-          anyOf:
-          - type: integer
-            maximum: 86400.0
-            minimum: 0.0
-          - type: 'null'
-          title: Run Delay
-        context:
-          anyOf:
-          - additionalProperties:
-              type: string
-            type: object
-          - type: 'null'
-          title: Context
-      additionalProperties: false
-      type: object
-      title: CallRunBody
-      description: 'Body for ``POST/PUT /api/2/calls/{call_id}/run``. Matches the legacy
-
-        ``action_run`` JSON Schema (``additionalProperties=false``).'
-      examples:
-      - context:
-          ACCESS_TOKEN: mytoken
-        location_id: us-west-2
-        run_delay: 0
-    ConditionsMeta:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        call_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Call Id
-        break_on_fail:
-          type: boolean
-          title: Break On Fail
-          default: false
-      type: object
-      title: ConditionsMeta
-    CallListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/CallListMetaResponse'
-        results:
-          items:
-            $ref: '#/components/schemas/CallResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: CallListResponse
-    CallListMetaResponse:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          type: string
-          title: Project Id
-      type: object
-      required:
-      - more
-      - project_id
-      title: CallListMetaResponse
-    BuildFromCurlBody:
-      properties:
-        request:
-          type: string
-          title: Request
-      additionalProperties: false
-      type: object
-      required:
-      - request
-      title: BuildFromCurlBody
-    PostConditionsRequest:
-      properties:
-        conditions:
-          items:
-            $ref: '#/components/schemas/ConditionalModel'
-          type: array
-          title: Conditions
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/ConditionsMeta'
-          - type: 'null'
-      type: object
-      required:
-      - conditions
-      title: PostConditionsRequest
+      title: CallRequestResponse
     _CallUpdateMeta:
       properties:
         name:
@@ -823,24 +700,6 @@ components:
       additionalProperties: false
       type: object
       title: _CallUpdateMeta
-    ConditionsResponse:
-      properties:
-        conditions:
-          items:
-            $ref: '#/components/schemas/ConditionalModel'
-          type: array
-          title: Conditions
-        conditions_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Conditions Id
-        meta:
-          $ref: '#/components/schemas/ConditionsMeta'
-      type: object
-      required:
-      - conditions
-      title: ConditionsResponse
     _CallUpdateRequest:
       properties:
         method:
@@ -898,45 +757,87 @@ components:
       additionalProperties: false
       type: object
       title: _CallUpdateRequest
-    CallUpdateBody:
+    CallRunBody:
       properties:
-        meta:
+        location_id:
           anyOf:
-          - $ref: '#/components/schemas/_CallUpdateMeta'
+          - type: string
           - type: 'null'
-        request:
+          title: Location Id
+        run_delay:
           anyOf:
-          - $ref: '#/components/schemas/_CallUpdateRequest'
+          - type: integer
+            maximum: 86400.0
+            minimum: 0.0
           - type: 'null'
-        access:
+          title: Run Delay
+        context:
           anyOf:
-          - additionalProperties: true
+          - additionalProperties:
+              type: string
             type: object
           - type: 'null'
-          title: Access
+          title: Context
       additionalProperties: false
       type: object
-      title: CallUpdateBody
-    CallRequestResponse:
+      title: CallRunBody
+      description: 'Body for ``POST/PUT /api/2/calls/{call_id}/run``. Matches the legacy
+
+        ``action_run`` JSON Schema (``additionalProperties=false``).'
+      examples:
+      - context:
+          ACCESS_TOKEN: mytoken
+        location_id: us-west-2
+        run_delay: 0
+    ConditionsMeta:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        call_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Call Id
+        break_on_fail:
+          type: boolean
+          title: Break On Fail
+          default: false
+      type: object
+      title: ConditionsMeta
+    _CallCreateRequest:
       properties:
         method:
           type: string
           title: Method
         url:
-          type: string
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
           title: Url
         parameters:
-          items:
-            $ref: '#/components/schemas/CallParameterResponse'
-          type: array
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CallParameterResponse'
+            type: array
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
           title: Parameters
-          default: []
         headers:
-          items:
-            $ref: '#/components/schemas/CallParameterResponse'
-          type: array
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CallParameterResponse'
+            type: array
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
           title: Headers
-          default: []
         body:
           anyOf:
           - type: string
@@ -957,37 +858,21 @@ components:
           - type: string
           - type: 'null'
           title: File Id
+      additionalProperties: false
       type: object
       required:
       - method
       - url
-      title: CallRequestResponse
-    ValidationError:
+      title: _CallCreateRequest
+    HTTPValidationError:
       properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: HTTPValidationError
     CallParameterResponse:
       properties:
         key:
@@ -1001,6 +886,43 @@ components:
       - key
       - value
       title: CallParameterResponse
+    ConditionalModel:
+      properties:
+        source:
+          type: string
+          title: Source
+        source_index:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Source Index
+        variable_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Variable Name
+        variable_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Variable Path
+        condition:
+          type: string
+          title: Condition
+        val:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Val
+        test_result_on_true:
+          title: Test Result On True
+        test_result_on_false:
+          title: Test Result On False
+      type: object
+      required:
+      - source
+      - condition
+      title: ConditionalModel
     CallRunPayload:
       properties:
         call_id:
@@ -1029,33 +951,6 @@ components:
       - result_id
       - context
       title: CallRunPayload
-    _CallCreateMeta:
-      properties:
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        workspace:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Workspace
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      title: _CallCreateMeta
     CallMetaResponse:
       properties:
         monitor_type:
@@ -1120,6 +1015,65 @@ components:
       - owner
       - project_id
       title: CallMetaResponse
+    CallListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/CallListMetaResponse'
+        results:
+          items:
+            $ref: '#/components/schemas/CallResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: CallListResponse
+    _CallCreateMeta:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      title: _CallCreateMeta
+    ConditionsResponse:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+        conditions_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Conditions Id
+        meta:
+          $ref: '#/components/schemas/ConditionsMeta'
+      type: object
+      required:
+      - conditions
+      title: ConditionsResponse
     CallResponse:
       properties:
         id:
@@ -1135,15 +1089,16 @@ components:
       - meta
       - request
       title: CallResponse
-    HTTPValidationError:
+    BuildFromCurlBody:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        request:
+          type: string
+          title: Request
+      additionalProperties: false
       type: object
-      title: HTTPValidationError
+      required:
+      - request
+      title: BuildFromCurlBody
     CallCreateBody:
       properties:
         meta:
@@ -1162,6 +1117,51 @@ components:
       - meta
       - request
       title: CallCreateBody
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CallUpdateBody:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/_CallUpdateMeta'
+          - type: 'null'
+        request:
+          anyOf:
+          - $ref: '#/components/schemas/_CallUpdateRequest'
+          - type: 'null'
+        access:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Access
+      additionalProperties: false
+      type: object
+      title: CallUpdateBody
   securitySchemes:
     OAuth2:
       type: oauth2

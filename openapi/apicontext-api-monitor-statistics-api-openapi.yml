@@ -225,6 +225,160 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    api3__monitors__common__api_models__PerformanceResponse_Metric___1:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceGroup_Metric___1'
+          type: array
+          title: Results
+        meta:
+          $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceMeta_Metric___1'
+      type: object
+      required:
+      - results
+      - meta
+      title: PerformanceResponse[Metric]
+    api3__monitors__common__api_models__PerformanceRequest_Metric___1:
+      properties:
+        from:
+          type: string
+          format: date-time
+          title: From
+          description: Window start (UTC ISO timestamp, inclusive)
+        to:
+          type: string
+          format: date-time
+          title: To
+          description: Window end (UTC ISO timestamp, exclusive)
+        interval:
+          anyOf:
+          - type: string
+            format: duration
+          - type: 'null'
+          title: Interval
+          description: Bucket size for time-series grouping (ISO 8601 duration, e.g. PT1H, PT15M). Omitted = single bucket over the whole window.
+        metrics:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/api3__monitors__api__stats__api_models__Metric'
+            type: array
+          - type: 'null'
+          title: Metrics
+          description: Metrics to aggregate. Defaults to the monitor type's standard set.
+        measures:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/Measure'
+            type: array
+          - type: 'null'
+          title: Measures
+          description: Statistical measures to return per metric (e.g. mean, p50, p90). Defaults to mean, p50, p90, p95, p99.
+        group_by:
+          items:
+            $ref: '#/components/schemas/GroupByDimension'
+          type: array
+          title: Group By
+          description: Dimensions to group results by.
+        locations:
+          items:
+            type: string
+          type: array
+          title: Locations
+          description: Restrict to these location IDs. Empty = all locations.
+        status:
+          items:
+            $ref: '#/components/schemas/ResultCategory'
+          type: array
+          title: Status
+          description: Restrict to these result categories. Empty = all categories.
+        poor_thresholds:
+          additionalProperties:
+            type: number
+            minimum: 0.0
+          propertyNames:
+            $ref: '#/components/schemas/api3__monitors__api__stats__api_models__Metric'
+          type: object
+          title: Poor Thresholds
+          description: Per-metric threshold values. When supplied, the response includes a poor_count for each matching metric counting samples whose value exceeds the threshold.
+      type: object
+      required:
+      - from
+      - to
+      title: PerformanceRequest[Metric]
+    api3__monitors__common__api_models__PerformanceMeta_Metric___1:
+      properties:
+        monitor_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Monitor Id
+        from:
+          type: string
+          format: date-time
+          title: From
+          description: UTC ISO timestamp, inclusive
+        to:
+          type: string
+          format: date-time
+          title: To
+          description: UTC ISO timestamp, exclusive
+        interval:
+          anyOf:
+          - type: string
+            format: duration
+          - type: 'null'
+          title: Interval
+        metrics:
+          items:
+            $ref: '#/components/schemas/api3__monitors__api__stats__api_models__Metric'
+          type: array
+          title: Metrics
+        measures:
+          items:
+            $ref: '#/components/schemas/Measure'
+          type: array
+          title: Measures
+        group_by:
+          items:
+            $ref: '#/components/schemas/GroupByDimension'
+          type: array
+          title: Group By
+      type: object
+      required:
+      - from
+      - to
+      - interval
+      - metrics
+      - measures
+      - group_by
+      title: PerformanceMeta[Metric]
     DiagnosticsGroup:
       properties:
         key:
@@ -304,43 +458,80 @@ components:
       - cname_records
       - ns_servers
       title: DiagnosticsGroup
-    GroupKey:
+    api3__monitors__common__api_models__PerformanceGroup_Metric___1:
       properties:
-        location_id:
+        key:
+          $ref: '#/components/schemas/GroupKey'
+        sample_count:
+          type: integer
+          title: Sample Count
+          description: Total samples in this group
+        pass_count:
+          type: integer
+          title: Pass Count
+          description: Samples whose result_category is PASS or SLOW
+          default: 0
+        top_location_id:
           anyOf:
           - type: string
           - type: 'null'
-          title: Location Id
-        interval_start:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Interval Start
-          description: UTC ISO timestamp of the bucket start when interval grouping is in use
-        monitor_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Monitor Id
-          description: Monitor ID when monitor grouping is in use
+          title: Top Location Id
+          description: Location_id with the most samples in this group; useful when the client isn't grouping by location but still needs an agent for display
+        metrics:
+          additionalProperties:
+            $ref: '#/components/schemas/MetricAggregate'
+          propertyNames:
+            $ref: '#/components/schemas/api3__monitors__api__stats__api_models__Metric'
+          type: object
+          title: Metrics
       type: object
-      title: GroupKey
-      description: 'Identifies which slice of data this group represents.
-
-
-        Fields are present only when the request asked to group by that dimension
-
-        (or, for `interval_start`, when an interval was requested).'
-    api3__monitors__api__stats__api_models__Metric:
-      type: string
-      enum:
-      - total
-      - dns
-      - connect
-      - tls
-      - ttfb
-      - response
-      title: Metric
+      required:
+      - key
+      - sample_count
+      - metrics
+      title: PerformanceGroup[Metric]
+    DnsRequest:
+      properties:
+        from:
+          type: string
+          format: date-time
+          title: From
+          description: Window start (UTC ISO timestamp, inclusive)
+        to:
+          type: string
+          format: date-time
+          title: To
+          description: Window end (UTC ISO timestamp, exclusive)
+        interval:
+          anyOf:
+          - type: string
+            format: duration
+          - type: 'null'
+          title: Interval
+          description: Bucket size for time-series grouping (ISO 8601 duration, e.g. PT1H). Omitted = single bucket over the whole window.
+        group_by:
+          items:
+            $ref: '#/components/schemas/GroupByDimension'
+          type: array
+          title: Group By
+          description: Dimensions to group results by.
+        locations:
+          items:
+            type: string
+          type: array
+          title: Locations
+          description: Restrict to these location IDs. Empty = all locations.
+        status:
+          items:
+            $ref: '#/components/schemas/ResultCategory'
+          type: array
+          title: Status
+          description: Restrict to these result categories. Empty = all categories.
+      type: object
+      required:
+      - from
+      - to
+      title: DnsRequest
     Measure:
       type: string
       enum:
@@ -384,123 +575,6 @@ components:
       - interval
       - group_by
       title: DnsDiagnosticsMeta
-    ResultCategory:
-      type: string
-      enum:
-      - PASS
-      - SLOW
-      - WARNING
-      - FAIL
-      title: ResultCategory
-    api3__monitors__common__api_models__PerformanceRequest_Metric___1:
-      properties:
-        from:
-          type: string
-          format: date-time
-          title: From
-          description: Window start (UTC ISO timestamp, inclusive)
-        to:
-          type: string
-          format: date-time
-          title: To
-          description: Window end (UTC ISO timestamp, exclusive)
-        interval:
-          anyOf:
-          - type: string
-            format: duration
-          - type: 'null'
-          title: Interval
-          description: Bucket size for time-series grouping (ISO 8601 duration, e.g. PT1H, PT15M). Omitted = single bucket over the whole window.
-        metrics:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/api3__monitors__api__stats__api_models__Metric'
-            type: array
-          - type: 'null'
-          title: Metrics
-          description: Metrics to aggregate. Defaults to the monitor type's standard set.
-        measures:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/Measure'
-            type: array
-          - type: 'null'
-          title: Measures
-          description: Statistical measures to return per metric (e.g. mean, p50, p90). Defaults to mean, p50, p90, p95, p99.
-        group_by:
-          items:
-            $ref: '#/components/schemas/GroupByDimension'
-          type: array
-          title: Group By
-          description: Dimensions to group results by.
-        locations:
-          items:
-            type: string
-          type: array
-          title: Locations
-          description: Restrict to these location IDs. Empty = all locations.
-        status:
-          items:
-            $ref: '#/components/schemas/ResultCategory'
-          type: array
-          title: Status
-          description: Restrict to these result categories. Empty = all categories.
-        poor_thresholds:
-          additionalProperties:
-            type: number
-            minimum: 0.0
-          propertyNames:
-            $ref: '#/components/schemas/api3__monitors__api__stats__api_models__Metric'
-          type: object
-          title: Poor Thresholds
-          description: Per-metric threshold values. When supplied, the response includes a poor_count for each matching metric counting samples whose value exceeds the threshold.
-      type: object
-      required:
-      - from
-      - to
-      title: PerformanceRequest[Metric]
-    DnsRequest:
-      properties:
-        from:
-          type: string
-          format: date-time
-          title: From
-          description: Window start (UTC ISO timestamp, inclusive)
-        to:
-          type: string
-          format: date-time
-          title: To
-          description: Window end (UTC ISO timestamp, exclusive)
-        interval:
-          anyOf:
-          - type: string
-            format: duration
-          - type: 'null'
-          title: Interval
-          description: Bucket size for time-series grouping (ISO 8601 duration, e.g. PT1H). Omitted = single bucket over the whole window.
-        group_by:
-          items:
-            $ref: '#/components/schemas/GroupByDimension'
-          type: array
-          title: Group By
-          description: Dimensions to group results by.
-        locations:
-          items:
-            type: string
-          type: array
-          title: Locations
-          description: Restrict to these location IDs. Empty = all locations.
-        status:
-          items:
-            $ref: '#/components/schemas/ResultCategory'
-          type: array
-          title: Status
-          description: Restrict to these result categories. Empty = all categories.
-      type: object
-      required:
-      - from
-      - to
-      title: DnsRequest
     MetricAggregate:
       properties:
         sample_count:
@@ -560,6 +634,49 @@ components:
       - sample_count
       title: MetricAggregate
       description: Aggregates for one metric within one result group.
+    GroupKey:
+      properties:
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        interval_start:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interval Start
+          description: UTC ISO timestamp of the bucket start when interval grouping is in use
+        monitor_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Monitor Id
+          description: Monitor ID when monitor grouping is in use
+      type: object
+      title: GroupKey
+      description: 'Identifies which slice of data this group represents.
+
+
+        Fields are present only when the request asked to group by that dimension
+
+        (or, for `interval_start`, when an interval was requested).'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    GroupByDimension:
+      type: string
+      enum:
+      - location
+      - interval
+      - monitor
+      title: GroupByDimension
     RecordCount:
       properties:
         record:
@@ -575,115 +692,16 @@ components:
       - record
       - count
       title: RecordCount
-    api3__monitors__common__api_models__PerformanceGroup_Metric___1:
-      properties:
-        key:
-          $ref: '#/components/schemas/GroupKey'
-        sample_count:
-          type: integer
-          title: Sample Count
-          description: Total samples in this group
-        pass_count:
-          type: integer
-          title: Pass Count
-          description: Samples whose result_category is PASS or SLOW
-          default: 0
-        top_location_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Top Location Id
-          description: Location_id with the most samples in this group; useful when the client isn't grouping by location but still needs an agent for display
-        metrics:
-          additionalProperties:
-            $ref: '#/components/schemas/MetricAggregate'
-          propertyNames:
-            $ref: '#/components/schemas/api3__monitors__api__stats__api_models__Metric'
-          type: object
-          title: Metrics
-      type: object
-      required:
-      - key
-      - sample_count
-      - metrics
-      title: PerformanceGroup[Metric]
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    api3__monitors__common__api_models__PerformanceResponse_Metric___1:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceGroup_Metric___1'
-          type: array
-          title: Results
-        meta:
-          $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceMeta_Metric___1'
-      type: object
-      required:
-      - results
-      - meta
-      title: PerformanceResponse[Metric]
-    api3__monitors__common__api_models__PerformanceMeta_Metric___1:
-      properties:
-        monitor_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Monitor Id
-        from:
-          type: string
-          format: date-time
-          title: From
-          description: UTC ISO timestamp, inclusive
-        to:
-          type: string
-          format: date-time
-          title: To
-          description: UTC ISO timestamp, exclusive
-        interval:
-          anyOf:
-          - type: string
-            format: duration
-          - type: 'null'
-          title: Interval
-        metrics:
-          items:
-            $ref: '#/components/schemas/api3__monitors__api__stats__api_models__Metric'
-          type: array
-          title: Metrics
-        measures:
-          items:
-            $ref: '#/components/schemas/Measure'
-          type: array
-          title: Measures
-        group_by:
-          items:
-            $ref: '#/components/schemas/GroupByDimension'
-          type: array
-          title: Group By
-      type: object
-      required:
-      - from
-      - to
-      - interval
-      - metrics
-      - measures
-      - group_by
-      title: PerformanceMeta[Metric]
-    GroupByDimension:
+    api3__monitors__api__stats__api_models__Metric:
       type: string
       enum:
-      - location
-      - interval
-      - monitor
-      title: GroupByDimension
+      - total
+      - dns
+      - connect
+      - tls
+      - ttfb
+      - response
+      title: Metric
     DnsDiagnosticsResponse:
       properties:
         results:
@@ -698,32 +716,14 @@ components:
       - results
       - meta
       title: DnsDiagnosticsResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+    ResultCategory:
+      type: string
+      enum:
+      - PASS
+      - SLOW
+      - WARNING
+      - FAIL
+      title: ResultCategory
   securitySchemes:
     OAuth2:
       type: oauth2
