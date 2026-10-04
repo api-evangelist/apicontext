@@ -179,94 +179,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    CreateAgentRequest:
-      properties:
-        agent_type:
-          type: string
-          title: Agent Type
-        display_name:
-          type: string
-          title: Display Name
-        queue_name:
-          type: string
-          title: Queue Name
-        config_key_suffix:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Config Key Suffix
-        cloud:
-          type: string
-          title: Cloud
-        owners:
-          items:
-            type: string
-          type: array
-          title: Owners
-        user_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Name
-        user_city:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User City
-        user_region:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Region
-        user_country:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Country
-        user_continent:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Continent
-        user_geography:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Geography
-      type: object
-      required:
-      - agent_type
-      - display_name
-      - queue_name
-      - cloud
-      - owners
-      title: CreateAgentRequest
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ReadAgentResponse:
       properties:
         id:
@@ -353,6 +265,68 @@ components:
       - meta
       - agent
       title: ReadAgentResponse
+    CreateAgentRequest:
+      properties:
+        agent_type:
+          type: string
+          title: Agent Type
+        display_name:
+          type: string
+          title: Display Name
+        queue_name:
+          type: string
+          title: Queue Name
+        config_key_suffix:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Config Key Suffix
+        cloud:
+          type: string
+          title: Cloud
+        owners:
+          items:
+            type: string
+          type: array
+          title: Owners
+        user_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Name
+        user_city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User City
+        user_region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Region
+        user_country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Country
+        user_continent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Continent
+        user_geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Geography
+      type: object
+      required:
+      - agent_type
+      - display_name
+      - queue_name
+      - cloud
+      - owners
+      title: CreateAgentRequest
     HTTPValidationError:
       properties:
         detail:
@@ -362,6 +336,32 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

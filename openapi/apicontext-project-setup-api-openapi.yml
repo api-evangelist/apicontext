@@ -123,30 +123,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    UpdateCurrentProjectBody:
+    HTTPValidationError:
       properties:
-        name:
-          anyOf:
-          - type: string
-            maxLength: 400
-            minLength: 1
-          - type: 'null'
-          title: Name
-          description: Display name.
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-          description: Replaces the whole tag list.
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      title: UpdateCurrentProjectBody
-      examples:
-      - name: Renamed Project
-        tags:
-        - production
+      title: HTTPValidationError
     ProjectResponse:
       properties:
         id:
@@ -258,15 +243,30 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
+    UpdateCurrentProjectBody:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        name:
+          anyOf:
+          - type: string
+            maxLength: 400
+            minLength: 1
+          - type: 'null'
+          title: Name
+          description: Display name.
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+          description: Replaces the whole tag list.
       type: object
-      title: HTTPValidationError
+      title: UpdateCurrentProjectBody
+      examples:
+      - name: Renamed Project
+        tags:
+        - production
   securitySchemes:
     OAuth2:
       type: oauth2

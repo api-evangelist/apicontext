@@ -136,46 +136,35 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    RsaSignResponse:
+    RsaSignRequest:
       properties:
         alg:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Alg
-        signed:
-          type: string
-          title: Signed
-          description: base64url-encoded signature.
-      type: object
-      required:
-      - alg
-      - signed
-      title: RsaSignResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
+          description: RSA algorithm (e.g. 'rs256'); case-insensitive.
+        key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key
+          description: PEM RSA private key.
         msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Msg
+          description: Message to sign.
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: RsaSignRequest
+      description: Input for an RSA signature. Fields are optional; see ``HmacRequest``.
+      examples:
+      - alg: rs256
+        key: '-----BEGIN RSA PRIVATE KEY-----
+
+          ...'
+        msg: hello
     JwtEncodeRequest:
       properties:
         claims:
@@ -240,6 +229,94 @@ components:
           alg: HS256
           typ: JWT
         key: your-shared-secret
+    HmacResponse:
+      properties:
+        alg:
+          type: string
+          title: Alg
+        digest:
+          type: string
+          title: Digest
+          description: Standard base64 of the raw digest.
+        hex_digest:
+          type: string
+          title: Hex Digest
+          description: Hex digest.
+      type: object
+      required:
+      - alg
+      - digest
+      - hex_digest
+      title: HmacResponse
+    HmacRequest:
+      properties:
+        alg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alg
+          description: Hash algorithm name (e.g. 'sha256'); case-insensitive.
+        key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Key
+          description: HMAC key.
+        msg:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Msg
+          description: Message to authenticate.
+      type: object
+      title: HmacRequest
+      description: 'Input for an HMAC digest. Fields are optional so the legacy validation
+
+        order and 400 messages are reproduced in code rather than surfaced as 422s.'
+      examples:
+      - alg: sha256
+        key: my-secret
+        msg: hello
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    RsaSignResponse:
+      properties:
+        alg:
+          type: string
+          title: Alg
+        signed:
+          type: string
+          title: Signed
+          description: base64url-encoded signature.
+      type: object
+      required:
+      - alg
+      - signed
+      title: RsaSignResponse
     JwtDecodeResponse:
       properties:
         headers:
@@ -270,25 +347,6 @@ components:
         or ``error`` is present: ``error`` replaces ``payload`` when the claims
 
         segment cannot be decoded.'
-    HmacResponse:
-      properties:
-        alg:
-          type: string
-          title: Alg
-        digest:
-          type: string
-          title: Digest
-          description: Standard base64 of the raw digest.
-        hex_digest:
-          type: string
-          title: Hex Digest
-          description: Hex digest.
-      type: object
-      required:
-      - alg
-      - digest
-      - hex_digest
-      title: HmacResponse
     HTTPValidationError:
       properties:
         detail:
@@ -298,64 +356,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    HmacRequest:
-      properties:
-        alg:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Alg
-          description: Hash algorithm name (e.g. 'sha256'); case-insensitive.
-        key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Key
-          description: HMAC key.
-        msg:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Msg
-          description: Message to authenticate.
-      type: object
-      title: HmacRequest
-      description: 'Input for an HMAC digest. Fields are optional so the legacy validation
-
-        order and 400 messages are reproduced in code rather than surfaced as 422s.'
-      examples:
-      - alg: sha256
-        key: my-secret
-        msg: hello
-    RsaSignRequest:
-      properties:
-        alg:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Alg
-          description: RSA algorithm (e.g. 'rs256'); case-insensitive.
-        key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Key
-          description: PEM RSA private key.
-        msg:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Msg
-          description: Message to sign.
-      type: object
-      title: RsaSignRequest
-      description: Input for an RSA signature. Fields are optional; see ``HmacRequest``.
-      examples:
-      - alg: rs256
-        key: '-----BEGIN RSA PRIVATE KEY-----
-
-          ...'
-        msg: hello
   securitySchemes:
     OAuth2:
       type: oauth2

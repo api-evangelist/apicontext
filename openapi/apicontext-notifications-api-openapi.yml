@@ -205,6 +205,38 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    NotificationListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/NotificationListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/NotificationResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: NotificationListResponse
+    NotificationListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: NotificationListMeta
     ValidationError:
       properties:
         loc:
@@ -231,20 +263,16 @@ components:
       - msg
       - type
       title: ValidationError
-    NotificationListResponse:
+    UpdateNotificationBody:
       properties:
-        meta:
-          $ref: '#/components/schemas/NotificationListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/NotificationResponse'
-          type: array
-          title: Results
+        viewed:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Viewed
+          description: Mark the notification read (true) or unread (false).
       type: object
-      required:
-      - meta
-      - results
-      title: NotificationListResponse
+      title: UpdateNotificationBody
     NotificationResponse:
       properties:
         id:
@@ -310,34 +338,6 @@ components:
       - id
       - viewed
       title: NotificationResponse
-    UpdateNotificationBody:
-      properties:
-        viewed:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Viewed
-          description: Mark the notification read (true) or unread (false).
-      type: object
-      title: UpdateNotificationBody
-    NotificationListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          type: string
-          title: Project Id
-      type: object
-      required:
-      - more
-      - project_id
-      title: NotificationListMeta
     HTTPValidationError:
       properties:
         detail:

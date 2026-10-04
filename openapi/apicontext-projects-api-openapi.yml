@@ -304,6 +304,36 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    UpdateProjectBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        security_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Security Profile
+      type: object
+      title: UpdateProjectBody
+      examples:
+      - name: Renamed Project
+        tags:
+        - production
     ValidationError:
       properties:
         loc:
@@ -415,27 +445,6 @@ components:
             org_id: apicontext
             plan: enterprise
         tags: []
-    ProjectListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: integer
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      required:
-      - next_cursor
-      - more
-      title: ProjectListMeta
     CreateProjectBody:
       properties:
         name:
@@ -464,6 +473,27 @@ components:
       title: CreateProjectBody
       examples:
       - name: New Project
+    ProjectListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: integer
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - next_cursor
+      - more
+      title: ProjectListMeta
     ProjectListResponse:
       properties:
         meta:
@@ -507,36 +537,6 @@ components:
               org_id: apicontext
               plan: enterprise
           tags: []
-    UpdateProjectBody:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        security_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Security Profile
-      type: object
-      title: UpdateProjectBody
-      examples:
-      - name: Renamed Project
-        tags:
-        - production
     HTTPValidationError:
       properties:
         detail:

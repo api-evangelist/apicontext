@@ -1062,8 +1062,6 @@ apis:
   humanURL: https://docs.apimetrics.io/reference/create-schedule
   baseURL: https://client.apimetrics.io
   tags:
-  - OpenAPI
-  tags_raw:
   - Open API
   properties:
   - type: OpenAPI

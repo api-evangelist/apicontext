@@ -302,6 +302,107 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    _StoredVariablePayload:
+      properties:
+        name:
+          type: string
+          title: Name
+        value:
+          title: Value
+      type: object
+      required:
+      - name
+      - value
+      title: _StoredVariablePayload
+    SetVariableRequest:
+      properties:
+        value:
+          title: Value
+          description: The new value for the variable. Coerced and validated against the catalog's configured type / range / choice.
+      additionalProperties: false
+      type: object
+      required:
+      - value
+      title: SetVariableRequest
+    CatalogSummary:
+      properties:
+        id:
+          type: string
+          title: Id
+        title:
+          type: string
+          title: Title
+        description:
+          type: string
+          title: Description
+        enabled:
+          type: boolean
+          title: Enabled
+      type: object
+      required:
+      - id
+      - title
+      - description
+      - enabled
+      title: CatalogSummary
+      description: One entry in the top-level catalog list.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    _VariableMeta:
+      properties:
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        user:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        catalog:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Catalog
+      type: object
+      title: _VariableMeta
     VariableEntry:
       properties:
         id:
@@ -341,24 +442,6 @@ components:
         ``default_value``. Fields mirror ``_USER_SETTINGS_CONFIG`` variable
 
         dicts exactly for byte-compat with existing consumers.'
-    StoredVariableResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/_VariableMeta'
-        setting_variable:
-          $ref: '#/components/schemas/_StoredVariablePayload'
-      type: object
-      required:
-      - id
-      - meta
-      - setting_variable
-      title: StoredVariableResponse
-      description: 'The response from ``POST /<catalog>/<variable>`` -- the persisted
-
-        entity in its ``convert_datastore_to_api`` form.'
     api2__account_settings__settings___ListMeta:
       properties:
         next_cursor:
@@ -377,139 +460,24 @@ components:
         responses. No ``project_id`` field here -- the Py2 handler builds
 
         the envelope by hand rather than through ``render_query_results``.'
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    CatalogListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/api2__account_settings__settings___ListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/CatalogSummary'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: CatalogListResponse
-    _StoredVariablePayload:
-      properties:
-        name:
-          type: string
-          title: Name
-        value:
-          title: Value
-      type: object
-      required:
-      - name
-      - value
-      title: _StoredVariablePayload
-    _VariableMeta:
-      properties:
-        created:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Created
-        last_update:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Update
-        user:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-        catalog:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Catalog
-      type: object
-      title: _VariableMeta
-    StatusResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - status
-      title: StatusResponse
-    SetVariableRequest:
-      properties:
-        value:
-          title: Value
-          description: The new value for the variable. Coerced and validated against the catalog's configured type / range / choice.
-      additionalProperties: false
-      type: object
-      required:
-      - value
-      title: SetVariableRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    CatalogSummary:
+    StoredVariableResponse:
       properties:
         id:
           type: string
           title: Id
-        title:
-          type: string
-          title: Title
-        description:
-          type: string
-          title: Description
-        enabled:
-          type: boolean
-          title: Enabled
+        meta:
+          $ref: '#/components/schemas/_VariableMeta'
+        setting_variable:
+          $ref: '#/components/schemas/_StoredVariablePayload'
       type: object
       required:
       - id
-      - title
-      - description
-      - enabled
-      title: CatalogSummary
-      description: One entry in the top-level catalog list.
+      - meta
+      - setting_variable
+      title: StoredVariableResponse
+      description: 'The response from ``POST /<catalog>/<variable>`` -- the persisted
+
+        entity in its ``convert_datastore_to_api`` form.'
     CatalogVariablesResponse:
       properties:
         meta:
@@ -524,6 +492,38 @@ components:
       - meta
       - results
       title: CatalogVariablesResponse
+    CatalogListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api2__account_settings__settings___ListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/CatalogSummary'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: CatalogListResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: StatusResponse
   securitySchemes:
     OAuth2:
       type: oauth2

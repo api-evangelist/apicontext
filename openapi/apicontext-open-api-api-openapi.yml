@@ -111,62 +111,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ValidateError:
-      properties:
-        keyword:
-          type: string
-          title: Keyword
-        schemaPath:
-          type: string
-          title: Schemapath
-        params:
-          additionalProperties: true
-          type: object
-          title: Params
-        message:
-          type: string
-          title: Message
-        instancePaths:
-          items:
-            type: string
-          type: array
-          title: Instancepaths
-      additionalProperties: true
-      type: object
-      required:
-      - keyword
-      - schemaPath
-      - message
-      title: ValidateError
-      description: 'A single schema-validation failure, as produced by the ajv-backed
-
-        schema-validator function.'
     TagProjectError:
       properties:
         message:
@@ -193,21 +137,32 @@ components:
       - severity
       - instances
       title: TagProjectError
-    TagProjectMatch:
-      prefixItems:
-      - type: string
-        title: Call Id
-      - type: string
-        title: Method
-      - type: string
-        title: Path
-      - anyOf:
-        - type: string
-        - type: 'null'
-        title: File Id
-      type: array
-      maxItems: 4
-      minItems: 3
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     OpenApiFileInfo:
       properties:
         errors:
@@ -246,15 +201,54 @@ components:
       - servers
       title: OpenApiFileInfo
       description: Per-file validation summary, keyed by file ID in the tagger response.
-    HTTPValidationError:
+    ValidateResponse:
       properties:
-        detail:
+        message:
+          type: string
+          title: Message
+        valid:
+          type: boolean
+          title: Valid
+          default: false
+        errors:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/ValidateError'
           type: array
-          title: Detail
+          title: Errors
       type: object
-      title: HTTPValidationError
+      required:
+      - message
+      title: ValidateResponse
+    ValidateError:
+      properties:
+        keyword:
+          type: string
+          title: Keyword
+        schemaPath:
+          type: string
+          title: Schemapath
+        params:
+          additionalProperties: true
+          type: object
+          title: Params
+        message:
+          type: string
+          title: Message
+        instancePaths:
+          items:
+            type: string
+          type: array
+          title: Instancepaths
+      additionalProperties: true
+      type: object
+      required:
+      - keyword
+      - schemaPath
+      - message
+      title: ValidateError
+      description: 'A single schema-validation failure, as produced by the ajv-backed
+
+        schema-validator function.'
     TagProjectResponse:
       properties:
         status:
@@ -287,24 +281,30 @@ components:
       - matched
       - openapi_files
       title: TagProjectResponse
-    ValidateResponse:
+    HTTPValidationError:
       properties:
-        message:
-          type: string
-          title: Message
-        valid:
-          type: boolean
-          title: Valid
-          default: false
-        errors:
+        detail:
           items:
-            $ref: '#/components/schemas/ValidateError'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Errors
+          title: Detail
       type: object
-      required:
-      - message
-      title: ValidateResponse
+      title: HTTPValidationError
+    TagProjectMatch:
+      prefixItems:
+      - type: string
+        title: Call Id
+      - type: string
+        title: Method
+      - type: string
+        title: Path
+      - anyOf:
+        - type: string
+        - type: 'null'
+        title: File Id
+      type: array
+      maxItems: 4
+      minItems: 3
   securitySchemes:
     OAuth2:
       type: oauth2

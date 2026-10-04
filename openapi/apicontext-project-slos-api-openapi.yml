@@ -120,37 +120,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    METRICS:
-      type: string
-      enum:
-      - pass
-      - slow
-      - warning
-      - fail
-      - availability
-      - dns
-      - tcp
-      - handshake
-      - upload
-      - processing
-      - download
-      - total
-      - network
-      - server
-      - total_no_dns
-      - casc
-      - apdex
-      - first_contentful_paint
-      - largest_contentful_paint
-      - first_input_delay
-      - cumulative_layout_shift
-      title: METRICS
-    THRESHOLDS:
-      type: string
-      enum:
-      - grade
-      - latency
-      title: THRESHOLDS
     ProjectSloResponse:
       properties:
         project_id:
@@ -217,32 +186,19 @@ components:
           metric: latency
           period: MONTH
           unit: ms
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+    SloPeriod:
+      type: string
+      enum:
+      - DAY
+      - WEEK
+      - MONTH
+      title: SloPeriod
+      description: 'The evaluation periods the /api/2 project SLO accepts.
+
+
+        ``models.project_slo.PERIODS`` also defines sub-day periods for the newer
+
+        SLO configurations; ``ProjectSLO`` only supports these three.'
     ServiceLevelObjectiveResponse:
       properties:
         metric:
@@ -277,6 +233,38 @@ components:
       - unit
       - period
       title: ServiceLevelObjectiveResponse
+    THRESHOLDS:
+      type: string
+      enum:
+      - grade
+      - latency
+      title: THRESHOLDS
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ThresholdBody:
       properties:
         metric:
@@ -311,25 +299,6 @@ components:
         metric: latency
         period: MONTH
         unit: ms
-    COMPARATORS:
-      type: string
-      enum:
-      - <
-      - '>'
-      title: COMPARATORS
-    SloPeriod:
-      type: string
-      enum:
-      - DAY
-      - WEEK
-      - MONTH
-      title: SloPeriod
-      description: 'The evaluation periods the /api/2 project SLO accepts.
-
-
-        ``models.project_slo.PERIODS`` also defines sub-day periods for the newer
-
-        SLO configurations; ``ProjectSLO`` only supports these three.'
     UpdateProjectSloBody:
       properties:
         objectives:
@@ -381,6 +350,21 @@ components:
           metric: latency
           period: MONTH
           unit: ms
+    MEASURES:
+      type: string
+      enum:
+      - mean
+      - value
+      title: MEASURES
+    ProjectSloDeletedStatus:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: ok
+      type: object
+      title: ProjectSloDeletedStatus
+      description: Rendered when DELETE finds no stored SLO (idempotent delete).
     ThresholdResponse:
       properties:
         metric:
@@ -407,37 +391,6 @@ components:
       - unit
       - period
       title: ThresholdResponse
-    ProjectSloDeletedStatus:
-      properties:
-        status:
-          type: string
-          title: Status
-          default: ok
-      type: object
-      title: ProjectSloDeletedStatus
-      description: Rendered when DELETE finds no stored SLO (idempotent delete).
-    UNITS:
-      type: string
-      enum:
-      - ms
-      - percent
-      - pp
-      - value
-      title: UNITS
-      x-enum-descriptions:
-        ms: Duration in milliseconds
-        percent: Absolute percentage value, e.g. availability > 0.995
-        pp: Percentage points — the arithmetic difference between two percentages. Only valid for grade thresholds.
-        value: Dimensionless numeric value
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ServiceLevelObjectiveBody:
       properties:
         metric:
@@ -483,12 +436,59 @@ components:
         period: MONTH
         unit: ms
         value: 100
-    MEASURES:
+    UNITS:
       type: string
       enum:
-      - mean
+      - ms
+      - percent
+      - pp
       - value
-      title: MEASURES
+      title: UNITS
+      x-enum-descriptions:
+        ms: Duration in milliseconds
+        percent: Absolute percentage value, e.g. availability > 0.995
+        pp: Percentage points — the arithmetic difference between two percentages. Only valid for grade thresholds.
+        value: Dimensionless numeric value
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    METRICS:
+      type: string
+      enum:
+      - pass
+      - slow
+      - warning
+      - fail
+      - availability
+      - dns
+      - tcp
+      - handshake
+      - upload
+      - processing
+      - download
+      - total
+      - network
+      - server
+      - total_no_dns
+      - casc
+      - apdex
+      - first_contentful_paint
+      - largest_contentful_paint
+      - first_input_delay
+      - cumulative_layout_shift
+      title: METRICS
+    COMPARATORS:
+      type: string
+      enum:
+      - <
+      - '>'
+      title: COMPARATORS
   securitySchemes:
     OAuth2:
       type: oauth2

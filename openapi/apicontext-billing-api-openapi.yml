@@ -156,178 +156,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    MonthlyResultCounts:
-      properties:
-        month:
-          type: string
-          title: Month
-        api_count:
-          type: integer
-          title: Api Count
-        browser_count:
-          type: integer
-          title: Browser Count
-        mcp_count:
-          type: integer
-          title: Mcp Count
-        total_count:
-          type: integer
-          title: Total Count
-      type: object
-      required:
-      - month
-      - api_count
-      - browser_count
-      - mcp_count
-      - total_count
-      title: MonthlyResultCounts
-    UsageWeights:
-      properties:
-        api:
-          type: integer
-          title: Api
-          default: 1
-        browser:
-          type: integer
-          title: Browser
-          default: 50
-        mcp:
-          type: integer
-          title: Mcp
-          default: 1
-      type: object
-      title: UsageWeights
-    UsageCountsResponse:
-      properties:
-        org_id:
-          type: string
-          title: Org Id
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-        months:
-          items:
-            $ref: '#/components/schemas/MonthlyResultCounts'
-          type: array
-          title: Months
-      type: object
-      required:
-      - org_id
-      - project_id
-      - months
-      title: UsageCountsResponse
-    Quotas:
-      properties:
-        test_run_quota:
-          type: integer
-          title: Test Run Quota
-        test_setup_quota:
-          type: integer
-          title: Test Setup Quota
-        public_report_quota:
-          type: integer
-          title: Public Report Quota
-      type: object
-      required:
-      - test_run_quota
-      - test_setup_quota
-      - public_report_quota
-      title: Quotas
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    api3__billing__models__QuotaResponse:
-      properties:
-        sub:
-          $ref: '#/components/schemas/api3__billing__models__SubInfo'
-        quotas:
-          $ref: '#/components/schemas/Quotas'
-        usage:
-          $ref: '#/components/schemas/Usage'
-        weights:
-          $ref: '#/components/schemas/UsageWeights'
-        has_trial_expired:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Has Trial Expired
-        trial_expiry_date:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Trial Expiry Date
-        month_progress:
-          type: number
-          title: Month Progress
-      type: object
-      required:
-      - sub
-      - quotas
-      - usage
-      - weights
-      - has_trial_expired
-      - trial_expiry_date
-      - month_progress
-      title: QuotaResponse
-    Usage:
-      properties:
-        project_test_run_usage:
-          type: integer
-          title: Project Test Run Usage
-        org_test_run_usage:
-          type: integer
-          title: Org Test Run Usage
-        test_setup_count:
-          type: integer
-          title: Test Setup Count
-        public_report_count:
-          type: integer
-          title: Public Report Count
-        scheduled_test_count:
-          type: integer
-          title: Scheduled Test Count
-      type: object
-      required:
-      - project_test_run_usage
-      - org_test_run_usage
-      - test_setup_count
-      - public_report_count
-      - scheduled_test_count
-      title: Usage
     api3__billing__models__SubInfo:
       properties:
         level:
@@ -375,6 +203,178 @@ components:
       - org_id
       - backend
       title: SubInfo
+    UsageCountsResponse:
+      properties:
+        org_id:
+          type: string
+          title: Org Id
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        months:
+          items:
+            $ref: '#/components/schemas/MonthlyResultCounts'
+          type: array
+          title: Months
+      type: object
+      required:
+      - org_id
+      - project_id
+      - months
+      title: UsageCountsResponse
+    Usage:
+      properties:
+        project_test_run_usage:
+          type: integer
+          title: Project Test Run Usage
+        org_test_run_usage:
+          type: integer
+          title: Org Test Run Usage
+        test_setup_count:
+          type: integer
+          title: Test Setup Count
+        public_report_count:
+          type: integer
+          title: Public Report Count
+        scheduled_test_count:
+          type: integer
+          title: Scheduled Test Count
+      type: object
+      required:
+      - project_test_run_usage
+      - org_test_run_usage
+      - test_setup_count
+      - public_report_count
+      - scheduled_test_count
+      title: Usage
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Quotas:
+      properties:
+        test_run_quota:
+          type: integer
+          title: Test Run Quota
+        test_setup_quota:
+          type: integer
+          title: Test Setup Quota
+        public_report_quota:
+          type: integer
+          title: Public Report Quota
+      type: object
+      required:
+      - test_run_quota
+      - test_setup_quota
+      - public_report_quota
+      title: Quotas
+    api3__billing__models__QuotaResponse:
+      properties:
+        sub:
+          $ref: '#/components/schemas/api3__billing__models__SubInfo'
+        quotas:
+          $ref: '#/components/schemas/Quotas'
+        usage:
+          $ref: '#/components/schemas/Usage'
+        weights:
+          $ref: '#/components/schemas/UsageWeights'
+        has_trial_expired:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Has Trial Expired
+        trial_expiry_date:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Trial Expiry Date
+        month_progress:
+          type: number
+          title: Month Progress
+      type: object
+      required:
+      - sub
+      - quotas
+      - usage
+      - weights
+      - has_trial_expired
+      - trial_expiry_date
+      - month_progress
+      title: QuotaResponse
+    MonthlyResultCounts:
+      properties:
+        month:
+          type: string
+          title: Month
+        api_count:
+          type: integer
+          title: Api Count
+        browser_count:
+          type: integer
+          title: Browser Count
+        mcp_count:
+          type: integer
+          title: Mcp Count
+        total_count:
+          type: integer
+          title: Total Count
+      type: object
+      required:
+      - month
+      - api_count
+      - browser_count
+      - mcp_count
+      - total_count
+      title: MonthlyResultCounts
+    UsageWeights:
+      properties:
+        api:
+          type: integer
+          title: Api
+          default: 1
+        browser:
+          type: integer
+          title: Browser
+          default: 50
+        mcp:
+          type: integer
+          title: Mcp
+          default: 1
+      type: object
+      title: UsageWeights
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -317,24 +317,50 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    InsightsListMeta:
+    HTTPValidationError:
       properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      title: InsightsListMeta
+      title: HTTPValidationError
+    RankMeta:
+      properties:
+        user:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        period:
+          type: string
+          title: Period
+        start:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start
+        org:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org
+        org_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Name
+      type: object
+      required:
+      - period
+      title: RankMeta
     ValidationError:
       properties:
         loc:
@@ -361,6 +387,24 @@ components:
       - msg
       - type
       title: ValidationError
+    InsightsListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      title: InsightsListMeta
     RankResponse:
       properties:
         meta:
@@ -375,71 +419,6 @@ components:
       - meta
       - results
       title: RankResponse
-    HistoryRow:
-      properties:
-        start:
-          type: string
-          format: date-time
-          title: Start
-        good:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Good
-        ok:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Ok
-        bad:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Bad
-      type: object
-      required:
-      - start
-      title: HistoryRow
-      description: 'One period bucket. ``good``/``ok``/``bad`` are the score-band counts, or
-
-        ``None`` for a bucket with no reports — the route serializes with
-
-        ``exclude_none`` so an empty bucket renders as just ``{"start": ...}``,
-
-        matching the legacy output.'
-    HistoryMeta:
-      properties:
-        weekly:
-          type: boolean
-          title: Weekly
-        start_date:
-          type: string
-          format: date-time
-          title: Start Date
-        end_date:
-          type: string
-          format: date-time
-          title: End Date
-      type: object
-      required:
-      - weekly
-      - start_date
-      - end_date
-      title: HistoryMeta
-    InsightsListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/InsightsListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/InsightsReportApi'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: InsightsListResponse
     RankResult:
       properties:
         id:
@@ -526,29 +505,6 @@ components:
       description: 'A ranked monitor: its latest score plus a short ``results`` history of
 
         ``(period_start, score)`` points and the matching ``filenames``.'
-    HistoryResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/HistoryMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/HistoryRow'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: HistoryResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     InsightsReportApi:
       properties:
         id:
@@ -659,41 +615,85 @@ components:
         ``project_id``, and ``start`` / ``end`` are renamed to
 
         ``start_date`` / ``end_date``.'
-    RankMeta:
+    HistoryMeta:
       properties:
-        user:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        period:
+        weekly:
+          type: boolean
+          title: Weekly
+        start_date:
           type: string
-          title: Period
-        start:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: Start
-        org:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org
-        org_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org Name
+          format: date-time
+          title: Start Date
+        end_date:
+          type: string
+          format: date-time
+          title: End Date
       type: object
       required:
-      - period
-      title: RankMeta
+      - weekly
+      - start_date
+      - end_date
+      title: HistoryMeta
+    InsightsListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/InsightsListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/InsightsReportApi'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: InsightsListResponse
+    HistoryResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/HistoryMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/HistoryRow'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: HistoryResponse
+    HistoryRow:
+      properties:
+        start:
+          type: string
+          format: date-time
+          title: Start
+        good:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Good
+        ok:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Ok
+        bad:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Bad
+      type: object
+      required:
+      - start
+      title: HistoryRow
+      description: 'One period bucket. ``good``/``ok``/``bad`` are the score-band counts, or
+
+        ``None`` for a bucket with no reports — the route serializes with
+
+        ``exclude_none`` so an empty bucket renders as just ``{"start": ...}``,
+
+        matching the legacy output.'
   securitySchemes:
     OAuth2:
       type: oauth2

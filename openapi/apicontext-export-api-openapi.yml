@@ -124,21 +124,15 @@ components:
       - project
       title: ExportResponse
       description: 'The export bundle: a bare ``{$schema, version, project}`` object.'
-    SetTagsResponse:
+    HTTPValidationError:
       properties:
-        status:
-          type: string
-          title: Status
-        updates:
+        detail:
           items:
-            type: string
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Updates
+          title: Detail
       type: object
-      required:
-      - status
-      - updates
-      title: SetTagsResponse
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -165,15 +159,21 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
+    SetTagsResponse:
       properties:
-        detail:
+        status:
+          type: string
+          title: Status
+        updates:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            type: string
           type: array
-          title: Detail
+          title: Updates
       type: object
-      title: HTTPValidationError
+      required:
+      - status
+      - updates
+      title: SetTagsResponse
   securitySchemes:
     OAuth2:
       type: oauth2

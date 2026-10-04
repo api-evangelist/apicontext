@@ -289,36 +289,6 @@ components:
       - msg
       - type
       title: ValidationError
-    ProjectAccessListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: integer
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      required:
-      - next_cursor
-      - more
-      title: ProjectAccessListMeta
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ProjectResponse:
       properties:
         id:
@@ -404,6 +374,79 @@ components:
             org_id: apicontext
             plan: enterprise
         tags: []
+    ProjectAccessListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: integer
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - next_cursor
+      - more
+      title: ProjectAccessListMeta
+    ProjectAccessListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectAccessListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/api2__projects__proj_access__ProjectAccessResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ProjectAccessListResponse
+      examples:
+      - meta:
+          more: false
+        results:
+        - access_level: EDITOR
+          account_email: user@example.com
+          account_id: auth0|5f00000000000000000000aa
+          created: '2026-06-25T10:13:37.546136Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
+          last_update: '2026-06-25T10:13:37.597335Z'
+          project:
+            created: '2026-06-19T09:06:47.046143Z'
+            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+            last_update: '2026-06-19T09:06:47.046170Z'
+            name: Project 1
+            org_id: apicontext
+            tags: []
+    UpdateProjectAccessBody:
+      properties:
+        account_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Id
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        access_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Level
+      type: object
+      title: UpdateProjectAccessBody
+      examples:
+      - access_level: OWNER
     api2__projects__proj_access__ProjectAccessResponse:
       properties:
         id:
@@ -452,27 +495,6 @@ components:
           name: Project 1
           org_id: apicontext
           tags: []
-    UpdateProjectAccessBody:
-      properties:
-        account_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Account Id
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-        access_level:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Access Level
-      type: object
-      title: UpdateProjectAccessBody
-      examples:
-      - access_level: OWNER
     CreateProjectAccessBody:
       properties:
         account_id:
@@ -499,37 +521,15 @@ components:
       - access_level: EDITOR
         account_id: auth0|5f00000000000000000000aa
         email: user@example.com
-    ProjectAccessListResponse:
+    HTTPValidationError:
       properties:
-        meta:
-          $ref: '#/components/schemas/ProjectAccessListMeta'
-        results:
+        detail:
           items:
-            $ref: '#/components/schemas/api2__projects__proj_access__ProjectAccessResponse'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Results
+          title: Detail
       type: object
-      required:
-      - meta
-      - results
-      title: ProjectAccessListResponse
-      examples:
-      - meta:
-          more: false
-        results:
-        - access_level: EDITOR
-          account_email: user@example.com
-          account_id: auth0|5f00000000000000000000aa
-          created: '2026-06-25T10:13:37.546136Z'
-          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
-          last_update: '2026-06-25T10:13:37.597335Z'
-          project:
-            created: '2026-06-19T09:06:47.046143Z'
-            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-            last_update: '2026-06-19T09:06:47.046170Z'
-            name: Project 1
-            org_id: apicontext
-            tags: []
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

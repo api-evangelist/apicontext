@@ -148,6 +148,20 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ApiKeyListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ApiKeyListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/ApiKeyResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ApiKeyListResponse
     CreateApiKeyBody:
       properties:
         access_level:
@@ -192,20 +206,34 @@ components:
       - msg
       - type
       title: ValidationError
-    ApiKeyListResponse:
+    ApiKeyListMeta:
       properties:
-        meta:
-          $ref: '#/components/schemas/ApiKeyListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/ApiKeyResponse'
-          type: array
-          title: Results
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
       type: object
       required:
-      - meta
-      - results
-      title: ApiKeyListResponse
+      - more
+      title: ApiKeyListMeta
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ApiKeyResponse:
       properties:
         id:
@@ -259,34 +287,6 @@ components:
         api_key: aB3dE6gH9jK2mN5pQ8sT1vW4xY7zC0eF
         id: ahFkZXZ-YXBpbWV0cmljcy1xY3IZCxIHQXBpQXV0aBI...
         project_id: ahFkZXZ-YXBpbWV0cmljcy1xY3IUCxIEVXNlchiAgIC...
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ApiKeyListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      required:
-      - more
-      title: ApiKeyListMeta
   securitySchemes:
     OAuth2:
       type: oauth2

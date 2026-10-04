@@ -91,6 +91,76 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ProjectConditionsResponse:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+        meta:
+          $ref: '#/components/schemas/ProjectConditionsMeta'
+      type: object
+      required:
+      - conditions
+      title: ProjectConditionsResponse
+    PostProjectConditionsRequest:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+          description: The full set of conditionals; replaces any existing set.
+      type: object
+      required:
+      - conditions
+      title: PostProjectConditionsRequest
+    ProjectConditionsMeta:
+      properties:
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+          description: The project the conditions belong to.
+      type: object
+      title: ProjectConditionsMeta
     ConditionalModel:
       properties:
         source:
@@ -128,76 +198,6 @@ components:
       - source
       - condition
       title: ConditionalModel
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    PostProjectConditionsRequest:
-      properties:
-        conditions:
-          items:
-            $ref: '#/components/schemas/ConditionalModel'
-          type: array
-          title: Conditions
-          description: The full set of conditionals; replaces any existing set.
-      type: object
-      required:
-      - conditions
-      title: PostProjectConditionsRequest
-    ProjectConditionsMeta:
-      properties:
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-          description: The project the conditions belong to.
-      type: object
-      title: ProjectConditionsMeta
-    ProjectConditionsResponse:
-      properties:
-        conditions:
-          items:
-            $ref: '#/components/schemas/ConditionalModel'
-          type: array
-          title: Conditions
-        meta:
-          $ref: '#/components/schemas/ProjectConditionsMeta'
-      type: object
-      required:
-      - conditions
-      title: ProjectConditionsResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -144,6 +144,21 @@ paths:
         '200':
           description: Usage statistics
 components:
+  parameters:
+    subId:
+      name: sub_id
+      in: path
+      required: true
+      description: Project or organisation subscription ID
+      schema:
+        $ref: '#/components/schemas/KeyStr'
+    agentKey:
+      name: agent_key
+      in: path
+      required: true
+      description: URL-safe Datastore key for a remote agent
+      schema:
+        $ref: '#/components/schemas/KeyStr'
   schemas:
     AgentOutput:
       type: object
@@ -183,21 +198,6 @@ components:
       minLength: 3
       maxLength: 400
       pattern: ^[-A-Za-z0-9_]*={0,3}$
-  parameters:
-    subId:
-      name: sub_id
-      in: path
-      required: true
-      description: Project or organisation subscription ID
-      schema:
-        $ref: '#/components/schemas/KeyStr'
-    agentKey:
-      name: agent_key
-      in: path
-      required: true
-      description: URL-safe Datastore key for a remote agent
-      schema:
-        $ref: '#/components/schemas/KeyStr'
   securitySchemes:
     OAuth2:
       type: oauth2

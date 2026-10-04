@@ -217,6 +217,27 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ProjectRoleListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: integer
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - next_cursor
+      - more
+      title: ProjectRoleListMeta
     ValidationError:
       properties:
         loc:
@@ -243,33 +264,6 @@ components:
       - msg
       - type
       title: ValidationError
-    UpdateProjectRoleBody:
-      properties:
-        role_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Role Id
-        access_level:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Access Level
-        account_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Account Id
-        org_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org Id
-      type: object
-      title: UpdateProjectRoleBody
-      examples:
-      - access_level: OWNER
-        role_id: MANAGER
     ProjectResponse:
       properties:
         id:
@@ -355,87 +349,33 @@ components:
             org_id: apicontext
             plan: enterprise
         tags: []
-    ProjectRoleListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: integer
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      required:
-      - next_cursor
-      - more
-      title: ProjectRoleListMeta
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ProjectRoleListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/ProjectRoleListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/ProjectRoleResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: ProjectRoleListResponse
-      examples:
-      - meta:
-          more: false
-        results:
-        - access_level: EDITOR
-          created: '2026-06-25T10:13:37.546136Z'
-          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
-          last_update: '2026-06-25T10:13:37.597335Z'
-          project:
-            created: '2026-06-19T09:06:47.046143Z'
-            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-            last_update: '2026-06-19T09:06:47.046170Z'
-            name: Project 1
-            org_id: apicontext
-            tags: []
-          role_id: SRE
-    CreateProjectRoleBody:
+    UpdateProjectRoleBody:
       properties:
         role_id:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Role Id
         access_level:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Access Level
         account_id:
           anyOf:
           - type: string
           - type: 'null'
           title: Account Id
+        org_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Id
       type: object
-      required:
-      - role_id
-      - access_level
-      title: CreateProjectRoleBody
+      title: UpdateProjectRoleBody
       examples:
-      - access_level: EDITOR
-        role_id: SRE
+      - access_level: OWNER
+        role_id: MANAGER
     ProjectRoleResponse:
       properties:
         id:
@@ -479,6 +419,66 @@ components:
           org_id: apicontext
           tags: []
         role_id: SRE
+    CreateProjectRoleBody:
+      properties:
+        role_id:
+          type: string
+          title: Role Id
+        access_level:
+          type: string
+          title: Access Level
+        account_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Account Id
+      type: object
+      required:
+      - role_id
+      - access_level
+      title: CreateProjectRoleBody
+      examples:
+      - access_level: EDITOR
+        role_id: SRE
+    ProjectRoleListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ProjectRoleListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/ProjectRoleResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ProjectRoleListResponse
+      examples:
+      - meta:
+          more: false
+        results:
+        - access_level: EDITOR
+          created: '2026-06-25T10:13:37.546136Z'
+          id: ahFkZXZ-YXBpbWV0cmljcy1xY3IVCxIOQWNjb3VudFByb2plY3QYq0IM
+          last_update: '2026-06-25T10:13:37.597335Z'
+          project:
+            created: '2026-06-19T09:06:47.046143Z'
+            id: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+            last_update: '2026-06-19T09:06:47.046170Z'
+            name: Project 1
+            org_id: apicontext
+            tags: []
+          role_id: SRE
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

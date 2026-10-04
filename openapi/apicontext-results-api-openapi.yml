@@ -612,82 +612,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ResultDetailMeta:
-      properties:
-        result:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Result
-        result_category:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Result Category
-        agent_type:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Agent Type
-        call_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Call Name
-        location_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Location Id
-        start_time:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Start Time
-      additionalProperties: true
-      type: object
-      title: ResultDetailMeta
-    ResultDetailResponse:
-      properties:
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/ResultDetailMeta'
-          - type: 'null'
-      additionalProperties: true
-      type: object
-      title: ResultDetailResponse
-      description: Full result detail as returned by to_api().
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ResultSynopsisMeta:
       properties:
         id:
@@ -799,6 +723,107 @@ components:
       - results
       title: ResultListResponse
       description: Paginated list of result synopses.
+    ResultListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        next_cursor_before:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor Before
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - more
+      - project_id
+      title: ResultListMeta
+    ResultDetailMeta:
+      properties:
+        result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result
+        result_category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result Category
+        agent_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Agent Type
+        call_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Call Name
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        start_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start Time
+      additionalProperties: true
+      type: object
+      title: ResultDetailMeta
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ResultSynopsisItem:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        meta:
+          $ref: '#/components/schemas/ResultSynopsisMeta'
+        timing:
+          anyOf:
+          - $ref: '#/components/schemas/ResultSynopsisTiming'
+          - type: 'null'
+      type: object
+      required:
+      - meta
+      title: ResultSynopsisItem
     ResultSynopsisTiming:
       properties:
         dns:
@@ -838,6 +863,21 @@ components:
           title: Total
       type: object
       title: ResultSynopsisTiming
+    ResultDetailResponse:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/ResultDetailMeta'
+          - type: 'null'
+      additionalProperties: true
+      type: object
+      title: ResultDetailResponse
+      description: Full result detail as returned by to_api().
     HTTPValidationError:
       properties:
         detail:
@@ -847,46 +887,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ResultListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        next_cursor_before:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor Before
-        project_id:
-          type: string
-          title: Project Id
-      type: object
-      required:
-      - more
-      - project_id
-      title: ResultListMeta
-    ResultSynopsisItem:
-      properties:
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        meta:
-          $ref: '#/components/schemas/ResultSynopsisMeta'
-        timing:
-          anyOf:
-          - $ref: '#/components/schemas/ResultSynopsisTiming'
-          - type: 'null'
-      type: object
-      required:
-      - meta
-      title: ResultSynopsisItem
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -244,6 +244,21 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    UpdateIntegration:
+      properties:
+        name:
+          type: string
+          title: Name
+        details:
+          additionalProperties:
+            type: string
+          type: object
+          title: Details
+      type: object
+      required:
+      - name
+      - details
+      title: UpdateIntegration
     CreateIntegration:
       properties:
         name:
@@ -326,21 +341,6 @@ components:
       - created_at
       - last_modified
       title: ReadIntegration
-    UpdateIntegration:
-      properties:
-        name:
-          type: string
-          title: Name
-        details:
-          additionalProperties:
-            type: string
-          type: object
-          title: Details
-      type: object
-      required:
-      - name
-      - details
-      title: UpdateIntegration
     HTTPValidationError:
       properties:
         detail:

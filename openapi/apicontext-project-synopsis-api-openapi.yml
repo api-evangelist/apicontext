@@ -142,32 +142,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ProjectSloResponse:
       properties:
         project_id:
@@ -234,6 +208,26 @@ components:
           metric: latency
           period: MONTH
           unit: ms
+    SynopsisKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      title: SynopsisKind
+      description: 'The aggregation periods a synopsis blob is generated for.
+
+
+        Legacy read ``kind`` as a free string, upper-cased it and looked it up in a
+
+        dict with a ``daily`` default, so ``day``/``DAY`` were equivalent and an
+
+        unrecognised value quietly yielded daily data. ``_missing_`` reproduces both
+
+        of those, which keeps the coercion identical while still publishing the four
+
+        supported values in the OpenAPI spec.'
     ServiceLevelObjectiveResponse:
       properties:
         metric:
@@ -268,6 +262,111 @@ components:
       - unit
       - period
       title: ServiceLevelObjectiveResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    OrgSynopsisResultCounts:
+      properties:
+        PASS:
+          type: number
+          title: Pass
+          default: 0
+        SLOW:
+          type: number
+          title: Slow
+          default: 0
+        WARNING:
+          type: number
+          title: Warning
+          default: 0
+        FAIL:
+          type: number
+          title: Fail
+          default: 0
+        total:
+          type: number
+          title: Total
+          default: 0
+      type: object
+      title: OrgSynopsisResultCounts
+      description: Per-project sum of each call's pass/fail result counts.
+    OrgSynopsisInsights:
+      properties:
+        outlier_percent:
+          type: number
+          title: Outlier Percent
+          default: 0
+        sd_test_length:
+          type: number
+          title: Sd Test Length
+          default: 0
+        score:
+          type: number
+          title: Score
+          default: 0
+        pass_percent:
+          type: number
+          title: Pass Percent
+          default: 0
+        mean_test_length:
+          type: number
+          title: Mean Test Length
+          default: 0
+      type: object
+      title: OrgSynopsisInsights
+      description: 'Per-project mean of each call''s insight metrics.
+
+
+        Null on the enclosing synopsis when no included call reported a ``score``.'
+    ThresholdResponse:
+      properties:
+        metric:
+          type: string
+          title: Metric
+        delta:
+          type: number
+          title: Delta
+        unit:
+          type: string
+          title: Unit
+        period:
+          type: string
+          title: Period
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      type: object
+      required:
+      - metric
+      - delta
+      - unit
+      - period
+      title: ThresholdResponse
     ProjectRollupResponse:
       properties:
         project_id:
@@ -302,147 +401,6 @@ components:
       - slos
       title: ProjectRollupResponse
       description: One project's rolled-up synopsis for the requested period.
-    ThresholdResponse:
-      properties:
-        metric:
-          type: string
-          title: Metric
-        delta:
-          type: number
-          title: Delta
-        unit:
-          type: string
-          title: Unit
-        period:
-          type: string
-          title: Period
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-      type: object
-      required:
-      - metric
-      - delta
-      - unit
-      - period
-      title: ThresholdResponse
-    OrgSynopsisResponse:
-      properties:
-        kind:
-          $ref: '#/components/schemas/SynopsisKind'
-          description: The aggregation period the response was resolved to.
-        period:
-          type: string
-          title: Period
-          description: The period actually read. ``YYYY-MM-DD`` for DAY/WEEK/MONTH, or an ISO-8601 UTC timestamp for HOUR.
-        latest:
-          type: boolean
-          title: Latest
-          description: True when the requested period was at or after the newest generated one and was therefore clamped back to it.
-        project_ids:
-          items:
-            type: string
-          type: array
-          title: Project Ids
-          description: Every project visible to the caller in this org, sorted by id so the order is stable between requests.
-        synopses:
-          items:
-            $ref: '#/components/schemas/ProjectRollupResponse'
-          type: array
-          title: Synopses
-          description: One entry per visible project that has a synopsis blob for the period, in ``project_ids`` order. Projects with no blob are omitted.
-      type: object
-      required:
-      - kind
-      - period
-      - latest
-      - project_ids
-      - synopses
-      title: OrgSynopsisResponse
-    OrgSynopsisResultCounts:
-      properties:
-        PASS:
-          type: number
-          title: Pass
-          default: 0
-        SLOW:
-          type: number
-          title: Slow
-          default: 0
-        WARNING:
-          type: number
-          title: Warning
-          default: 0
-        FAIL:
-          type: number
-          title: Fail
-          default: 0
-        total:
-          type: number
-          title: Total
-          default: 0
-      type: object
-      title: OrgSynopsisResultCounts
-      description: Per-project sum of each call's pass/fail result counts.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    OrgSynopsisInsights:
-      properties:
-        outlier_percent:
-          type: number
-          title: Outlier Percent
-          default: 0
-        sd_test_length:
-          type: number
-          title: Sd Test Length
-          default: 0
-        score:
-          type: number
-          title: Score
-          default: 0
-        pass_percent:
-          type: number
-          title: Pass Percent
-          default: 0
-        mean_test_length:
-          type: number
-          title: Mean Test Length
-          default: 0
-      type: object
-      title: OrgSynopsisInsights
-      description: 'Per-project mean of each call''s insight metrics.
-
-
-        Null on the enclosing synopsis when no included call reported a ``score``.'
-    SynopsisKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      title: SynopsisKind
-      description: 'The aggregation periods a synopsis blob is generated for.
-
-
-        Legacy read ``kind`` as a free string, upper-cased it and looked it up in a
-
-        dict with a ``daily`` default, so ``day``/``DAY`` were equivalent and an
-
-        unrecognised value quietly yielded daily data. ``_missing_`` reproduces both
-
-        of those, which keeps the coercion identical while still publishing the four
-
-        supported values in the OpenAPI spec.'
     OrgSynopsisTimings:
       properties:
         count:
@@ -505,6 +463,48 @@ components:
         Latency values are summed, not averaged — ``count`` is the divisor callers
 
         use to turn them into per-result means.'
+    OrgSynopsisResponse:
+      properties:
+        kind:
+          $ref: '#/components/schemas/SynopsisKind'
+          description: The aggregation period the response was resolved to.
+        period:
+          type: string
+          title: Period
+          description: The period actually read. ``YYYY-MM-DD`` for DAY/WEEK/MONTH, or an ISO-8601 UTC timestamp for HOUR.
+        latest:
+          type: boolean
+          title: Latest
+          description: True when the requested period was at or after the newest generated one and was therefore clamped back to it.
+        project_ids:
+          items:
+            type: string
+          type: array
+          title: Project Ids
+          description: Every project visible to the caller in this org, sorted by id so the order is stable between requests.
+        synopses:
+          items:
+            $ref: '#/components/schemas/ProjectRollupResponse'
+          type: array
+          title: Synopses
+          description: One entry per visible project that has a synopsis blob for the period, in ``project_ids`` order. Projects with no blob are omitted.
+      type: object
+      required:
+      - kind
+      - period
+      - latest
+      - project_ids
+      - synopses
+      title: OrgSynopsisResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

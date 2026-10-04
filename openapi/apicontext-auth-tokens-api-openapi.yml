@@ -285,32 +285,40 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
+    TokenResponse:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        id:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Id
+        meta:
+          $ref: '#/components/schemas/TokenMeta'
+        token:
+          $ref: '#/components/schemas/TokenData'
+      additionalProperties: true
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - id
+      - meta
+      - token
+      title: TokenResponse
+    TokenListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - project_id
+      title: TokenListMeta
     TokenMeta:
       properties:
         name:
@@ -357,6 +365,64 @@ components:
           title: Owner
       type: object
       title: TokenMeta
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    TokenDataInput:
+      properties:
+        expire_time:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expire Time
+      additionalProperties: true
+      type: object
+      title: TokenDataInput
+    UpdateTokenRequest:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/TokenMetaInput'
+          - type: 'null'
+        token:
+          anyOf:
+          - $ref: '#/components/schemas/TokenDataInput'
+          - type: 'null'
+      type: object
+      title: UpdateTokenRequest
+    CreateTokenRequest:
+      properties:
+        meta:
+          $ref: '#/components/schemas/TokenMetaInput'
+        token:
+          anyOf:
+          - $ref: '#/components/schemas/TokenDataInput'
+          - type: 'null'
+      type: object
+      title: CreateTokenRequest
     TokenMetaInput:
       properties:
         name:
@@ -386,22 +452,20 @@ components:
           description: Plain hostname the token applies to, e.g. api.example.com
       type: object
       title: TokenMetaInput
-    TokenResponse:
+    TokenListResponse:
       properties:
-        id:
-          type: string
-          title: Id
         meta:
-          $ref: '#/components/schemas/TokenMeta'
-        token:
-          $ref: '#/components/schemas/TokenData'
-      additionalProperties: true
+          $ref: '#/components/schemas/TokenListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/TokenResponse'
+          type: array
+          title: Results
       type: object
       required:
-      - id
       - meta
-      - token
-      title: TokenResponse
+      - results
+      title: TokenListResponse
     TokenData:
       properties:
         expire_time:
@@ -417,70 +481,6 @@ components:
       additionalProperties: true
       type: object
       title: TokenData
-    TokenListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-        project_id:
-          type: string
-          title: Project Id
-      type: object
-      required:
-      - project_id
-      title: TokenListMeta
-    TokenDataInput:
-      properties:
-        expire_time:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Expire Time
-      additionalProperties: true
-      type: object
-      title: TokenDataInput
-    CreateTokenRequest:
-      properties:
-        meta:
-          $ref: '#/components/schemas/TokenMetaInput'
-        token:
-          anyOf:
-          - $ref: '#/components/schemas/TokenDataInput'
-          - type: 'null'
-      type: object
-      title: CreateTokenRequest
-    TokenListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/TokenListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/TokenResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: TokenListResponse
-    UpdateTokenRequest:
-      properties:
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/TokenMetaInput'
-          - type: 'null'
-        token:
-          anyOf:
-          - $ref: '#/components/schemas/TokenDataInput'
-          - type: 'null'
-      type: object
-      title: UpdateTokenRequest
     HTTPValidationError:
       properties:
         detail:

@@ -129,6 +129,63 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    CopyMoveResponse:
+      properties:
+        source:
+          type: string
+          title: Source
+        destination:
+          type: string
+          title: Destination
+        type:
+          type: string
+          enum:
+          - call
+          - workflow
+          - auth
+          - report
+          - browser
+          - mcp
+          title: Type
+        info:
+          items:
+            type: string
+          type: array
+          title: Info
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+      type: object
+      required:
+      - source
+      - destination
+      - type
+      title: CopyMoveResponse
+      description: "Response shape for both endpoints.\n\nField semantics match the Py2 handler:\n\n* ``info``    -- success messages, one per cloned/moved entity.\n* ``warnings`` -- non-blocking advisories (e.g. tokens not copied).\n* ``errors``  -- blocking failures collected in ``dry_run`` mode;\n                 non-dry-run runs raise 400 on the first one of these."
+      examples:
+      - destination: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchifQgw
+        errors: []
+        info:
+        - Will copy API Call "Login"
+        source: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+        type: call
+        warnings: []
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -197,63 +254,6 @@ components:
         id:
         - ahFkZXZ-YXBpbWV0cmljcy1xY3IOCxIHVGVzdFNldHVwGL9CDA
         type: call
-    CopyMoveResponse:
-      properties:
-        source:
-          type: string
-          title: Source
-        destination:
-          type: string
-          title: Destination
-        type:
-          type: string
-          enum:
-          - call
-          - workflow
-          - auth
-          - report
-          - browser
-          - mcp
-          title: Type
-        info:
-          items:
-            type: string
-          type: array
-          title: Info
-        warnings:
-          items:
-            type: string
-          type: array
-          title: Warnings
-        errors:
-          items:
-            type: string
-          type: array
-          title: Errors
-      type: object
-      required:
-      - source
-      - destination
-      - type
-      title: CopyMoveResponse
-      description: "Response shape for both endpoints.\n\nField semantics match the Py2 handler:\n\n* ``info``    -- success messages, one per cloned/moved entity.\n* ``warnings`` -- non-blocking advisories (e.g. tokens not copied).\n* ``errors``  -- blocking failures collected in ``dry_run`` mode;\n                 non-dry-run runs raise 400 on the first one of these."
-      examples:
-      - destination: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchifQgw
-        errors: []
-        info:
-        - Will copy API Call "Login"
-        source: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-        type: call
-        warnings: []
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -999,47 +999,51 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    QuantileResponse:
-      properties:
-        columns:
-          items:
-            type: string
-          type: array
-          title: Columns
-        index:
-          items:
-            items: {}
-            type: array
-          type: array
-          title: Index
-        data:
-          items:
-            items:
-              type: number
-            type: array
-          type: array
-          title: Data
-      type: object
-      required:
-      - columns
-      - index
-      - data
-      title: QuantileResponse
-      description: pandas-``to_dict('split')``-style payload (columns / index / data).
-    PassFailRangeResponse:
+    PassFailResponse:
       properties:
         meta:
-          $ref: '#/components/schemas/_PassFailRangeMeta'
-        results:
-          additionalProperties:
-            $ref: '#/components/schemas/_PassFailCounts'
-          type: object
-          title: Results
+          $ref: '#/components/schemas/_PassFailMeta'
+        stat:
+          $ref: '#/components/schemas/_PassFailCounts'
       type: object
       required:
       - meta
-      - results
-      title: PassFailRangeResponse
+      - stat
+      title: PassFailResponse
+    _LegacyPassFailMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+      type: object
+      required:
+      - call_id
+      - kind
+      - location_id
+      title: _LegacyPassFailMeta
     _StatMeta:
       properties:
         call_id:
@@ -1072,99 +1076,20 @@ components:
       - kind
       - location_id
       title: _StatMeta
-    _CategoryBreakdown:
+    _HttpBreakdownStat:
       properties:
-        totals:
-          additionalProperties:
-            type: integer
-          type: object
-          title: Totals
-        totals_grouped:
-          additionalProperties:
-            type: integer
-          type: object
-          title: Totals Grouped
-      type: object
-      title: _CategoryBreakdown
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    LegacyPassFailResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_LegacyPassFailMeta'
-        stat:
-          $ref: '#/components/schemas/_PassFailCounts'
+        overall:
+          $ref: '#/components/schemas/_HttpBreakdownOverall'
+        pass:
+          $ref: '#/components/schemas/_CategoryBreakdown'
+        warning:
+          $ref: '#/components/schemas/_CategoryBreakdown'
+        failure:
+          $ref: '#/components/schemas/_CategoryBreakdown'
       type: object
       required:
-      - meta
-      - stat
-      title: LegacyPassFailResponse
-    PassFailResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_PassFailMeta'
-        stat:
-          $ref: '#/components/schemas/_PassFailCounts'
-      type: object
-      required:
-      - meta
-      - stat
-      title: PassFailResponse
-    _PassFailMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        location_id:
-          type: string
-          title: Location Id
-        min_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-        kind:
-          type: string
-          title: Kind
-      type: object
-      required:
-      - call_id
-      - location_id
-      - kind
-      title: _PassFailMeta
-    LegacyPassFailRangeResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_LegacyPassFailMeta'
-        results:
-          additionalProperties:
-            $ref: '#/components/schemas/_PassFailCounts'
-          type: object
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: LegacyPassFailRangeResponse
+      - overall
+      title: _HttpBreakdownStat
     _HttpBreakdownMeta:
       properties:
         call_id:
@@ -1199,6 +1124,236 @@ components:
       - kind
       - location_id
       title: _HttpBreakdownMeta
+    StatListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_StatListMeta'
+        stats:
+          items:
+            $ref: '#/components/schemas/_StatItem'
+          type: array
+          title: Stats
+      type: object
+      required:
+      - meta
+      - stats
+      title: StatListResponse
+    _PassFailMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+        kind:
+          type: string
+          title: Kind
+      type: object
+      required:
+      - call_id
+      - location_id
+      - kind
+      title: _PassFailMeta
+    _HttpBreakdownOverall:
+      properties:
+        pass:
+          type: integer
+          title: Pass
+          default: 0
+        warning:
+          type: integer
+          title: Warning
+          default: 0
+        failure:
+          type: integer
+          title: Failure
+          default: 0
+      type: object
+      title: _HttpBreakdownOverall
+    LegacyPassFailResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_LegacyPassFailMeta'
+        stat:
+          $ref: '#/components/schemas/_PassFailCounts'
+      type: object
+      required:
+      - meta
+      - stat
+      title: LegacyPassFailResponse
+    PassFailRangeResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailRangeMeta'
+        results:
+          additionalProperties:
+            $ref: '#/components/schemas/_PassFailCounts'
+          type: object
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: PassFailRangeResponse
+    StatsType:
+      type: string
+      enum:
+      - ALL
+      - UNABLE_TO_RUN
+      - STARTED
+      - ENDED
+      - QUEUED
+      - PROCESSING
+      - SKIPPED
+      - AGENT_ERROR
+      - CONNECTION_WARNING
+      - HTTP_REDIRECT_ERROR
+      - HTTP_CLIENT_ERROR
+      - CONTENT_WARNING
+      - SLA_WARNING
+      - HTTP_SERVER_ERROR
+      - CONNECTION_ERROR
+      - HEADER_ERROR
+      - CONTENT_ERROR
+      - SLA_ERROR
+      - COMPLETE
+      - SLOW_COMPLETE
+      title: StatsType
+    PassFailTotalResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_PassFailTotalMeta'
+        stat:
+          additionalProperties: true
+          type: object
+          title: Stat
+      type: object
+      required:
+      - meta
+      - stat
+      title: PassFailTotalResponse
+    _StatValues:
+      properties:
+        min_latency:
+          type: number
+          title: Min Latency
+        max_latency:
+          type: number
+          title: Max Latency
+        avg_latency:
+          type: number
+          title: Avg Latency
+        standard_deviation:
+          type: number
+          title: Standard Deviation
+        count:
+          type: integer
+          title: Count
+        time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Time
+      type: object
+      required:
+      - min_latency
+      - max_latency
+      - avg_latency
+      - standard_deviation
+      - count
+      title: _StatValues
+    StatResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_StatMeta'
+        stat:
+          anyOf:
+          - $ref: '#/components/schemas/_StatValues'
+          - type: 'null'
+        adv_stat:
+          anyOf:
+          - $ref: '#/components/schemas/_StatValues'
+          - type: 'null'
+      type: object
+      required:
+      - meta
+      title: StatResponse
+    _StatListMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        type:
+          type: string
+          title: Type
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+      type: object
+      required:
+      - call_id
+      - type
+      - kind
+      - location_id
+      title: _StatListMeta
+    StatsKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      - YEAR
+      title: StatsKind
+      description: Aggregation period for ``stats/`` and ``metrics/`` (StatsApiHandler.VALID_KINDS).
     HttpBreakdownResponse:
       properties:
         meta:
@@ -1210,16 +1365,29 @@ components:
       - meta
       - stat
       title: HttpBreakdownResponse
-    StatsKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      - YEAR
-      title: StatsKind
-      description: Aggregation period for ``stats/`` and ``metrics/`` (StatsApiHandler.VALID_KINDS).
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    LegacyPassFailRangeResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/_LegacyPassFailMeta'
+        results:
+          additionalProperties:
+            $ref: '#/components/schemas/_PassFailCounts'
+          type: object
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: LegacyPassFailRangeResponse
     _PassFailCounts:
       properties:
         pass:
@@ -1236,6 +1404,77 @@ components:
           default: 0
       type: object
       title: _PassFailCounts
+    _PassFailTotalMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+      type: object
+      required:
+      - call_id
+      title: _PassFailTotalMeta
+    ListStatsKind:
+      type: string
+      enum:
+      - RAW
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      - YEAR
+      title: ListStatsKind
+      description: As ``StatsKind`` plus ``RAW`` (per-result rows) for ``since``/``before``.
+    _PassFailRangeMeta:
+      properties:
+        call_id:
+          type: string
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        min_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Min Time
+        max_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Max Time
+        kind:
+          type: string
+          title: Kind
+        location_id:
+          type: string
+          title: Location Id
+      type: object
+      required:
+      - call_id
+      - kind
+      - location_id
+      title: _PassFailRangeMeta
     _StatItem:
       properties:
         time:
@@ -1291,156 +1530,6 @@ components:
       - count
       title: _StatItem
       description: One bucket (aggregated) or one result (RAW).
-    StatsCategory:
-      type: string
-      enum:
-      - PASS
-      - SLOW
-      - WARNING
-      - FAIL
-      title: StatsCategory
-      description: Result category filter for the quantile ``metrics/`` endpoint.
-    ListStatsKind:
-      type: string
-      enum:
-      - RAW
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      - YEAR
-      title: ListStatsKind
-      description: As ``StatsKind`` plus ``RAW`` (per-result rows) for ``since``/``before``.
-    StatsType:
-      type: string
-      enum:
-      - ALL
-      - UNABLE_TO_RUN
-      - STARTED
-      - ENDED
-      - QUEUED
-      - PROCESSING
-      - SKIPPED
-      - AGENT_ERROR
-      - CONNECTION_WARNING
-      - HTTP_REDIRECT_ERROR
-      - HTTP_CLIENT_ERROR
-      - CONTENT_WARNING
-      - SLA_WARNING
-      - HTTP_SERVER_ERROR
-      - CONNECTION_ERROR
-      - HEADER_ERROR
-      - CONTENT_ERROR
-      - SLA_ERROR
-      - COMPLETE
-      - SLOW_COMPLETE
-      title: StatsType
-    BreakdownKind:
-      type: string
-      enum:
-      - HOUR
-      - DAY
-      - WEEK
-      - MONTH
-      title: BreakdownKind
-      description: '``http_codes`` / ``legacy/passfail*`` — no YEAR.'
-    _LegacyPassFailMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        kind:
-          type: string
-          title: Kind
-        location_id:
-          type: string
-          title: Location Id
-        min_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-      type: object
-      required:
-      - call_id
-      - kind
-      - location_id
-      title: _LegacyPassFailMeta
-    _HttpBreakdownStat:
-      properties:
-        overall:
-          $ref: '#/components/schemas/_HttpBreakdownOverall'
-        pass:
-          $ref: '#/components/schemas/_CategoryBreakdown'
-        warning:
-          $ref: '#/components/schemas/_CategoryBreakdown'
-        failure:
-          $ref: '#/components/schemas/_CategoryBreakdown'
-      type: object
-      required:
-      - overall
-      title: _HttpBreakdownStat
-    _StatValues:
-      properties:
-        min_latency:
-          type: number
-          title: Min Latency
-        max_latency:
-          type: number
-          title: Max Latency
-        avg_latency:
-          type: number
-          title: Avg Latency
-        standard_deviation:
-          type: number
-          title: Standard Deviation
-        count:
-          type: integer
-          title: Count
-        time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Time
-      type: object
-      required:
-      - min_latency
-      - max_latency
-      - avg_latency
-      - standard_deviation
-      - count
-      title: _StatValues
-    StatsMetric:
-      type: string
-      enum:
-      - namelookup_time
-      - time_to_connect
-      - time_to_handshake
-      - time_to_tx_request
-      - time_to_first_byte
-      - time_to_response
-      - total_time
-      - total_time_no_dns
-      - server_time
-      - starttransfer_time
-      - starttransfer_time_no_dns
-      - network_time
-      - network_time_no_dns
-      - time_to_last_byte
-      title: StatsMetric
     ValidationError:
       properties:
         loc:
@@ -1467,48 +1556,83 @@ components:
       - msg
       - type
       title: ValidationError
-    StatResponse:
+    StatsMetric:
+      type: string
+      enum:
+      - namelookup_time
+      - time_to_connect
+      - time_to_handshake
+      - time_to_tx_request
+      - time_to_first_byte
+      - time_to_response
+      - total_time
+      - total_time_no_dns
+      - server_time
+      - starttransfer_time
+      - starttransfer_time_no_dns
+      - network_time
+      - network_time_no_dns
+      - time_to_last_byte
+      title: StatsMetric
+    _CategoryBreakdown:
       properties:
-        meta:
-          $ref: '#/components/schemas/_StatMeta'
-        stat:
-          anyOf:
-          - $ref: '#/components/schemas/_StatValues'
-          - type: 'null'
-        adv_stat:
-          anyOf:
-          - $ref: '#/components/schemas/_StatValues'
-          - type: 'null'
+        totals:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Totals
+        totals_grouped:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Totals Grouped
+      type: object
+      title: _CategoryBreakdown
+    BreakdownKind:
+      type: string
+      enum:
+      - HOUR
+      - DAY
+      - WEEK
+      - MONTH
+      title: BreakdownKind
+      description: '``http_codes`` / ``legacy/passfail*`` — no YEAR.'
+    StatsCategory:
+      type: string
+      enum:
+      - PASS
+      - SLOW
+      - WARNING
+      - FAIL
+      title: StatsCategory
+      description: Result category filter for the quantile ``metrics/`` endpoint.
+    QuantileResponse:
+      properties:
+        columns:
+          items:
+            type: string
+          type: array
+          title: Columns
+        index:
+          items:
+            items: {}
+            type: array
+          type: array
+          title: Index
+        data:
+          items:
+            items:
+              type: number
+            type: array
+          type: array
+          title: Data
       type: object
       required:
-      - meta
-      title: StatResponse
-    _PassFailTotalMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        min_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-      type: object
-      required:
-      - call_id
-      title: _PassFailTotalMeta
+      - columns
+      - index
+      - data
+      title: QuantileResponse
+      description: pandas-``to_dict('split')``-style payload (columns / index / data).
     PassFailKind:
       type: string
       enum:
@@ -1518,130 +1642,6 @@ components:
       - YEAR
       title: PassFailKind
       description: '``passfail`` / ``passfail_range`` (KIND_CLASS_MAP) — no WEEK.'
-    _StatListMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        type:
-          type: string
-          title: Type
-        kind:
-          type: string
-          title: Kind
-        location_id:
-          type: string
-          title: Location Id
-        min_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-      type: object
-      required:
-      - call_id
-      - type
-      - kind
-      - location_id
-      title: _StatListMeta
-    StatListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_StatListMeta'
-        stats:
-          items:
-            $ref: '#/components/schemas/_StatItem'
-          type: array
-          title: Stats
-      type: object
-      required:
-      - meta
-      - stats
-      title: StatListResponse
-    _HttpBreakdownOverall:
-      properties:
-        pass:
-          type: integer
-          title: Pass
-          default: 0
-        warning:
-          type: integer
-          title: Warning
-          default: 0
-        failure:
-          type: integer
-          title: Failure
-          default: 0
-      type: object
-      title: _HttpBreakdownOverall
-    PassFailTotalResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/_PassFailTotalMeta'
-        stat:
-          additionalProperties: true
-          type: object
-          title: Stat
-      type: object
-      required:
-      - meta
-      - stat
-      title: PassFailTotalResponse
-    _PassFailRangeMeta:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        min_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Min Time
-        max_time:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Max Time
-        kind:
-          type: string
-          title: Kind
-        location_id:
-          type: string
-          title: Location Id
-      type: object
-      required:
-      - call_id
-      - kind
-      - location_id
-      title: _PassFailRangeMeta
   securitySchemes:
     OAuth2:
       type: oauth2

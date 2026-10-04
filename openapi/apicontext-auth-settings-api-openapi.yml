@@ -283,115 +283,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    UpdateAuthConfigRequest:
-      properties:
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/AuthConfigMetaInput'
-          - type: 'null'
-        settings:
-          anyOf:
-          - $ref: '#/components/schemas/AuthConfigSettingsInput'
-          - type: 'null'
-        keys:
-          anyOf:
-          - $ref: '#/components/schemas/AuthConfigKeysInput'
-          - type: 'null'
-      type: object
-      title: UpdateAuthConfigRequest
-    AuthConfigResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/AuthConfigMeta'
-        settings:
-          $ref: '#/components/schemas/AuthConfigSettings'
-        keys:
-          $ref: '#/components/schemas/AuthConfigKeys'
-      type: object
-      required:
-      - id
-      - meta
-      - settings
-      - keys
-      title: AuthConfigResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    CreateAuthConfigRequest:
-      properties:
-        meta:
-          $ref: '#/components/schemas/AuthConfigMetaInput'
-        settings:
-          $ref: '#/components/schemas/AuthConfigSettingsInput'
-        keys:
-          anyOf:
-          - $ref: '#/components/schemas/AuthConfigKeysInput'
-          - type: 'null'
-      type: object
-      title: CreateAuthConfigRequest
-    AuthConfigKeysInput:
-      properties:
-        client_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Client Id
-        client_secret:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Client Secret
-      type: object
-      title: AuthConfigKeysInput
-    AuthConfigSettings:
-      properties:
-        auth_type:
-          type: string
-          title: Auth Type
-        custom_variables:
-          additionalProperties: true
-          type: object
-          title: Custom Variables
-      additionalProperties: true
-      type: object
-      required:
-      - auth_type
-      title: AuthConfigSettings
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     AuthConfigMetaInput:
       properties:
         name:
@@ -427,6 +318,139 @@ components:
           description: 'Informational URLs: keys, docs, apps, provider'
       type: object
       title: AuthConfigMetaInput
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AuthConfigKeys:
+      properties:
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+      type: object
+      title: AuthConfigKeys
+    UpdateAuthConfigRequest:
+      properties:
+        meta:
+          anyOf:
+          - $ref: '#/components/schemas/AuthConfigMetaInput'
+          - type: 'null'
+        settings:
+          anyOf:
+          - $ref: '#/components/schemas/AuthConfigSettingsInput'
+          - type: 'null'
+        keys:
+          anyOf:
+          - $ref: '#/components/schemas/AuthConfigKeysInput'
+          - type: 'null'
+      type: object
+      title: UpdateAuthConfigRequest
+    AuthConfigKeysInput:
+      properties:
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+      type: object
+      title: AuthConfigKeysInput
+    AuthConfigResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/AuthConfigMeta'
+        settings:
+          $ref: '#/components/schemas/AuthConfigSettings'
+        keys:
+          $ref: '#/components/schemas/AuthConfigKeys'
+      type: object
+      required:
+      - id
+      - meta
+      - settings
+      - keys
+      title: AuthConfigResponse
+    AuthConfigSettingsInput:
+      properties:
+        auth_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Type
+          description: One of the AuthToken API names, e.g. NONE, OAUTH2, BASIC
+        custom_variables:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Custom Variables
+      additionalProperties: true
+      type: object
+      title: AuthConfigSettingsInput
+    AuthConfigSettings:
+      properties:
+        auth_type:
+          type: string
+          title: Auth Type
+        custom_variables:
+          additionalProperties: true
+          type: object
+          title: Custom Variables
+      additionalProperties: true
+      type: object
+      required:
+      - auth_type
+      title: AuthConfigSettings
+    AuthConfigListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/AuthConfigListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/AuthConfigResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: AuthConfigListResponse
     AuthConfigMeta:
       properties:
         name:
@@ -475,69 +499,15 @@ components:
           $ref: '#/components/schemas/AuthDocumentation'
       type: object
       title: AuthConfigMeta
-    AuthConfigKeys:
+    HTTPValidationError:
       properties:
-        client_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Client Id
-        client_secret:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Client Secret
-      type: object
-      title: AuthConfigKeys
-    AuthConfigSettingsInput:
-      properties:
-        auth_type:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Auth Type
-          description: One of the AuthToken API names, e.g. NONE, OAUTH2, BASIC
-        custom_variables:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Custom Variables
-      additionalProperties: true
-      type: object
-      title: AuthConfigSettingsInput
-    AuthConfigListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/AuthConfigListMeta'
-        results:
+        detail:
           items:
-            $ref: '#/components/schemas/AuthConfigResponse'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Results
+          title: Detail
       type: object
-      required:
-      - meta
-      - results
-      title: AuthConfigListResponse
-    AuthConfigListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-        project_id:
-          type: string
-          title: Project Id
-      type: object
-      required:
-      - project_id
-      title: AuthConfigListMeta
+      title: HTTPValidationError
     AuthDocumentation:
       properties:
         keys:
@@ -562,6 +532,36 @@ components:
           title: Provider
       type: object
       title: AuthDocumentation
+    AuthConfigListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          type: string
+          title: Project Id
+      type: object
+      required:
+      - project_id
+      title: AuthConfigListMeta
+    CreateAuthConfigRequest:
+      properties:
+        meta:
+          $ref: '#/components/schemas/AuthConfigMetaInput'
+        settings:
+          $ref: '#/components/schemas/AuthConfigSettingsInput'
+        keys:
+          anyOf:
+          - $ref: '#/components/schemas/AuthConfigKeysInput'
+          - type: 'null'
+      type: object
+      title: CreateAuthConfigRequest
   securitySchemes:
     OAuth2:
       type: oauth2

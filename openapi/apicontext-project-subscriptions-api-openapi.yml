@@ -346,75 +346,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    SubscribeRequest:
-      properties:
-        options:
-          items:
-            type: string
-            enum:
-            - daily
-            - weekly
-            - monthly
-          type: array
-          title: Options
-          description: Which digest cadences to subscribe to.
-      additionalProperties: false
-      type: object
-      title: SubscribeRequest
-      description: 'Body for ``POST/PUT /api/2/project-subscriptions/``.
-
-
-        Options default to all three digest levels if the caller omits the
-
-        field, matching Py2''s ``options = self.request_body.get("options", VALID_OPTIONS)``.'
-      examples:
-      - options:
-        - daily
-        - weekly
-    api2__project_subscriptions__subscriptions___ListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      title: _ListMeta
     SubscriptionResponse:
       properties:
         id:
@@ -453,24 +384,57 @@ components:
       description: 'One row of ``ProjectEmailSubscription``, matching Py2''s
 
         ``convert_datastore_to_api`` output.'
-    StatusResponse:
+    SubscribeRequest:
       properties:
-        status:
+        options:
+          items:
+            type: string
+            enum:
+            - daily
+            - weekly
+            - monthly
+          type: array
+          title: Options
+          description: Which digest cadences to subscribe to.
+      additionalProperties: false
+      type: object
+      title: SubscribeRequest
+      description: 'Body for ``POST/PUT /api/2/project-subscriptions/``.
+
+
+        Options default to all three digest levels if the caller omits the
+
+        field, matching Py2''s ``options = self.request_body.get("options", VALID_OPTIONS)``.'
+      examples:
+      - options:
+        - daily
+        - weekly
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          title: Status
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - status
-      title: StatusResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
+      - loc
+      - msg
+      - type
+      title: ValidationError
     SubscriptionListResponse:
       properties:
         meta:
@@ -485,6 +449,42 @@ components:
       - meta
       - results
       title: SubscriptionListResponse
+    api2__project_subscriptions__subscriptions___ListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      title: _ListMeta
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: StatusResponse
   securitySchemes:
     OAuth2:
       type: oauth2

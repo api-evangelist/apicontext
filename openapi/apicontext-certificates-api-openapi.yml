@@ -197,6 +197,16 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    CertificateListMeta:
+      properties:
+        org_id:
+          type: string
+          pattern: ^[a-z0-9]{3,400}$
+          title: Organization ID
+      type: object
+      required:
+      - org_id
+      title: CertificateListMeta
     KidAlg:
       type: string
       enum:
@@ -204,6 +214,50 @@ components:
       - rfc7638-sha1
       - rfc7638-sha256
       title: KidAlg
+    api3__certificates__api_models__UpdateRequest:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        intended_use:
+          anyOf:
+          - $ref: '#/components/schemas/IntendedUse'
+          - type: 'null'
+        certificate:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Certificate
+        private_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Private Key
+        password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Password
+        kid:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Kid
+        kid_alg:
+          anyOf:
+          - $ref: '#/components/schemas/KidAlg'
+          - type: 'null'
+        projects:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Projects
+      type: object
+      title: UpdateRequest
     ValidationError:
       properties:
         loc:
@@ -230,20 +284,47 @@ components:
       - msg
       - type
       title: ValidationError
-    CertificateListResults:
+    api3__certificates__api_models__CreateRequest:
       properties:
-        results:
-          items:
-            $ref: '#/components/schemas/CertificateMetadata'
-          type: array
-          title: Results
-        meta:
-          $ref: '#/components/schemas/CertificateListMeta'
+        name:
+          type: string
+          title: Name
+        intended_use:
+          $ref: '#/components/schemas/IntendedUse'
+        certificate:
+          type: string
+          title: Certificate
+        private_key:
+          type: string
+          title: Private Key
+        password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Password
+        kid:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Kid
+        kid_alg:
+          anyOf:
+          - $ref: '#/components/schemas/KidAlg'
+          - type: 'null'
+        projects:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Projects
       type: object
       required:
-      - results
-      - meta
-      title: CertificateListResults
+      - name
+      - intended_use
+      - certificate
+      - private_key
+      title: CreateRequest
     IntendedUse:
       type: string
       enum:
@@ -251,16 +332,6 @@ components:
       - signing
       - signing-pss
       title: IntendedUse
-    CertificateListMeta:
-      properties:
-        org_id:
-          type: string
-          pattern: ^[a-z0-9]{3,400}$
-          title: Organization ID
-      type: object
-      required:
-      - org_id
-      title: CertificateListMeta
     CertificateMetadata:
       properties:
         id:
@@ -351,91 +422,20 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    api3__certificates__api_models__CreateRequest:
+    CertificateListResults:
       properties:
-        name:
-          type: string
-          title: Name
-        intended_use:
-          $ref: '#/components/schemas/IntendedUse'
-        certificate:
-          type: string
-          title: Certificate
-        private_key:
-          type: string
-          title: Private Key
-        password:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Password
-        kid:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Kid
-        kid_alg:
-          anyOf:
-          - $ref: '#/components/schemas/KidAlg'
-          - type: 'null'
-        projects:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Projects
+        results:
+          items:
+            $ref: '#/components/schemas/CertificateMetadata'
+          type: array
+          title: Results
+        meta:
+          $ref: '#/components/schemas/CertificateListMeta'
       type: object
       required:
-      - name
-      - intended_use
-      - certificate
-      - private_key
-      title: CreateRequest
-    api3__certificates__api_models__UpdateRequest:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        intended_use:
-          anyOf:
-          - $ref: '#/components/schemas/IntendedUse'
-          - type: 'null'
-        certificate:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Certificate
-        private_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Private Key
-        password:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Password
-        kid:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Kid
-        kid_alg:
-          anyOf:
-          - $ref: '#/components/schemas/KidAlg'
-          - type: 'null'
-        projects:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Projects
-      type: object
-      title: UpdateRequest
+      - results
+      - meta
+      title: CertificateListResults
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -176,6 +176,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    DeleteStatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: DeleteStatusResponse
     ValidationError:
       properties:
         loc:
@@ -346,15 +355,6 @@ components:
           title: Is Admin
       type: object
       title: UpdateUserBody
-    DeleteStatusResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - status
-      title: DeleteStatusResponse
     HTTPValidationError:
       properties:
         detail:

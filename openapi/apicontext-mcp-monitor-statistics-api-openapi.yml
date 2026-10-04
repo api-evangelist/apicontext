@@ -120,55 +120,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    api3__monitors__common__api_models__PerformanceResponse_Metric___3:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceGroup_Metric___3'
-          type: array
-          title: Results
-        meta:
-          $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceMeta_Metric___3'
-      type: object
-      required:
-      - results
-      - meta
-      title: PerformanceResponse[Metric]
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Measure:
-      type: string
-      enum:
-      - mean
-      - p50
-      - p90
-      - p95
-      - p99
-      title: Measure
     api3__monitors__common__api_models__PerformanceRequest_Metric___3:
       properties:
         from:
@@ -236,51 +187,38 @@ components:
       - from
       - to
       title: PerformanceRequest[Metric]
-    GroupKey:
+    api3__monitors__common__api_models__PerformanceGroup_Metric___3:
       properties:
-        location_id:
+        key:
+          $ref: '#/components/schemas/GroupKey'
+        sample_count:
+          type: integer
+          title: Sample Count
+          description: Total samples in this group
+        pass_count:
+          type: integer
+          title: Pass Count
+          description: Samples whose result_category is PASS or SLOW
+          default: 0
+        top_location_id:
           anyOf:
           - type: string
           - type: 'null'
-          title: Location Id
-        interval_start:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Interval Start
-          description: UTC ISO timestamp of the bucket start when interval grouping is in use
-        monitor_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Monitor Id
-          description: Monitor ID when monitor grouping is in use
+          title: Top Location Id
+          description: Location_id with the most samples in this group; useful when the client isn't grouping by location but still needs an agent for display
+        metrics:
+          additionalProperties:
+            $ref: '#/components/schemas/MetricAggregate'
+          propertyNames:
+            $ref: '#/components/schemas/api3__monitors__mcp__stats__api_models__Metric'
+          type: object
+          title: Metrics
       type: object
-      title: GroupKey
-      description: 'Identifies which slice of data this group represents.
-
-
-        Fields are present only when the request asked to group by that dimension
-
-        (or, for `interval_start`, when an interval was requested).'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    api3__monitors__mcp__stats__api_models__Metric:
-      type: string
-      enum:
-      - total
-      - initialize
-      - dns
-      - tcp
-      - tls
-      title: Metric
+      required:
+      - key
+      - sample_count
+      - metrics
+      title: PerformanceGroup[Metric]
     MetricAggregate:
       properties:
         sample_count:
@@ -340,6 +278,59 @@ components:
       - sample_count
       title: MetricAggregate
       description: Aggregates for one metric within one result group.
+    GroupKey:
+      properties:
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        interval_start:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interval Start
+          description: UTC ISO timestamp of the bucket start when interval grouping is in use
+        monitor_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Monitor Id
+          description: Monitor ID when monitor grouping is in use
+      type: object
+      title: GroupKey
+      description: 'Identifies which slice of data this group represents.
+
+
+        Fields are present only when the request asked to group by that dimension
+
+        (or, for `interval_start`, when an interval was requested).'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     api3__monitors__common__api_models__PerformanceMeta_Metric___3:
       properties:
         monitor_id:
@@ -387,45 +378,6 @@ components:
       - measures
       - group_by
       title: PerformanceMeta[Metric]
-    api3__monitors__common__api_models__PerformanceGroup_Metric___3:
-      properties:
-        key:
-          $ref: '#/components/schemas/GroupKey'
-        sample_count:
-          type: integer
-          title: Sample Count
-          description: Total samples in this group
-        pass_count:
-          type: integer
-          title: Pass Count
-          description: Samples whose result_category is PASS or SLOW
-          default: 0
-        top_location_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Top Location Id
-          description: Location_id with the most samples in this group; useful when the client isn't grouping by location but still needs an agent for display
-        metrics:
-          additionalProperties:
-            $ref: '#/components/schemas/MetricAggregate'
-          propertyNames:
-            $ref: '#/components/schemas/api3__monitors__mcp__stats__api_models__Metric'
-          type: object
-          title: Metrics
-      type: object
-      required:
-      - key
-      - sample_count
-      - metrics
-      title: PerformanceGroup[Metric]
-    GroupByDimension:
-      type: string
-      enum:
-      - location
-      - interval
-      - monitor
-      title: GroupByDimension
     ResultCategory:
       type: string
       enum:
@@ -434,6 +386,54 @@ components:
       - WARNING
       - FAIL
       title: ResultCategory
+    Measure:
+      type: string
+      enum:
+      - mean
+      - p50
+      - p90
+      - p95
+      - p99
+      title: Measure
+    GroupByDimension:
+      type: string
+      enum:
+      - location
+      - interval
+      - monitor
+      title: GroupByDimension
+    api3__monitors__mcp__stats__api_models__Metric:
+      type: string
+      enum:
+      - total
+      - initialize
+      - dns
+      - tcp
+      - tls
+      title: Metric
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    api3__monitors__common__api_models__PerformanceResponse_Metric___3:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceGroup_Metric___3'
+          type: array
+          title: Results
+        meta:
+          $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceMeta_Metric___3'
+      type: object
+      required:
+      - results
+      - meta
+      title: PerformanceResponse[Metric]
   securitySchemes:
     OAuth2:
       type: oauth2

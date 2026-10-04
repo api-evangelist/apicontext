@@ -314,6 +314,111 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    api3__monitors__browser__api_models__CreateRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Display name for the monitor
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Optional description for the monitor
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          description: Tags to apply to the monitor for grouping or advanced features
+        workspace:
+          type: string
+          title: Workspace
+          description: Workspace to assign the monitor to
+          default: global
+        url:
+          type: string
+          title: Url
+          description: Target URL for the monitor
+        browser_types:
+          anyOf:
+          - items:
+              type: string
+              enum:
+              - chromium
+              - firefox
+              - webkit
+              - camoufox
+            type: array
+          - type: 'null'
+          title: Browser Types
+          description: Browsers which the monitor is permitted to run on
+        user_agent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Agent
+          description: User-Agent header value for the monitor
+      type: object
+      required:
+      - name
+      - url
+      title: CreateRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    models__browser_call___SetupRepr:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: Target URL for this monitor
+        browser_types:
+          items:
+            type: string
+            enum:
+            - chromium
+            - firefox
+            - webkit
+            - camoufox
+          type: array
+          title: Browser Types
+          description: Browsers which this monitor is permitted to run on
+        user_agent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Agent
+          description: User-Agent header value for the monitor
+      type: object
+      required:
+      - url
+      - browser_types
+      title: _SetupRepr
     UpdateRequestSetup:
       properties:
         url:
@@ -396,60 +501,42 @@ components:
       - owner
       - workspace
       title: _MetaRepr
-    ValidationError:
+    BrowserTestSetupRepr:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        id:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Id
+        meta:
+          $ref: '#/components/schemas/models__browser_call___MetaRepr'
+        setup:
+          $ref: '#/components/schemas/models__browser_call___SetupRepr'
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    models__browser_call___SetupRepr:
+      - id
+      - meta
+      - setup
+      title: BrowserTestSetupRepr
+    api3__monitors__browser__api_models__UpdateRequest:
       properties:
-        url:
-          type: string
-          title: Url
-          description: Target URL for this monitor
-        browser_types:
-          items:
-            type: string
-            enum:
-            - chromium
-            - firefox
-            - webkit
-            - camoufox
-          type: array
-          title: Browser Types
-          description: Browsers which this monitor is permitted to run on
-        user_agent:
+        meta:
           anyOf:
-          - type: string
+          - $ref: '#/components/schemas/UpdateRequestMeta'
           - type: 'null'
-          title: User Agent
-          description: User-Agent header value for the monitor
+        setup:
+          anyOf:
+          - $ref: '#/components/schemas/UpdateRequestSetup'
+          - type: 'null'
       type: object
-      required:
-      - url
-      - browser_types
-      title: _SetupRepr
+      title: UpdateRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     BrowserTestSetupListResults:
       properties:
         results:
@@ -491,93 +578,6 @@ components:
           description: Workspace to assign the monitor to
       type: object
       title: UpdateRequestMeta
-    BrowserTestSetupRepr:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/models__browser_call___MetaRepr'
-        setup:
-          $ref: '#/components/schemas/models__browser_call___SetupRepr'
-      type: object
-      required:
-      - id
-      - meta
-      - setup
-      title: BrowserTestSetupRepr
-    api3__monitors__browser__api_models__UpdateRequest:
-      properties:
-        meta:
-          anyOf:
-          - $ref: '#/components/schemas/UpdateRequestMeta'
-          - type: 'null'
-        setup:
-          anyOf:
-          - $ref: '#/components/schemas/UpdateRequestSetup'
-          - type: 'null'
-      type: object
-      title: UpdateRequest
-    api3__monitors__browser__api_models__CreateRequest:
-      properties:
-        name:
-          type: string
-          title: Name
-          description: Display name for the monitor
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-          description: Optional description for the monitor
-        tags:
-          items:
-            type: string
-          type: array
-          title: Tags
-          description: Tags to apply to the monitor for grouping or advanced features
-        workspace:
-          type: string
-          title: Workspace
-          description: Workspace to assign the monitor to
-          default: global
-        url:
-          type: string
-          title: Url
-          description: Target URL for the monitor
-        browser_types:
-          anyOf:
-          - items:
-              type: string
-              enum:
-              - chromium
-              - firefox
-              - webkit
-              - camoufox
-            type: array
-          - type: 'null'
-          title: Browser Types
-          description: Browsers which the monitor is permitted to run on
-        user_agent:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Agent
-          description: User-Agent header value for the monitor
-      type: object
-      required:
-      - name
-      - url
-      title: CreateRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

@@ -267,21 +267,46 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    OrgListMeta:
+    UpdateOrgBody:
       properties:
-        next_cursor:
+        name:
           anyOf:
-          - type: integer
           - type: string
           - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        enforce_2fa:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enforce 2Fa
+        kms_enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Kms Enabled
+        password_expiry_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Password Expiry Days
+      type: object
+      title: UpdateOrgBody
+    OrgAccountDeleteResponse:
+      properties:
+        status:
+          type: string
+          title: Status
       type: object
       required:
-      - more
-      title: OrgListMeta
+      - status
+      title: OrgAccountDeleteResponse
     ValidationError:
       properties:
         loc:
@@ -308,21 +333,20 @@ components:
       - msg
       - type
       title: ValidationError
-    OrgAccountResponse:
+    OrgAccountListMeta:
       properties:
-        id:
-          type: string
-          title: Id
-        permissions:
-          items:
-            type: string
-          type: array
-          title: Permissions
-      additionalProperties: true
+        more:
+          type: boolean
+          title: More
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
       type: object
       required:
-      - id
-      title: OrgAccountResponse
+      - more
+      title: OrgAccountListMeta
     OrgResponse:
       properties:
         id:
@@ -385,37 +409,36 @@ components:
       - name
       - subscription_level
       title: OrgResponse
-    UpdateOrgBody:
+    OrgListMeta:
       properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        enforce_2fa:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enforce 2Fa
-        kms_enabled:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Kms Enabled
-        password_expiry_days:
+        next_cursor:
           anyOf:
           - type: integer
+          - type: string
           - type: 'null'
-          title: Password Expiry Days
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
       type: object
-      title: UpdateOrgBody
+      required:
+      - more
+      title: OrgListMeta
+    OrgAccountResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        permissions:
+          items:
+            type: string
+          type: array
+          title: Permissions
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      title: OrgAccountResponse
     OrgAccountListResponse:
       properties:
         meta:
@@ -430,15 +453,6 @@ components:
       - meta
       - results
       title: OrgAccountListResponse
-    OrgAccountDeleteResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - status
-      title: OrgAccountDeleteResponse
     OrgListResponse:
       properties:
         meta:
@@ -462,20 +476,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    OrgAccountListMeta:
-      properties:
-        more:
-          type: boolean
-          title: More
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-      type: object
-      required:
-      - more
-      title: OrgAccountListMeta
   securitySchemes:
     OAuth2:
       type: oauth2
