@@ -1062,6 +1062,8 @@ apis:
   humanURL: https://docs.apimetrics.io/reference/create-schedule
   baseURL: https://client.apimetrics.io
   tags:
+  - OpenAPI
+  tags_raw:
   - Open API
   properties:
   - type: OpenAPI
@@ -1075,6 +1077,9 @@ apis:
   - type: Webhooks
     url: asyncapi/apicontext-webhooks.yml
 common:
+  - type: CapabilityMap
+    url: capabilities/apicontext-capability-edges.yml
+    name: APIContext Business Capability Map
   - type: Website
     url: https://apicontext.com/
   - type: DeveloperPortal
