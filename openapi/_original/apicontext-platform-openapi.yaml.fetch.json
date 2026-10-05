@@ -1,0 +1,12 @@
+{
+ "url": "https://client.apimetrics.io/openapi.json",
+ "requested_url": "https://client.apimetrics.io/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 639476,
+ "sha256": "bbf5cb6c32dd0f4b4cf746f4708d5b82ed6abcdee000f67da604709a92c6e028",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 0.915), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
