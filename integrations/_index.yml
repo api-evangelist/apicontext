@@ -121,18 +121,6 @@
   source: curated
   status: pending-generation
   arazzo: null
-- slug: apicontext-microsoft-azure-marketplace
-  label: Microsoft Azure Marketplace
-  partner: microsoft-azure
-  partner_name: Microsoft Azure Marketplace
-  type: marketplace
-  marketplace: azure-marketplace
-  channel: distribution
-  evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=APIContext
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
 - slug: apicontext-opentelemetry
   label: OpenTelemetry
   partner_name: OpenTelemetry
@@ -154,5 +142,17 @@
     - registry: application-integration-python-apicontext.yml
     detected_by: sweep-observability.py
     detected: '2026-10-13'
+  status: not-a-workflow
+  arazzo: null
+- slug: apicontext-microsoft-azure-marketplace
+  label: Microsoft Azure Marketplace
+  partner: microsoft-azure
+  partner_name: Microsoft Azure Marketplace
+  type: marketplace
+  marketplace: azure-marketplace
+  channel: distribution
+  evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=APIContext
+  source: edge
+  relationship: distribution-channel
   status: not-a-workflow
   arazzo: null
