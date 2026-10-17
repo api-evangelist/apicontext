@@ -88,23 +88,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ImportResponse:
+    HTTPValidationError:
       properties:
-        version:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Version
-        project:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Project
-      additionalProperties: true
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      title: ImportResponse
-      description: The (mutated) import bundle echoed back on a successful import.
+      title: HTTPValidationError
     ImportSampleResponse:
       properties:
         project_ids:
@@ -116,15 +108,6 @@ components:
       additionalProperties: true
       type: object
       title: ImportSampleResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -151,6 +134,23 @@ components:
       - msg
       - type
       title: ValidationError
+    ImportResponse:
+      properties:
+        version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Version
+        project:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Project
+      additionalProperties: true
+      type: object
+      title: ImportResponse
+      description: The (mutated) import bundle echoed back on a successful import.
   securitySchemes:
     OAuth2:
       type: oauth2

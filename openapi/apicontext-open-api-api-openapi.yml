@@ -111,32 +111,53 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    TagProjectError:
+    TagProjectResponse:
       properties:
+        status:
+          type: string
+          title: Status
         message:
-          type: string
-          title: Message
-        ruleId:
-          type: string
-          title: Ruleid
-        severity:
-          type: string
-          title: Severity
-        location:
           anyOf:
           - type: string
           - type: 'null'
-          title: Location
-        instances:
-          type: integer
-          title: Instances
+          title: Message
+        updated:
+          items:
+            type: string
+          type: array
+          title: Updated
+        matched:
+          items:
+            $ref: '#/components/schemas/TagProjectMatch'
+          type: array
+          title: Matched
+        openapi_files:
+          additionalProperties:
+            $ref: '#/components/schemas/OpenApiFileInfo'
+          type: object
+          title: Openapi Files
       type: object
       required:
-      - message
-      - ruleId
-      - severity
-      - instances
-      title: TagProjectError
+      - status
+      - updated
+      - matched
+      - openapi_files
+      title: TagProjectResponse
+    TagProjectMatch:
+      prefixItems:
+      - type: string
+        title: Call Id
+      - type: string
+        title: Method
+      - type: string
+        title: Path
+      - anyOf:
+        - type: string
+        - type: 'null'
+        title: File Id
+      type: array
+      maxItems: 4
+      minItems: 3
     ValidationError:
       properties:
         loc:
@@ -163,44 +184,41 @@ components:
       - msg
       - type
       title: ValidationError
-    OpenApiFileInfo:
+    HTTPValidationError:
       properties:
-        errors:
+        detail:
           items:
-            $ref: '#/components/schemas/TagProjectError'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Errors
-        previous_error:
-          type: boolean
-          title: Previous Error
-        has_parse_errors:
-          type: boolean
-          title: Has Parse Errors
-        has_external_refs:
-          type: boolean
-          title: Has External Refs
-        is_not_oas3:
-          type: boolean
-          title: Is Not Oas3
-        was_converted:
-          type: boolean
-          title: Was Converted
-        servers:
-          items:
-            type: string
-          type: array
-          title: Servers
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TagProjectError:
+      properties:
+        message:
+          type: string
+          title: Message
+        ruleId:
+          type: string
+          title: Ruleid
+        severity:
+          type: string
+          title: Severity
+        location:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location
+        instances:
+          type: integer
+          title: Instances
       type: object
       required:
-      - errors
-      - previous_error
-      - has_parse_errors
-      - has_external_refs
-      - is_not_oas3
-      - was_converted
-      - servers
-      title: OpenApiFileInfo
-      description: Per-file validation summary, keyed by file ID in the tagger response.
+      - message
+      - ruleId
+      - severity
+      - instances
+      title: TagProjectError
     ValidateResponse:
       properties:
         message:
@@ -249,62 +267,44 @@ components:
       description: 'A single schema-validation failure, as produced by the ajv-backed
 
         schema-validator function.'
-    TagProjectResponse:
+    OpenApiFileInfo:
       properties:
-        status:
-          type: string
-          title: Status
-        message:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Message
-        updated:
+        errors:
+          items:
+            $ref: '#/components/schemas/TagProjectError'
+          type: array
+          title: Errors
+        previous_error:
+          type: boolean
+          title: Previous Error
+        has_parse_errors:
+          type: boolean
+          title: Has Parse Errors
+        has_external_refs:
+          type: boolean
+          title: Has External Refs
+        is_not_oas3:
+          type: boolean
+          title: Is Not Oas3
+        was_converted:
+          type: boolean
+          title: Was Converted
+        servers:
           items:
             type: string
           type: array
-          title: Updated
-        matched:
-          items:
-            $ref: '#/components/schemas/TagProjectMatch'
-          type: array
-          title: Matched
-        openapi_files:
-          additionalProperties:
-            $ref: '#/components/schemas/OpenApiFileInfo'
-          type: object
-          title: Openapi Files
+          title: Servers
       type: object
       required:
-      - status
-      - updated
-      - matched
-      - openapi_files
-      title: TagProjectResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    TagProjectMatch:
-      prefixItems:
-      - type: string
-        title: Call Id
-      - type: string
-        title: Method
-      - type: string
-        title: Path
-      - anyOf:
-        - type: string
-        - type: 'null'
-        title: File Id
-      type: array
-      maxItems: 4
-      minItems: 3
+      - errors
+      - previous_error
+      - has_parse_errors
+      - has_external_refs
+      - is_not_oas3
+      - was_converted
+      - servers
+      title: OpenApiFileInfo
+      description: Per-file validation summary, keyed by file ID in the tagger response.
   securitySchemes:
     OAuth2:
       type: oauth2

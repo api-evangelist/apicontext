@@ -176,15 +176,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    DeleteStatusResponse:
-      properties:
-        status:
-          type: string
-          title: Status
-      type: object
-      required:
-      - status
-      title: DeleteStatusResponse
     ValidationError:
       properties:
         loc:
@@ -211,6 +202,33 @@ components:
       - msg
       - type
       title: ValidationError
+    DeleteStatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: DeleteStatusResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UpdateUserBody:
+      properties:
+        is_admin:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Admin
+      type: object
+      title: UpdateUserBody
     UserResponse:
       properties:
         id:
@@ -346,24 +364,6 @@ components:
           title: Security Profile
       type: object
       title: UserResponse
-    UpdateUserBody:
-      properties:
-        is_admin:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Admin
-      type: object
-      title: UpdateUserBody
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   securitySchemes:
     OAuth2:
       type: oauth2

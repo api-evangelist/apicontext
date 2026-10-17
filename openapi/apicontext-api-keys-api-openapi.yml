@@ -148,38 +148,25 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ApiKeyListResponse:
+    ApiKeyListMeta:
       properties:
-        meta:
-          $ref: '#/components/schemas/ApiKeyListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/ApiKeyResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: ApiKeyListResponse
-    CreateApiKeyBody:
-      properties:
-        access_level:
+        next_cursor:
           anyOf:
           - type: string
           - type: 'null'
-          title: Access Level
-          description: Access level for the new key; one of ['INGRESS', 'VIEWER', 'ANALYST', 'MANAGER', 'EDITOR', 'OWNER']. Defaults to VIEWER when omitted.
-      additionalProperties: false
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
       type: object
-      title: CreateApiKeyBody
-      description: 'Create payload. ``access_level`` is the only accepted field (there is no
-
-        key ``name``); an unknown field is rejected. Omitting ``access_level``
-
-        defaults the key to VIEWER (but see ``create_api_key`` for the owner guard).'
-      examples:
-      - access_level: EDITOR
+      required:
+      - more
+      title: ApiKeyListMeta
     ValidationError:
       properties:
         loc:
@@ -206,25 +193,24 @@ components:
       - msg
       - type
       title: ValidationError
-    ApiKeyListMeta:
+    CreateApiKeyBody:
       properties:
-        next_cursor:
+        access_level:
           anyOf:
           - type: string
           - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
+          title: Access Level
+          description: Access level for the new key; one of ['INGRESS', 'VIEWER', 'ANALYST', 'MANAGER', 'EDITOR', 'OWNER']. Defaults to VIEWER when omitted.
+      additionalProperties: false
       type: object
-      required:
-      - more
-      title: ApiKeyListMeta
+      title: CreateApiKeyBody
+      description: 'Create payload. ``access_level`` is the only accepted field (there is no
+
+        key ``name``); an unknown field is rejected. Omitting ``access_level``
+
+        defaults the key to VIEWER (but see ``create_api_key`` for the owner guard).'
+      examples:
+      - access_level: EDITOR
     HTTPValidationError:
       properties:
         detail:
@@ -234,6 +220,20 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    ApiKeyListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/ApiKeyListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/ApiKeyResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: ApiKeyListResponse
     ApiKeyResponse:
       properties:
         id:

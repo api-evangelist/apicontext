@@ -770,32 +770,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    MsteamsWebHookParameters:
-      properties:
-        url:
-          type: string
-          title: URL
-          description: This the web hook url to post result data, set in the MS Teams integration Incoming Webhooks
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - url
-      title: MsteamsWebHookParameters
-    WebHookTypeListResponse:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/WebHookTypeDescriptor'
-          type: array
-          title: Results
-      type: object
-      required:
-      - results
-      title: WebHookTypeListResponse
-    ApimetricsTokenWebHookSpec:
+    HipchatWebHookSpec:
       properties:
         enabled:
           type: boolean
@@ -809,18 +784,18 @@ components:
           description: Alert conditions that trigger the webhook
         type:
           type: string
-          const: apimetrics_token
+          const: hipchat
           title: Type
-          default: apimetrics_token
+          default: hipchat
         parameters:
-          $ref: '#/components/schemas/ApimetricsTokenWebHookParameters'
+          $ref: '#/components/schemas/HipchatWebHookParameters'
       type: object
       required:
       - enabled
       - alerts
       - parameters
-      title: ApimetricsTokenWebHookSpec
-    FlowdockWebHookSpec:
+      title: HipchatWebHookSpec
+    ConformanceOpentelemetryWebHookSpec:
       properties:
         enabled:
           type: boolean
@@ -834,71 +809,18 @@ components:
           description: Alert conditions that trigger the webhook
         type:
           type: string
-          const: flowdock
+          const: conformance_opentelemetry
           title: Type
-          default: flowdock
+          default: conformance_opentelemetry
         parameters:
-          $ref: '#/components/schemas/FlowdockWebHookParameters'
+          $ref: '#/components/schemas/ConformanceOpentelemetryWebHookParameters'
       type: object
       required:
       - enabled
       - alerts
       - parameters
-      title: FlowdockWebHookSpec
-    WebHookBody:
-      properties:
-        type:
-          type: string
-          title: Type
-        enabled:
-          type: boolean
-          title: Enabled
-        alerts:
-          items:
-            type: string
-          type: array
-          title: Alerts
-        parameters:
-          additionalProperties:
-            type: string
-          type: object
-          title: Parameters
-      type: object
-      required:
-      - type
-      - enabled
-      - alerts
-      - parameters
-      title: WebHookBody
-    EmailTextWebHookParameters:
-      properties:
-        email_address:
-          type: string
-          title: Email
-          description: Your email address
-        fails_in_a_row:
-          type: string
-          title: Only send email after X failures in a row
-          default: '1'
-      type: object
-      required:
-      - email_address
-      title: EmailTextWebHookParameters
-    DatadogWebHookParameters:
-      properties:
-        api_key:
-          type: string
-          title: API key
-          description: The DataDog API key
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - api_key
-      title: DatadogWebHookParameters
-    ApimetricsApiWebHookSpec:
+      title: ConformanceOpentelemetryWebHookSpec
+    ConformanceGenericWebHookSpec:
       properties:
         enabled:
           type: boolean
@@ -912,17 +834,17 @@ components:
           description: Alert conditions that trigger the webhook
         type:
           type: string
-          const: apimetrics_api
+          const: conformance_generic
           title: Type
-          default: apimetrics_api
+          default: conformance_generic
         parameters:
-          $ref: '#/components/schemas/ApimetricsApiWebHookParameters'
+          $ref: '#/components/schemas/ConformanceGenericWebHookParameters'
       type: object
       required:
       - enabled
       - alerts
       - parameters
-      title: ApimetricsApiWebHookSpec
+      title: ConformanceGenericWebHookSpec
     SlackWebHookParameters:
       properties:
         url:
@@ -942,45 +864,21 @@ components:
       required:
       - url
       title: SlackWebHookParameters
-    DatadogeventWebHookParameters:
+    ConformanceAxiomWebHookParameters:
       properties:
         api_key:
           type: string
           title: API key
-          description: The DataDog API key
-        fails_in_a_row:
+          description: The Axiom API key
+        data_set_name:
           type: string
-          title: Only send alert after X failures in a row
-          default: '0'
+          title: Axiom Data Set Name
+          description: The name of the data set to post to
       type: object
       required:
       - api_key
-      title: DatadogeventWebHookParameters
-    ConformanceAxiomWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: conformance_axiom
-          title: Type
-          default: conformance_axiom
-        parameters:
-          $ref: '#/components/schemas/ConformanceAxiomWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: ConformanceAxiomWebHookSpec
+      - data_set_name
+      title: ConformanceAxiomWebHookParameters
     WebHookTypeParameter:
       properties:
         name:
@@ -1009,7 +907,37 @@ components:
       - name
       - mandatory
       title: WebHookTypeParameter
-    GenericWebHookSpec:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    WebHookTypeDescriptor:
+      properties:
+        id:
+          type: string
+          title: Id
+        title:
+          type: string
+          title: Title
+        icon_url:
+          type: string
+          title: Icon Url
+        url:
+          type: string
+          title: Url
+      type: object
+      required:
+      - id
+      - title
+      - icon_url
+      - url
+      title: WebHookTypeDescriptor
+    NonameWebHookSpec:
       properties:
         enabled:
           type: boolean
@@ -1023,18 +951,46 @@ components:
           description: Alert conditions that trigger the webhook
         type:
           type: string
-          const: generic
+          const: noname
           title: Type
-          default: generic
+          default: noname
         parameters:
-          $ref: '#/components/schemas/GenericWebHookParameters'
+          $ref: '#/components/schemas/NonameWebHookParameters'
       type: object
       required:
       - enabled
       - alerts
       - parameters
-      title: GenericWebHookSpec
-    ApimetricsWorkflowWebHookSpec:
+      title: NonameWebHookSpec
+    EmailTextWebHookParameters:
+      properties:
+        email_address:
+          type: string
+          title: Email
+          description: Your email address
+        fails_in_a_row:
+          type: string
+          title: Only send email after X failures in a row
+          default: '1'
+      type: object
+      required:
+      - email_address
+      title: EmailTextWebHookParameters
+    api3__webhooks__router___ListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api3__webhooks__router___ListResponseMeta'
+        data:
+          items:
+            $ref: '#/components/schemas/ApiWebHook'
+          type: array
+          title: Data
+      type: object
+      required:
+      - meta
+      - data
+      title: _ListResponse
+    ConformanceSummaryGenericWebHookSpec:
       properties:
         enabled:
           type: boolean
@@ -1048,17 +1004,17 @@ components:
           description: Alert conditions that trigger the webhook
         type:
           type: string
-          const: apimetrics_workflow
+          const: conformance_summary_generic
           title: Type
-          default: apimetrics_workflow
+          default: conformance_summary_generic
         parameters:
-          $ref: '#/components/schemas/ApimetricsWorkflowWebHookParameters'
+          $ref: '#/components/schemas/ConformanceSummaryGenericWebHookParameters'
       type: object
       required:
       - enabled
       - alerts
       - parameters
-      title: ApimetricsWorkflowWebHookSpec
+      title: ConformanceSummaryGenericWebHookSpec
     DatadogintegrationWebHookParameters:
       properties:
         integration_id:
@@ -1069,7 +1025,7 @@ components:
       required:
       - integration_id
       title: DatadogintegrationWebHookParameters
-    ConformanceEmailWebHookSpec:
+    ApimetricsApiWebHookSpec:
       properties:
         enabled:
           type: boolean
@@ -1083,120 +1039,17 @@ components:
           description: Alert conditions that trigger the webhook
         type:
           type: string
-          const: conformance_email
+          const: apimetrics_api
           title: Type
-          default: conformance_email
+          default: apimetrics_api
         parameters:
-          $ref: '#/components/schemas/ConformanceEmailWebHookParameters'
+          $ref: '#/components/schemas/ApimetricsApiWebHookParameters'
       type: object
       required:
       - enabled
       - alerts
       - parameters
-      title: ConformanceEmailWebHookSpec
-    WebHookTypePropertiesResponse:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/WebHookTypeParameter'
-          type: array
-          title: Results
-      type: object
-      required:
-      - results
-      title: WebHookTypePropertiesResponse
-    AlertCondition:
-      type: string
-      enum:
-      - PASS
-      - SLOW
-      - WARNING
-      - FAIL
-      title: AlertCondition
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    StatuspageWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: statuspage
-          title: Type
-          default: statuspage
-        parameters:
-          $ref: '#/components/schemas/StatuspageWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: StatuspageWebHookSpec
-    FlowdockWebHookParameters:
-      properties:
-        flow_token:
-          type: string
-          title: Flow Token
-          description: The token for the Flow to post to
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - flow_token
-      title: FlowdockWebHookParameters
-    VictoropsWebHookParameters:
-      properties:
-        api_key:
-          type: string
-          title: API key
-          description: The API key generated in Victor Ops when configuringan Integration as a REST Endpoint.
-        routing_key:
-          type: string
-          title: Routing key
-          description: Optional routing key to route the alerts.
-          default: $routing_key
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - api_key
-      title: VictoropsWebHookParameters
+      title: ApimetricsApiWebHookSpec
     MsteamsWebHookSpec:
       properties:
         enabled:
@@ -1222,499 +1075,6 @@ components:
       - alerts
       - parameters
       title: MsteamsWebHookSpec
-    UpdateWebHookBody:
-      properties:
-        type:
-          anyOf:
-          - $ref: '#/components/schemas/WebHookType'
-          - type: 'null'
-        enabled:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enabled
-        alerts:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/AlertCondition'
-            type: array
-          - type: 'null'
-          title: Alerts
-        parameters:
-          anyOf:
-          - additionalProperties:
-              type: string
-            type: object
-          - type: 'null'
-          title: Parameters
-      type: object
-      title: UpdateWebHookBody
-    DatadogeventWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: datadogevent
-          title: Type
-          default: datadogevent
-        parameters:
-          $ref: '#/components/schemas/DatadogeventWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: DatadogeventWebHookSpec
-    EmailTemplateWebHookParameters:
-      properties:
-        email_address:
-          type: string
-          title: Email
-          description: Your email address
-        fails_in_a_row:
-          type: string
-          title: Only send email after X failures in a row
-          default: '1'
-        subject_template:
-          type: string
-          title: Template for subject line
-        text_template:
-          type: string
-          title: Template for email body
-      type: object
-      required:
-      - email_address
-      - subject_template
-      - text_template
-      title: EmailTemplateWebHookParameters
-    ConformanceSummaryEmailWebHookParameters:
-      properties:
-        email_address:
-          type: string
-          title: Email
-          description: Your email address
-      type: object
-      required:
-      - email_address
-      title: ConformanceSummaryEmailWebHookParameters
-    EmailWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: email
-          title: Type
-          default: email
-        parameters:
-          $ref: '#/components/schemas/EmailWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: EmailWebHookSpec
-    api3__webhooks__router___ListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/api3__webhooks__router___ListResponseMeta'
-        data:
-          items:
-            $ref: '#/components/schemas/ApiWebHook'
-          type: array
-          title: Data
-      type: object
-      required:
-      - meta
-      - data
-      title: _ListResponse
-    UpdateWebHookRequest:
-      properties:
-        meta:
-          $ref: '#/components/schemas/UpdateWebHookMeta'
-        webhook:
-          $ref: '#/components/schemas/UpdateWebHookBody'
-      type: object
-      title: UpdateWebHookRequest
-    HydrolixWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: hydrolix
-          title: Type
-          default: hydrolix
-        parameters:
-          $ref: '#/components/schemas/HydrolixWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: HydrolixWebHookSpec
-    OpenTelemetryAxiomWebHookParameters:
-      properties:
-        api_key:
-          type: string
-          title: API key
-          description: The Axiom API key
-        data_set_name:
-          type: string
-          title: Axiom Data Set Name
-          description: The name of the data set to post to
-      type: object
-      required:
-      - api_key
-      - data_set_name
-      title: OpenTelemetryAxiomWebHookParameters
-    WebHookMeta:
-      properties:
-        owner:
-          type: string
-          title: Owner
-        project_webhook:
-          type: boolean
-          title: Project Webhook
-        call_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Call Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          items:
-            type: string
-          type: array
-          title: Tags
-        include_tags:
-          items:
-            type: string
-          type: array
-          title: Include Tags
-        exclude_tags:
-          items:
-            type: string
-          type: array
-          title: Exclude Tags
-        created:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Created
-        last_update:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Update
-      type: object
-      required:
-      - owner
-      - project_webhook
-      title: WebHookMeta
-    EmailTemplateWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: email_template
-          title: Type
-          default: email_template
-        parameters:
-          $ref: '#/components/schemas/EmailTemplateWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: EmailTemplateWebHookSpec
-    OpenTelemetryWebHookParameters:
-      properties:
-        url:
-          type: string
-          title: URL
-          description: The HTTP endpoint to post result data
-        http_header_1:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: HTTP Header 1
-          description: The HTTP header to include
-        http_header_2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: HTTP Header 2
-          description: The HTTP header to include
-        http_header_3:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: HTTP Header 3
-          description: The HTTP header to include
-        client_cert_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Client Certificate
-          description: The client certificate to use for authentication, if required by the endpoint
-        server_public_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Server CA Certificate
-          description: The server CA certificate to use for SSL verification. Must be in PEM format. If not provided, SSL verification will use the default trusted CAs.
-      type: object
-      required:
-      - url
-      title: OpenTelemetryWebHookParameters
-    WebHookListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/WebHookListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/WebHookResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: WebHookListResponse
-    HydrolixWebHookParameters:
-      properties:
-        url:
-          type: string
-          title: URL
-          description: The url to post result data
-        username:
-          type: string
-          title: Username
-          description: The username for basic authentication
-          default: ''
-        password:
-          type: string
-          title: Password
-          description: The password for basic authentication
-          default: ''
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-        client_cert_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Client Certificate
-          description: The client certificate to use for authentication, if required by the endpoint
-        server_public_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Server CA Certificate
-          description: The server CA certificate to use for SSL verification. Must be in PEM format. If not provided, SSL verification will use the default trusted CAs.
-      type: object
-      required:
-      - url
-      title: HydrolixWebHookParameters
-    ConformanceOpentelemetryWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: conformance_opentelemetry
-          title: Type
-          default: conformance_opentelemetry
-        parameters:
-          $ref: '#/components/schemas/ConformanceOpentelemetryWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: ConformanceOpentelemetryWebHookSpec
-    WebHookType:
-      type: string
-      enum:
-      - email
-      - email_text
-      - email_template
-      - generic
-      - apimetrics_api
-      - apimetrics_workflow
-      - apimetrics_token
-      - slack
-      - pager_duty
-      - pager_duty_v2
-      - big_panda
-      - victorops
-      - hipchat
-      - msteams
-      - noname
-      - newrelic
-      - datadog
-      - datadogevent
-      - datadogintegration
-      - statuspage
-      - flowdock
-      - opsgenie
-      - opsgenieeu
-      - open_telemetry
-      - open_telemetry_axiom
-      - hydrolix
-      - conformance_axiom
-      - conformance_datadog
-      - conformance_email
-      - conformance_generic
-      - conformance_opentelemetry
-      - conformance_slack
-      - conformance_summary_email
-      - conformance_summary_generic
-      - conformance_summary_slack
-      title: WebHookType
-    ApimetricsTokenWebHookParameters:
-      properties:
-        token_id:
-          type: string
-          title: Auth Token
-          description: The Token to update
-      type: object
-      required:
-      - token_id
-      title: ApimetricsTokenWebHookParameters
-    ConformanceSlackWebHookParameters:
-      properties:
-        url:
-          type: string
-          title: URL
-          description: 'This the web hook url to post result data, set in slack integration incoming WebHooks url looks like: https://hooks.slack.com/services/REDACTED'
-        channel:
-          type: string
-          title: Channel
-          description: Integration chanel name if different from the defined in slack integration
-          default: ''
-      type: object
-      required:
-      - url
-      title: ConformanceSlackWebHookParameters
-    DatadogWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: datadog
-          title: Type
-          default: datadog
-        parameters:
-          $ref: '#/components/schemas/DatadogWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: DatadogWebHookSpec
-    StatuspageWebHookParameters:
-      properties:
-        page_id:
-          type: string
-          title: Page ID
-          description: The page id for StatusPage
-        api_key:
-          type: string
-          title: API key
-          description: The StatusPage API key
-        component_id:
-          type: string
-          title: Component ID
-          description: The StatusPage Component ID
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - page_id
-      - api_key
-      - component_id
-      title: StatuspageWebHookParameters
-    NewrelicWebHookParameters:
-      properties:
-        app_key:
-          type: string
-          title: Account ID
-          description: New Relic Account ID
-        api_key:
-          type: string
-          title: API key
-          description: The New Relic API key
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - app_key
-      - api_key
-      title: NewrelicWebHookParameters
     ConformanceSummaryEmailWebHookSpec:
       properties:
         enabled:
@@ -1740,21 +1100,236 @@ components:
       - alerts
       - parameters
       title: ConformanceSummaryEmailWebHookSpec
-    ConformanceSummarySlackWebHookParameters:
+    api3__webhooks__router___ListResponseMeta:
+      properties:
+        project_id:
+          type: string
+          title: Project Id
+          description: The project the webhooks belong to
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Cursor to pass to retrieve the next page, or null on the last page
+        more:
+          type: boolean
+          title: More
+          description: True if there are further pages beyond this response
+      type: object
+      required:
+      - project_id
+      - next_cursor
+      - more
+      title: _ListResponseMeta
+    ConformanceOpentelemetryWebHookParameters:
       properties:
         url:
           type: string
           title: URL
-          description: 'This the web hook url to post result data, set in slack integration incoming WebHooks url looks like: https://hooks.slack.com/services/REDACTED'
-        channel:
-          type: string
-          title: Channel
-          description: Integration chanel name if different from the defined in slack integration
-          default: ''
+          description: The HTTP endpoint to post conformance events to
+        http_header_1:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: HTTP Header 1
+          description: The HTTP header to include
+        http_header_2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: HTTP Header 2
+          description: The HTTP header to include
+        http_header_3:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: HTTP Header 3
+          description: The HTTP header to include
       type: object
       required:
       - url
-      title: ConformanceSummarySlackWebHookParameters
+      title: ConformanceOpentelemetryWebHookParameters
+    ConformanceDatadogWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: conformance_datadog
+          title: Type
+          default: conformance_datadog
+        parameters:
+          $ref: '#/components/schemas/ConformanceDatadogWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: ConformanceDatadogWebHookSpec
+    ConformanceSlackWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: conformance_slack
+          title: Type
+          default: conformance_slack
+        parameters:
+          $ref: '#/components/schemas/ConformanceSlackWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: ConformanceSlackWebHookSpec
+    ConformanceAxiomWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: conformance_axiom
+          title: Type
+          default: conformance_axiom
+        parameters:
+          $ref: '#/components/schemas/ConformanceAxiomWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: ConformanceAxiomWebHookSpec
+    NonameWebHookParameters:
+      properties:
+        url:
+          type: string
+          title: Engine URL
+          description: System Engine URL
+        api_key:
+          type: string
+          title: Source key
+          description: Integration Source key
+        source_type:
+          type: string
+          title: Source type
+          description: Integration Source type (an integer)
+          default: '49'
+        source_index:
+          type: string
+          title: Source index
+          description: Integration Source index (an integer)
+          default: '1'
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - url
+      - api_key
+      title: NonameWebHookParameters
+    WebHookTypePropertiesResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/WebHookTypeParameter'
+          type: array
+          title: Results
+      type: object
+      required:
+      - results
+      title: WebHookTypePropertiesResponse
+    EmailTemplateWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: email_template
+          title: Type
+          default: email_template
+        parameters:
+          $ref: '#/components/schemas/EmailTemplateWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: EmailTemplateWebHookSpec
+    ConformanceSummaryEmailWebHookParameters:
+      properties:
+        email_address:
+          type: string
+          title: Email
+          description: Your email address
+      type: object
+      required:
+      - email_address
+      title: ConformanceSummaryEmailWebHookParameters
+    WebHookTypeListResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/WebHookTypeDescriptor'
+          type: array
+          title: Results
+      type: object
+      required:
+      - results
+      title: WebHookTypeListResponse
+    BigPandaWebHookParameters:
+      properties:
+        user_key:
+          type: string
+          title: User key
+          description: The user key used in the header Authorization Bearer
+        app_key:
+          type: string
+          title: App key
+          description: The app key generated at big panda when configuring REST API Alerts and associated with the name you provided.
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - user_key
+      - app_key
+      title: BigPandaWebHookParameters
     EditableWebHookBody:
       properties:
         name:
@@ -1843,31 +1418,39 @@ components:
           default: false
       type: object
       title: WebHookListMeta
-    SlackWebHookSpec:
+    VictoropsWebHookParameters:
       properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
+        api_key:
           type: string
-          const: slack
-          title: Type
-          default: slack
-        parameters:
-          $ref: '#/components/schemas/SlackWebHookParameters'
+          title: API key
+          description: The API key generated in Victor Ops when configuringan Integration as a REST Endpoint.
+        routing_key:
+          type: string
+          title: Routing key
+          description: Optional routing key to route the alerts.
+          default: $routing_key
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
       type: object
       required:
-      - enabled
-      - alerts
-      - parameters
-      title: SlackWebHookSpec
+      - api_key
+      title: VictoropsWebHookParameters
+    EmailWebHookParameters:
+      properties:
+        email_address:
+          type: string
+          title: Email
+          description: Your email address
+        fails_in_a_row:
+          type: string
+          title: Only send email after X failures in a row
+          default: '1'
+      type: object
+      required:
+      - email_address
+      title: EmailWebHookParameters
     BigPandaWebHookSpec:
       properties:
         enabled:
@@ -1893,7 +1476,21 @@ components:
       - alerts
       - parameters
       title: BigPandaWebHookSpec
-    OpenTelemetryWebHookSpec:
+    PagerDutyWebHookParameters:
+      properties:
+        integration_key:
+          type: string
+          title: Integration key
+          description: The service integration key, with Integration Type:Generic API
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - integration_key
+      title: PagerDutyWebHookParameters
+    ApimetricsWorkflowWebHookSpec:
       properties:
         enabled:
           type: boolean
@@ -1907,56 +1504,115 @@ components:
           description: Alert conditions that trigger the webhook
         type:
           type: string
-          const: open_telemetry
+          const: apimetrics_workflow
           title: Type
-          default: open_telemetry
+          default: apimetrics_workflow
         parameters:
-          $ref: '#/components/schemas/OpenTelemetryWebHookParameters'
+          $ref: '#/components/schemas/ApimetricsWorkflowWebHookParameters'
       type: object
       required:
       - enabled
       - alerts
       - parameters
-      title: OpenTelemetryWebHookSpec
-    ConformanceDatadogWebHookParameters:
+      title: ApimetricsWorkflowWebHookSpec
+    CreateWebHookBody:
       properties:
-        integration_id:
-          type: string
-          title: Integration ID
-          description: Datadog Integration
+        type:
+          $ref: '#/components/schemas/WebHookType'
+        enabled:
+          type: boolean
+          title: Enabled
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+        parameters:
+          additionalProperties:
+            type: string
+          type: object
+          title: Parameters
       type: object
       required:
-      - integration_id
-      title: ConformanceDatadogWebHookParameters
-    NonameWebHookParameters:
+      - type
+      - enabled
+      - alerts
+      - parameters
+      title: CreateWebHookBody
+    StatuspageWebHookParameters:
       properties:
-        url:
+        page_id:
           type: string
-          title: Engine URL
-          description: System Engine URL
+          title: Page ID
+          description: The page id for StatusPage
         api_key:
           type: string
-          title: Source key
-          description: Integration Source key
-        source_type:
+          title: API key
+          description: The StatusPage API key
+        component_id:
           type: string
-          title: Source type
-          description: Integration Source type (an integer)
-          default: '49'
-        source_index:
-          type: string
-          title: Source index
-          description: Integration Source index (an integer)
-          default: '1'
+          title: Component ID
+          description: The StatusPage Component ID
         fails_in_a_row:
           type: string
           title: Only send alert after X failures in a row
           default: '0'
       type: object
       required:
-      - url
+      - page_id
       - api_key
-      title: NonameWebHookParameters
+      - component_id
+      title: StatuspageWebHookParameters
+    GenericWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: generic
+          title: Type
+          default: generic
+        parameters:
+          $ref: '#/components/schemas/GenericWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: GenericWebHookSpec
+    SlackWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: slack
+          title: Type
+          default: slack
+        parameters:
+          $ref: '#/components/schemas/SlackWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: SlackWebHookSpec
     ApiWebHookMeta:
       properties:
         name:
@@ -2025,118 +1681,18 @@ components:
       - project_webhook
       - call_id
       title: ApiWebHookMeta
-    ConformanceGenericWebHookParameters:
+    CreateWebHookRequest:
       properties:
-        url:
-          type: string
-          title: URL
-          description: The url to post result data
-        username:
-          type: string
-          title: Username
-          description: The username for basic authentication
-          default: ''
-        password:
-          type: string
-          title: Password
-          description: The password for basic authentication
-          default: ''
+        meta:
+          $ref: '#/components/schemas/CreateWebHookMeta'
+        webhook:
+          $ref: '#/components/schemas/CreateWebHookBody'
       type: object
       required:
-      - url
-      title: ConformanceGenericWebHookParameters
-    ConformanceAxiomWebHookParameters:
-      properties:
-        api_key:
-          type: string
-          title: API key
-          description: The Axiom API key
-        data_set_name:
-          type: string
-          title: Axiom Data Set Name
-          description: The name of the data set to post to
-      type: object
-      required:
-      - api_key
-      - data_set_name
-      title: ConformanceAxiomWebHookParameters
-    ConformanceSummaryGenericWebHookParameters:
-      properties:
-        url:
-          type: string
-          title: URL
-          description: The url to post result data
-        username:
-          type: string
-          title: Username
-          description: The username for basic authentication
-          default: ''
-        password:
-          type: string
-          title: Password
-          description: The password for basic authentication
-          default: ''
-      type: object
-      required:
-      - url
-      title: ConformanceSummaryGenericWebHookParameters
-    ConformanceOpentelemetryWebHookParameters:
-      properties:
-        url:
-          type: string
-          title: URL
-          description: The HTTP endpoint to post conformance events to
-        http_header_1:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: HTTP Header 1
-          description: The HTTP header to include
-        http_header_2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: HTTP Header 2
-          description: The HTTP header to include
-        http_header_3:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: HTTP Header 3
-          description: The HTTP header to include
-      type: object
-      required:
-      - url
-      title: ConformanceOpentelemetryWebHookParameters
-    EmailWebHookParameters:
-      properties:
-        email_address:
-          type: string
-          title: Email
-          description: Your email address
-        fails_in_a_row:
-          type: string
-          title: Only send email after X failures in a row
-          default: '1'
-      type: object
-      required:
-      - email_address
-      title: EmailWebHookParameters
-    ApimetricsWorkflowWebHookParameters:
-      properties:
-        workflow_id:
-          type: string
-          title: Workflow
-          description: The Workflow to run
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - workflow_id
-      title: ApimetricsWorkflowWebHookParameters
-    OpsgenieWebHookSpec:
+      - meta
+      - webhook
+      title: CreateWebHookRequest
+    EmailWebHookSpec:
       properties:
         enabled:
           type: boolean
@@ -2150,17 +1706,58 @@ components:
           description: Alert conditions that trigger the webhook
         type:
           type: string
-          const: opsgenie
+          const: email
           title: Type
-          default: opsgenie
+          default: email
         parameters:
-          $ref: '#/components/schemas/OpsgenieWebHookParameters'
+          $ref: '#/components/schemas/EmailWebHookParameters'
       type: object
       required:
       - enabled
       - alerts
       - parameters
-      title: OpsgenieWebHookSpec
+      title: EmailWebHookSpec
+    OpsgenieWebHookParameters:
+      properties:
+        api_key:
+          type: string
+          title: API key
+          description: The OpsGenie API key
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - api_key
+      title: OpsgenieWebHookParameters
+    UpdateWebHookBody:
+      properties:
+        type:
+          anyOf:
+          - $ref: '#/components/schemas/WebHookType'
+          - type: 'null'
+        enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enabled
+        alerts:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/AlertCondition'
+            type: array
+          - type: 'null'
+          title: Alerts
+        parameters:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Parameters
+      type: object
+      title: UpdateWebHookBody
     UpdateWebHookMeta:
       properties:
         name:
@@ -2193,6 +1790,51 @@ components:
           title: Exclude Tags
       type: object
       title: UpdateWebHookMeta
+    EmailTextWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: email_text
+          title: Type
+          default: email_text
+        parameters:
+          $ref: '#/components/schemas/EmailTextWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: EmailTextWebHookSpec
+    ConformanceSummaryGenericWebHookParameters:
+      properties:
+        url:
+          type: string
+          title: URL
+          description: The url to post result data
+        username:
+          type: string
+          title: Username
+          description: The username for basic authentication
+          default: ''
+        password:
+          type: string
+          title: Password
+          description: The password for basic authentication
+          default: ''
+      type: object
+      required:
+      - url
+      title: ConformanceSummaryGenericWebHookParameters
     OpenTelemetryAxiomWebHookSpec:
       properties:
         enabled:
@@ -2218,234 +1860,102 @@ components:
       - alerts
       - parameters
       title: OpenTelemetryAxiomWebHookSpec
-    WebHookTypeDescriptor:
+    StatuspageWebHookSpec:
       properties:
-        id:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
           type: string
-          title: Id
-        title:
+          const: statuspage
+          title: Type
+          default: statuspage
+        parameters:
+          $ref: '#/components/schemas/StatuspageWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: StatuspageWebHookSpec
+    DatadogWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
           type: string
-          title: Title
-        icon_url:
-          type: string
-          title: Icon Url
+          const: datadog
+          title: Type
+          default: datadog
+        parameters:
+          $ref: '#/components/schemas/DatadogWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: DatadogWebHookSpec
+    GenericWebHookParameters:
+      properties:
         url:
           type: string
-          title: Url
+          title: URL
+          description: The url to post result data
+        username:
+          type: string
+          title: Username
+          description: The username for basic authentication
+          default: ''
+        password:
+          type: string
+          title: Password
+          description: The password for basic authentication
+          default: ''
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+        client_cert_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Certificate
+          description: The client certificate to use for authentication, if required by the endpoint
+        server_public_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Server CA Certificate
+          description: The server CA certificate to use for SSL verification. Must be in PEM format. If not provided, SSL verification will use the default trusted CAs.
       type: object
       required:
-      - id
-      - title
-      - icon_url
       - url
-      title: WebHookTypeDescriptor
-    ConformanceSummaryGenericWebHookSpec:
+      title: GenericWebHookParameters
+    ConformanceDatadogWebHookParameters:
       properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
+        integration_id:
           type: string
-          const: conformance_summary_generic
-          title: Type
-          default: conformance_summary_generic
-        parameters:
-          $ref: '#/components/schemas/ConformanceSummaryGenericWebHookParameters'
+          title: Integration ID
+          description: Datadog Integration
       type: object
       required:
-      - enabled
-      - alerts
-      - parameters
-      title: ConformanceSummaryGenericWebHookSpec
-    OpsgenieeuWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: opsgenieeu
-          title: Type
-          default: opsgenieeu
-        parameters:
-          $ref: '#/components/schemas/OpsgenieeuWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: OpsgenieeuWebHookSpec
-    OpsgenieWebHookParameters:
-      properties:
-        api_key:
-          type: string
-          title: API key
-          description: The OpsGenie API key
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - api_key
-      title: OpsgenieWebHookParameters
-    VictoropsWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: victorops
-          title: Type
-          default: victorops
-        parameters:
-          $ref: '#/components/schemas/VictoropsWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: VictoropsWebHookSpec
-    ConformanceSlackWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: conformance_slack
-          title: Type
-          default: conformance_slack
-        parameters:
-          $ref: '#/components/schemas/ConformanceSlackWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: ConformanceSlackWebHookSpec
-    CreateWebHookBody:
-      properties:
-        type:
-          $ref: '#/components/schemas/WebHookType'
-        enabled:
-          type: boolean
-          title: Enabled
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-        parameters:
-          additionalProperties:
-            type: string
-          type: object
-          title: Parameters
-      type: object
-      required:
-      - type
-      - enabled
-      - alerts
-      - parameters
-      title: CreateWebHookBody
-    NonameWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: noname
-          title: Type
-          default: noname
-        parameters:
-          $ref: '#/components/schemas/NonameWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: NonameWebHookSpec
-    ConformanceDatadogWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: conformance_datadog
-          title: Type
-          default: conformance_datadog
-        parameters:
-          $ref: '#/components/schemas/ConformanceDatadogWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: ConformanceDatadogWebHookSpec
-    PagerDutyV2WebHookParameters:
-      properties:
-        integration_key:
-          type: string
-          title: Integration key
-          description: The service integration key, with Integration Type:Generic API
-        severity:
-          type: string
-          title: Severity
-          description: One of critical, error, warning or info.
-          default: error
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - integration_key
-      title: PagerDutyV2WebHookParameters
+      - integration_id
+      title: ConformanceDatadogWebHookParameters
     NewrelicWebHookSpec:
       properties:
         enabled:
@@ -2471,6 +1981,250 @@ components:
       - alerts
       - parameters
       title: NewrelicWebHookSpec
+    HydrolixWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: hydrolix
+          title: Type
+          default: hydrolix
+        parameters:
+          $ref: '#/components/schemas/HydrolixWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: HydrolixWebHookSpec
+    VictoropsWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: victorops
+          title: Type
+          default: victorops
+        parameters:
+          $ref: '#/components/schemas/VictoropsWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: VictoropsWebHookSpec
+    WebHookBody:
+      properties:
+        type:
+          type: string
+          title: Type
+        enabled:
+          type: boolean
+          title: Enabled
+        alerts:
+          items:
+            type: string
+          type: array
+          title: Alerts
+        parameters:
+          additionalProperties:
+            type: string
+          type: object
+          title: Parameters
+      type: object
+      required:
+      - type
+      - enabled
+      - alerts
+      - parameters
+      title: WebHookBody
+    PagerDutyV2WebHookParameters:
+      properties:
+        integration_key:
+          type: string
+          title: Integration key
+          description: The service integration key, with Integration Type:Generic API
+        severity:
+          type: string
+          title: Severity
+          description: One of critical, error, warning or info.
+          default: error
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - integration_key
+      title: PagerDutyV2WebHookParameters
+    ConformanceGenericWebHookParameters:
+      properties:
+        url:
+          type: string
+          title: URL
+          description: The url to post result data
+        username:
+          type: string
+          title: Username
+          description: The username for basic authentication
+          default: ''
+        password:
+          type: string
+          title: Password
+          description: The password for basic authentication
+          default: ''
+      type: object
+      required:
+      - url
+      title: ConformanceGenericWebHookParameters
+    MsteamsWebHookParameters:
+      properties:
+        url:
+          type: string
+          title: URL
+          description: This the web hook url to post result data, set in the MS Teams integration Incoming Webhooks
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - url
+      title: MsteamsWebHookParameters
+    ConformanceEmailWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: conformance_email
+          title: Type
+          default: conformance_email
+        parameters:
+          $ref: '#/components/schemas/ConformanceEmailWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: ConformanceEmailWebHookSpec
+    PagerDutyWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: pager_duty
+          title: Type
+          default: pager_duty
+        parameters:
+          $ref: '#/components/schemas/PagerDutyWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: PagerDutyWebHookSpec
+    OpenTelemetryAxiomWebHookParameters:
+      properties:
+        api_key:
+          type: string
+          title: API key
+          description: The Axiom API key
+        data_set_name:
+          type: string
+          title: Axiom Data Set Name
+          description: The name of the data set to post to
+      type: object
+      required:
+      - api_key
+      - data_set_name
+      title: OpenTelemetryAxiomWebHookParameters
+    HydrolixWebHookParameters:
+      properties:
+        url:
+          type: string
+          title: URL
+          description: The url to post result data
+        username:
+          type: string
+          title: Username
+          description: The username for basic authentication
+          default: ''
+        password:
+          type: string
+          title: Password
+          description: The password for basic authentication
+          default: ''
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+        client_cert_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Certificate
+          description: The client certificate to use for authentication, if required by the endpoint
+        server_public_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Server CA Certificate
+          description: The server CA certificate to use for SSL verification. Must be in PEM format. If not provided, SSL verification will use the default trusted CAs.
+      type: object
+      required:
+      - url
+      title: HydrolixWebHookParameters
+    WebHookResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/WebHookMeta'
+        webhook:
+          $ref: '#/components/schemas/WebHookBody'
+      type: object
+      required:
+      - id
+      - meta
+      - webhook
+      title: WebHookResponse
     HipchatWebHookParameters:
       properties:
         url:
@@ -2485,6 +2239,393 @@ components:
       required:
       - url
       title: HipchatWebHookParameters
+    WebHookType:
+      type: string
+      enum:
+      - email
+      - email_text
+      - email_template
+      - generic
+      - apimetrics_api
+      - apimetrics_workflow
+      - apimetrics_token
+      - slack
+      - pager_duty
+      - pager_duty_v2
+      - big_panda
+      - victorops
+      - hipchat
+      - msteams
+      - noname
+      - newrelic
+      - datadog
+      - datadogevent
+      - datadogintegration
+      - statuspage
+      - flowdock
+      - opsgenie
+      - opsgenieeu
+      - open_telemetry
+      - open_telemetry_axiom
+      - hydrolix
+      - conformance_axiom
+      - conformance_datadog
+      - conformance_email
+      - conformance_generic
+      - conformance_opentelemetry
+      - conformance_slack
+      - conformance_summary_email
+      - conformance_summary_generic
+      - conformance_summary_slack
+      title: WebHookType
+    NewrelicWebHookParameters:
+      properties:
+        app_key:
+          type: string
+          title: Account ID
+          description: New Relic Account ID
+        api_key:
+          type: string
+          title: API key
+          description: The New Relic API key
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - app_key
+      - api_key
+      title: NewrelicWebHookParameters
+    WebHookMeta:
+      properties:
+        owner:
+          type: string
+          title: Owner
+        project_webhook:
+          type: boolean
+          title: Project Webhook
+        call_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Call Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+        include_tags:
+          items:
+            type: string
+          type: array
+          title: Include Tags
+        exclude_tags:
+          items:
+            type: string
+          type: array
+          title: Exclude Tags
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+      type: object
+      required:
+      - owner
+      - project_webhook
+      title: WebHookMeta
+    ConformanceEmailWebHookParameters:
+      properties:
+        email_address:
+          type: string
+          title: Email
+          description: Your email address
+      type: object
+      required:
+      - email_address
+      title: ConformanceEmailWebHookParameters
+    ConformanceSlackWebHookParameters:
+      properties:
+        url:
+          type: string
+          title: URL
+          description: 'This the web hook url to post result data, set in slack integration incoming WebHooks url looks like: https://hooks.slack.com/services/REDACTED'
+        channel:
+          type: string
+          title: Channel
+          description: Integration chanel name if different from the defined in slack integration
+          default: ''
+      type: object
+      required:
+      - url
+      title: ConformanceSlackWebHookParameters
+    OpsgenieeuWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: opsgenieeu
+          title: Type
+          default: opsgenieeu
+        parameters:
+          $ref: '#/components/schemas/OpsgenieeuWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: OpsgenieeuWebHookSpec
+    UpdateWebHookRequest:
+      properties:
+        meta:
+          $ref: '#/components/schemas/UpdateWebHookMeta'
+        webhook:
+          $ref: '#/components/schemas/UpdateWebHookBody'
+      type: object
+      title: UpdateWebHookRequest
+    ApimetricsTokenWebHookParameters:
+      properties:
+        token_id:
+          type: string
+          title: Auth Token
+          description: The Token to update
+      type: object
+      required:
+      - token_id
+      title: ApimetricsTokenWebHookParameters
+    OpenTelemetryWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: open_telemetry
+          title: Type
+          default: open_telemetry
+        parameters:
+          $ref: '#/components/schemas/OpenTelemetryWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: OpenTelemetryWebHookSpec
+    ConformanceSummarySlackWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: conformance_summary_slack
+          title: Type
+          default: conformance_summary_slack
+        parameters:
+          $ref: '#/components/schemas/ConformanceSummarySlackWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: ConformanceSummarySlackWebHookSpec
+    ApimetricsTokenWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: apimetrics_token
+          title: Type
+          default: apimetrics_token
+        parameters:
+          $ref: '#/components/schemas/ApimetricsTokenWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: ApimetricsTokenWebHookSpec
+    FlowdockWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: flowdock
+          title: Type
+          default: flowdock
+        parameters:
+          $ref: '#/components/schemas/FlowdockWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: FlowdockWebHookSpec
+    ConformanceSummarySlackWebHookParameters:
+      properties:
+        url:
+          type: string
+          title: URL
+          description: 'This the web hook url to post result data, set in slack integration incoming WebHooks url looks like: https://hooks.slack.com/services/REDACTED'
+        channel:
+          type: string
+          title: Channel
+          description: Integration chanel name if different from the defined in slack integration
+          default: ''
+      type: object
+      required:
+      - url
+      title: ConformanceSummarySlackWebHookParameters
+    ApimetricsApiWebHookParameters:
+      properties:
+        call_id:
+          type: string
+          title: API Call
+          description: The API Call to run
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - call_id
+      title: ApimetricsApiWebHookParameters
+    CreateWebHookMeta:
+      properties:
+        name:
+          type: string
+          maxLength: 400
+          minLength: 1
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        include_tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Include Tags
+        exclude_tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Exclude Tags
+      type: object
+      required:
+      - name
+      title: CreateWebHookMeta
+    OpsgenieWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: opsgenie
+          title: Type
+          default: opsgenie
+        parameters:
+          $ref: '#/components/schemas/OpsgenieWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: OpsgenieWebHookSpec
+    DatadogeventWebHookSpec:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether the webhook fires when triggered
+        alerts:
+          items:
+            $ref: '#/components/schemas/AlertCondition'
+          type: array
+          title: Alerts
+          description: Alert conditions that trigger the webhook
+        type:
+          type: string
+          const: datadogevent
+          title: Type
+          default: datadogevent
+        parameters:
+          $ref: '#/components/schemas/DatadogeventWebHookParameters'
+      type: object
+      required:
+      - enabled
+      - alerts
+      - parameters
+      title: DatadogeventWebHookSpec
     ApiWebHook:
       properties:
         meta:
@@ -2575,6 +2716,60 @@ components:
       - webhook
       - id
       title: ApiWebHook
+    FlowdockWebHookParameters:
+      properties:
+        flow_token:
+          type: string
+          title: Flow Token
+          description: The token for the Flow to post to
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - flow_token
+      title: FlowdockWebHookParameters
+    OpenTelemetryWebHookParameters:
+      properties:
+        url:
+          type: string
+          title: URL
+          description: The HTTP endpoint to post result data
+        http_header_1:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: HTTP Header 1
+          description: The HTTP header to include
+        http_header_2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: HTTP Header 2
+          description: The HTTP header to include
+        http_header_3:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: HTTP Header 3
+          description: The HTTP header to include
+        client_cert_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Certificate
+          description: The client certificate to use for authentication, if required by the endpoint
+        server_public_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Server CA Certificate
+          description: The server CA certificate to use for SSL verification. Must be in PEM format. If not provided, SSL verification will use the default trusted CAs.
+      type: object
+      required:
+      - url
+      title: OpenTelemetryWebHookParameters
     OpsgenieeuWebHookParameters:
       properties:
         api_key:
@@ -2589,6 +2784,110 @@ components:
       required:
       - api_key
       title: OpsgenieeuWebHookParameters
+    DatadogWebHookParameters:
+      properties:
+        api_key:
+          type: string
+          title: API key
+          description: The DataDog API key
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - api_key
+      title: DatadogWebHookParameters
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    WebHookListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/WebHookListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/WebHookResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: WebHookListResponse
+    ApimetricsWorkflowWebHookParameters:
+      properties:
+        workflow_id:
+          type: string
+          title: Workflow
+          description: The Workflow to run
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - workflow_id
+      title: ApimetricsWorkflowWebHookParameters
+    DatadogeventWebHookParameters:
+      properties:
+        api_key:
+          type: string
+          title: API key
+          description: The DataDog API key
+        fails_in_a_row:
+          type: string
+          title: Only send alert after X failures in a row
+          default: '0'
+      type: object
+      required:
+      - api_key
+      title: DatadogeventWebHookParameters
+    EmailTemplateWebHookParameters:
+      properties:
+        email_address:
+          type: string
+          title: Email
+          description: Your email address
+        fails_in_a_row:
+          type: string
+          title: Only send email after X failures in a row
+          default: '1'
+        subject_template:
+          type: string
+          title: Template for subject line
+        text_template:
+          type: string
+          title: Template for email body
+      type: object
+      required:
+      - email_address
+      - subject_template
+      - text_template
+      title: EmailTemplateWebHookParameters
     PagerDutyV2WebHookSpec:
       properties:
         enabled:
@@ -2614,260 +2913,6 @@ components:
       - alerts
       - parameters
       title: PagerDutyV2WebHookSpec
-    EmailTextWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: email_text
-          title: Type
-          default: email_text
-        parameters:
-          $ref: '#/components/schemas/EmailTextWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: EmailTextWebHookSpec
-    WebHookResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/WebHookMeta'
-        webhook:
-          $ref: '#/components/schemas/WebHookBody'
-      type: object
-      required:
-      - id
-      - meta
-      - webhook
-      title: WebHookResponse
-    ConformanceEmailWebHookParameters:
-      properties:
-        email_address:
-          type: string
-          title: Email
-          description: Your email address
-      type: object
-      required:
-      - email_address
-      title: ConformanceEmailWebHookParameters
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    PagerDutyWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: pager_duty
-          title: Type
-          default: pager_duty
-        parameters:
-          $ref: '#/components/schemas/PagerDutyWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: PagerDutyWebHookSpec
-    BigPandaWebHookParameters:
-      properties:
-        user_key:
-          type: string
-          title: User key
-          description: The user key used in the header Authorization Bearer
-        app_key:
-          type: string
-          title: App key
-          description: The app key generated at big panda when configuring REST API Alerts and associated with the name you provided.
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - user_key
-      - app_key
-      title: BigPandaWebHookParameters
-    ConformanceSummarySlackWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: conformance_summary_slack
-          title: Type
-          default: conformance_summary_slack
-        parameters:
-          $ref: '#/components/schemas/ConformanceSummarySlackWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: ConformanceSummarySlackWebHookSpec
-    HipchatWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: hipchat
-          title: Type
-          default: hipchat
-        parameters:
-          $ref: '#/components/schemas/HipchatWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: HipchatWebHookSpec
-    CreateWebHookRequest:
-      properties:
-        meta:
-          $ref: '#/components/schemas/CreateWebHookMeta'
-        webhook:
-          $ref: '#/components/schemas/CreateWebHookBody'
-      type: object
-      required:
-      - meta
-      - webhook
-      title: CreateWebHookRequest
-    api3__webhooks__router___ListResponseMeta:
-      properties:
-        project_id:
-          type: string
-          title: Project Id
-          description: The project the webhooks belong to
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-          description: Cursor to pass to retrieve the next page, or null on the last page
-        more:
-          type: boolean
-          title: More
-          description: True if there are further pages beyond this response
-      type: object
-      required:
-      - project_id
-      - next_cursor
-      - more
-      title: _ListResponseMeta
-    CreateWebHookMeta:
-      properties:
-        name:
-          type: string
-          maxLength: 400
-          minLength: 1
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        include_tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Include Tags
-        exclude_tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Exclude Tags
-      type: object
-      required:
-      - name
-      title: CreateWebHookMeta
-    GenericWebHookParameters:
-      properties:
-        url:
-          type: string
-          title: URL
-          description: The url to post result data
-        username:
-          type: string
-          title: Username
-          description: The username for basic authentication
-          default: ''
-        password:
-          type: string
-          title: Password
-          description: The password for basic authentication
-          default: ''
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-        client_cert_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Client Certificate
-          description: The client certificate to use for authentication, if required by the endpoint
-        server_public_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Server CA Certificate
-          description: The server CA certificate to use for SSL verification. Must be in PEM format. If not provided, SSL verification will use the default trusted CAs.
-      type: object
-      required:
-      - url
-      title: GenericWebHookParameters
     DatadogintegrationWebHookSpec:
       properties:
         enabled:
@@ -2893,59 +2938,14 @@ components:
       - alerts
       - parameters
       title: DatadogintegrationWebHookSpec
-    ApimetricsApiWebHookParameters:
-      properties:
-        call_id:
-          type: string
-          title: API Call
-          description: The API Call to run
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - call_id
-      title: ApimetricsApiWebHookParameters
-    ConformanceGenericWebHookSpec:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-          description: Whether the webhook fires when triggered
-        alerts:
-          items:
-            $ref: '#/components/schemas/AlertCondition'
-          type: array
-          title: Alerts
-          description: Alert conditions that trigger the webhook
-        type:
-          type: string
-          const: conformance_generic
-          title: Type
-          default: conformance_generic
-        parameters:
-          $ref: '#/components/schemas/ConformanceGenericWebHookParameters'
-      type: object
-      required:
-      - enabled
-      - alerts
-      - parameters
-      title: ConformanceGenericWebHookSpec
-    PagerDutyWebHookParameters:
-      properties:
-        integration_key:
-          type: string
-          title: Integration key
-          description: The service integration key, with Integration Type:Generic API
-        fails_in_a_row:
-          type: string
-          title: Only send alert after X failures in a row
-          default: '0'
-      type: object
-      required:
-      - integration_key
-      title: PagerDutyWebHookParameters
+    AlertCondition:
+      type: string
+      enum:
+      - PASS
+      - SLOW
+      - WARNING
+      - FAIL
+      title: AlertCondition
   securitySchemes:
     OAuth2:
       type: oauth2

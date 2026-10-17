@@ -91,15 +91,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -126,6 +117,27 @@ components:
       - msg
       - type
       title: ValidationError
+    PostProjectConditionsRequest:
+      properties:
+        conditions:
+          items:
+            $ref: '#/components/schemas/ConditionalModel'
+          type: array
+          title: Conditions
+          description: The full set of conditionals; replaces any existing set.
+      type: object
+      required:
+      - conditions
+      title: PostProjectConditionsRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ProjectConditionsResponse:
       properties:
         conditions:
@@ -139,28 +151,6 @@ components:
       required:
       - conditions
       title: ProjectConditionsResponse
-    PostProjectConditionsRequest:
-      properties:
-        conditions:
-          items:
-            $ref: '#/components/schemas/ConditionalModel'
-          type: array
-          title: Conditions
-          description: The full set of conditionals; replaces any existing set.
-      type: object
-      required:
-      - conditions
-      title: PostProjectConditionsRequest
-    ProjectConditionsMeta:
-      properties:
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-          description: The project the conditions belong to.
-      type: object
-      title: ProjectConditionsMeta
     ConditionalModel:
       properties:
         source:
@@ -198,6 +188,16 @@ components:
       - source
       - condition
       title: ConditionalModel
+    ProjectConditionsMeta:
+      properties:
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+          description: The project the conditions belong to.
+      type: object
+      title: ProjectConditionsMeta
   securitySchemes:
     OAuth2:
       type: oauth2

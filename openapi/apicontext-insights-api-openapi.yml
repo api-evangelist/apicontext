@@ -317,194 +317,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    RankMeta:
-      properties:
-        user:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        period:
-          type: string
-          title: Period
-        start:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: Start
-        org:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org
-        org_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org Name
-      type: object
-      required:
-      - period
-      title: RankMeta
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    InsightsListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-          default: false
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      title: InsightsListMeta
-    RankResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/RankMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/RankResult'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: RankResponse
-    RankResult:
-      properties:
-        id:
-          type: string
-          title: Id
-        score:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Score
-        results:
-          items:
-            prefixItems:
-            - type: string
-              format: date-time
-            - anyOf:
-              - type: integer
-              - type: 'null'
-            type: array
-            maxItems: 2
-            minItems: 2
-          type: array
-          title: Results
-        filenames:
-          items:
-            type: string
-          type: array
-          title: Filenames
-        most_recent:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Most Recent
-        insights_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Insights Id
-        pass_percent:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Pass Percent
-        outlier_percent:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Outlier Percent
-        mean_test_length:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Mean Test Length
-        sd_test_length:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Sd Test Length
-        api_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Api Name
-        api_tags:
-          items:
-            type: string
-          type: array
-          title: Api Tags
-        domain:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Domain
-        owner:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Owner
-      type: object
-      required:
-      - id
-      title: RankResult
-      description: 'A ranked monitor: its latest score plus a short ``results`` history of
-
-        ``(period_start, score)`` points and the matching ``filenames``.'
     InsightsReportApi:
       properties:
         id:
@@ -615,25 +427,67 @@ components:
         ``project_id``, and ``start`` / ``end`` are renamed to
 
         ``start_date`` / ``end_date``.'
-    HistoryMeta:
+    ValidationError:
       properties:
-        weekly:
-          type: boolean
-          title: Weekly
-        start_date:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          format: date-time
-          title: Start Date
-        end_date:
+          title: Message
+        type:
           type: string
-          format: date-time
-          title: End Date
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
-      - weekly
-      - start_date
-      - end_date
-      title: HistoryMeta
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    RankMeta:
+      properties:
+        user:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        period:
+          type: string
+          title: Period
+        start:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start
+        org:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org
+        org_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Name
+      type: object
+      required:
+      - period
+      title: RankMeta
     InsightsListResponse:
       properties:
         meta:
@@ -648,20 +502,92 @@ components:
       - meta
       - results
       title: InsightsListResponse
-    HistoryResponse:
+    RankResult:
       properties:
-        meta:
-          $ref: '#/components/schemas/HistoryMeta'
+        id:
+          type: string
+          title: Id
+        score:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Score
         results:
           items:
-            $ref: '#/components/schemas/HistoryRow'
+            prefixItems:
+            - type: string
+              format: date-time
+            - anyOf:
+              - type: integer
+              - type: 'null'
+            type: array
+            maxItems: 2
+            minItems: 2
           type: array
           title: Results
+        filenames:
+          items:
+            type: string
+          type: array
+          title: Filenames
+        most_recent:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Most Recent
+        insights_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Insights Id
+        pass_percent:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Pass Percent
+        outlier_percent:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Outlier Percent
+        mean_test_length:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Mean Test Length
+        sd_test_length:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Sd Test Length
+        api_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Name
+        api_tags:
+          items:
+            type: string
+          type: array
+          title: Api Tags
+        domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Domain
+        owner:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Owner
       type: object
       required:
-      - meta
-      - results
-      title: HistoryResponse
+      - id
+      title: RankResult
+      description: 'A ranked monitor: its latest score plus a short ``results`` history of
+
+        ``(period_start, score)`` points and the matching ``filenames``.'
     HistoryRow:
       properties:
         start:
@@ -694,6 +620,80 @@ components:
         ``exclude_none`` so an empty bucket renders as just ``{"start": ...}``,
 
         matching the legacy output.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HistoryResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/HistoryMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/HistoryRow'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: HistoryResponse
+    RankResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/RankMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/RankResult'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: RankResponse
+    HistoryMeta:
+      properties:
+        weekly:
+          type: boolean
+          title: Weekly
+        start_date:
+          type: string
+          format: date-time
+          title: Start Date
+        end_date:
+          type: string
+          format: date-time
+          title: End Date
+      type: object
+      required:
+      - weekly
+      - start_date
+      - end_date
+      title: HistoryMeta
+    InsightsListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+          default: false
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      title: InsightsListMeta
   securitySchemes:
     OAuth2:
       type: oauth2

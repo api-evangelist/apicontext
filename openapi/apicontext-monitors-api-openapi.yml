@@ -220,25 +220,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    api3__monitors__router___ListResponseMeta:
-      properties:
-        project_id:
-          type: string
-          title: Project Id
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-      type: object
-      required:
-      - project_id
-      - next_cursor
-      - more
-      title: _ListResponseMeta
     McpCallToolStepRepr:
       properties:
         timeout_ms:
@@ -276,7 +257,7 @@ components:
       - wait_ms
       - tool_name
       title: McpCallToolStepRepr
-    McpWaitStepRepr:
+    McpListResourceTemplatesStepRepr:
       properties:
         timeout_ms:
           type: integer
@@ -292,16 +273,146 @@ components:
           description: Time to wait after finishing step (milliseconds)
         step_type:
           type: string
-          const: wait
+          const: list_resource_templates
           title: Step Type
-          default: wait
+          default: list_resource_templates
       additionalProperties: false
       type: object
       required:
       - timeout_ms
       - wait_ms
-      title: McpWaitStepRepr
-    models__browser_call___MetaRepr:
+      title: McpListResourceTemplatesStepRepr
+    McpReadResourceStepRepr:
+      properties:
+        timeout_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Timeout Ms
+          description: Step timeout (milliseconds)
+        wait_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Wait Ms
+          description: Time to wait after finishing step (milliseconds)
+        step_type:
+          type: string
+          const: read_resource
+          title: Step Type
+          default: read_resource
+        resource_uri:
+          type: string
+          title: Resource Uri
+          description: URI of the resource to read
+      additionalProperties: false
+      type: object
+      required:
+      - timeout_ms
+      - wait_ms
+      - resource_uri
+      title: McpReadResourceStepRepr
+    McpTestSetupRepr:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/models__mcp_test_setup___MetaRepr'
+        setup:
+          $ref: '#/components/schemas/models__mcp_test_setup___SetupRepr'
+      type: object
+      required:
+      - id
+      - meta
+      - setup
+      title: McpTestSetupRepr
+    models__browser_call___SetupRepr:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: Target URL for this monitor
+        browser_types:
+          items:
+            type: string
+            enum:
+            - chromium
+            - firefox
+            - webkit
+            - camoufox
+          type: array
+          title: Browser Types
+          description: Browsers which this monitor is permitted to run on
+        user_agent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Agent
+          description: User-Agent header value for the monitor
+      type: object
+      required:
+      - url
+      - browser_types
+      title: _SetupRepr
+    McpListResourcesStepRepr:
+      properties:
+        timeout_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Timeout Ms
+          description: Step timeout (milliseconds)
+        wait_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Wait Ms
+          description: Time to wait after finishing step (milliseconds)
+        step_type:
+          type: string
+          const: list_resources
+          title: Step Type
+          default: list_resources
+      additionalProperties: false
+      type: object
+      required:
+      - timeout_ms
+      - wait_ms
+      title: McpListResourcesStepRepr
+    api3__monitors__router___ListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/api3__monitors__router___ListResponseMeta'
+        data:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/TestSetup2Repr'
+            - $ref: '#/components/schemas/BrowserTestSetupRepr'
+            - $ref: '#/components/schemas/McpTestSetupRepr'
+          type: array
+          title: Data
+      type: object
+      required:
+      - meta
+      - data
+      title: _ListResponse
+    BrowserTestSetupRepr:
+      properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/models__browser_call___MetaRepr'
+        setup:
+          $ref: '#/components/schemas/models__browser_call___SetupRepr'
+      type: object
+      required:
+      - id
+      - meta
+      - setup
+      title: BrowserTestSetupRepr
+    models__mcp_test_setup___MetaRepr:
       properties:
         monitor_type:
           type: string
@@ -310,7 +421,7 @@ components:
           - www
           - mcp
           title: Monitor Type
-          default: www
+          default: mcp
         name:
           type: string
           title: Name
@@ -348,42 +459,13 @@ components:
       type: object
       required:
       - name
+      - tags
       - domain
       - created
       - last_update
       - owner
       - workspace
       title: _MetaRepr
-    BrowserTestSetupRepr:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/models__browser_call___MetaRepr'
-        setup:
-          $ref: '#/components/schemas/models__browser_call___SetupRepr'
-      type: object
-      required:
-      - id
-      - meta
-      - setup
-      title: BrowserTestSetupRepr
-    McpTestSetupRepr:
-      properties:
-        id:
-          type: string
-          title: Id
-        meta:
-          $ref: '#/components/schemas/models__mcp_test_setup___MetaRepr'
-        setup:
-          $ref: '#/components/schemas/models__mcp_test_setup___SetupRepr'
-      type: object
-      required:
-      - id
-      - meta
-      - setup
-      title: McpTestSetupRepr
     models__mcp_test_setup___SetupRepr:
       properties:
         url:
@@ -440,60 +522,53 @@ components:
       - overall_timeout_ms
       - steps
       title: _SetupRepr
-    _RequestRepr:
+    CallRunPayload:
       properties:
-        method:
+        call_id:
           type: string
-          title: Method
-        url:
+          title: Call Id
+        location_id:
           type: string
-          title: Url
-        parameters:
+          title: Location Id
+        result_id:
+          type: string
+          title: Result Id
+        context:
+          additionalProperties: true
+          type: object
+          title: Context
+        user:
           anyOf:
-          - items:
-              $ref: '#/components/schemas/_TestParameterRepr'
-            type: array
-          - type: 'null'
-          title: Parameters
-        headers:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/_TestParameterRepr'
-            type: array
-          - type: 'null'
-          title: Headers
-        auth_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Auth Id
-        token_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Token Id
-        body:
-          anyOf:
-          - type: string
           - additionalProperties: true
             type: object
           - type: 'null'
-          title: Body
-        file_id:
+          title: User
+      type: object
+      required:
+      - call_id
+      - location_id
+      - result_id
+      - context
+      title: CallRunPayload
+    api3__monitors__router___ListResponseMeta:
+      properties:
+        project_id:
+          type: string
+          title: Project Id
+        next_cursor:
           anyOf:
           - type: string
           - type: 'null'
-          title: File Id
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
       type: object
       required:
-      - method
-      - url
-      - parameters
-      - headers
-      - auth_id
-      - token_id
-      - body
-      title: _RequestRepr
+      - project_id
+      - next_cursor
+      - more
+      title: _ListResponseMeta
     McpListToolsStepRepr:
       properties:
         timeout_ms:
@@ -519,6 +594,15 @@ components:
       - timeout_ms
       - wait_ms
       title: McpListToolsStepRepr
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     _TestParameterRepr:
       properties:
         key:
@@ -532,140 +616,6 @@ components:
       - key
       - value
       title: _TestParameterRepr
-    RunMonitorRequest:
-      properties:
-        context:
-          additionalProperties:
-            type: string
-          type: object
-          title: Context
-          default: {}
-        location_id:
-          type: string
-          title: Location Id
-          default: ''
-        run_delay:
-          type: integer
-          title: Run Delay
-          default: 0
-      type: object
-      title: RunMonitorRequest
-    McpGetPromptStepRepr:
-      properties:
-        timeout_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Timeout Ms
-          description: Step timeout (milliseconds)
-        wait_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Wait Ms
-          description: Time to wait after finishing step (milliseconds)
-        step_type:
-          type: string
-          const: get_prompt
-          title: Step Type
-          default: get_prompt
-        prompt_name:
-          type: string
-          title: Prompt Name
-          description: Name of the prompt to get
-        parameters:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Parameters
-          description: Arguments to provide to the prompt template
-      additionalProperties: false
-      type: object
-      required:
-      - timeout_ms
-      - wait_ms
-      - prompt_name
-      title: McpGetPromptStepRepr
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    McpListResourcesStepRepr:
-      properties:
-        timeout_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Timeout Ms
-          description: Step timeout (milliseconds)
-        wait_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Wait Ms
-          description: Time to wait after finishing step (milliseconds)
-        step_type:
-          type: string
-          const: list_resources
-          title: Step Type
-          default: list_resources
-      additionalProperties: false
-      type: object
-      required:
-      - timeout_ms
-      - wait_ms
-      title: McpListResourcesStepRepr
-    api3__monitors__router___ListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/api3__monitors__router___ListResponseMeta'
-        data:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/TestSetup2Repr'
-            - $ref: '#/components/schemas/BrowserTestSetupRepr'
-            - $ref: '#/components/schemas/McpTestSetupRepr'
-          type: array
-          title: Data
-      type: object
-      required:
-      - meta
-      - data
-      title: _ListResponse
-    models__browser_call___SetupRepr:
-      properties:
-        url:
-          type: string
-          title: Url
-          description: Target URL for this monitor
-        browser_types:
-          items:
-            type: string
-            enum:
-            - chromium
-            - firefox
-            - webkit
-            - camoufox
-          type: array
-          title: Browser Types
-          description: Browsers which this monitor is permitted to run on
-        user_agent:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: User Agent
-          description: User-Agent header value for the monitor
-      type: object
-      required:
-      - url
-      - browser_types
-      title: _SetupRepr
     models__call___MetaRepr:
       properties:
         monitor_type:
@@ -730,32 +680,7 @@ components:
       - owner
       - workspace
       title: _MetaRepr
-    McpListResourceTemplatesStepRepr:
-      properties:
-        timeout_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Timeout Ms
-          description: Step timeout (milliseconds)
-        wait_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Wait Ms
-          description: Time to wait after finishing step (milliseconds)
-        step_type:
-          type: string
-          const: list_resource_templates
-          title: Step Type
-          default: list_resource_templates
-      additionalProperties: false
-      type: object
-      required:
-      - timeout_ms
-      - wait_ms
-      title: McpListResourceTemplatesStepRepr
-    models__mcp_test_setup___MetaRepr:
+    models__browser_call___MetaRepr:
       properties:
         monitor_type:
           type: string
@@ -764,7 +689,7 @@ components:
           - www
           - mcp
           title: Monitor Type
-          default: mcp
+          default: www
         name:
           type: string
           title: Name
@@ -802,7 +727,6 @@ components:
       type: object
       required:
       - name
-      - tags
       - domain
       - created
       - last_update
@@ -835,6 +759,83 @@ components:
       - msg
       - type
       title: ValidationError
+    McpWaitStepRepr:
+      properties:
+        timeout_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Timeout Ms
+          description: Step timeout (milliseconds)
+        wait_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Wait Ms
+          description: Time to wait after finishing step (milliseconds)
+        step_type:
+          type: string
+          const: wait
+          title: Step Type
+          default: wait
+      additionalProperties: false
+      type: object
+      required:
+      - timeout_ms
+      - wait_ms
+      title: McpWaitStepRepr
+    McpGetPromptStepRepr:
+      properties:
+        timeout_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Timeout Ms
+          description: Step timeout (milliseconds)
+        wait_ms:
+          type: integer
+          maximum: 120000.0
+          minimum: 0.0
+          title: Wait Ms
+          description: Time to wait after finishing step (milliseconds)
+        step_type:
+          type: string
+          const: get_prompt
+          title: Step Type
+          default: get_prompt
+        prompt_name:
+          type: string
+          title: Prompt Name
+          description: Name of the prompt to get
+        parameters:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Parameters
+          description: Arguments to provide to the prompt template
+      additionalProperties: false
+      type: object
+      required:
+      - timeout_ms
+      - wait_ms
+      - prompt_name
+      title: McpGetPromptStepRepr
+    TestSetup2Repr:
+      properties:
+        meta:
+          $ref: '#/components/schemas/models__call___MetaRepr'
+        request:
+          $ref: '#/components/schemas/_RequestRepr'
+        id:
+          type: string
+          title: Id
+      type: object
+      required:
+      - meta
+      - request
+      - id
+      title: TestSetup2Repr
     McpListPromptsStepRepr:
       properties:
         timeout_ms:
@@ -860,79 +861,78 @@ components:
       - timeout_ms
       - wait_ms
       title: McpListPromptsStepRepr
-    TestSetup2Repr:
+    RunMonitorRequest:
       properties:
-        meta:
-          $ref: '#/components/schemas/models__call___MetaRepr'
-        request:
-          $ref: '#/components/schemas/_RequestRepr'
-        id:
-          type: string
-          title: Id
-      type: object
-      required:
-      - meta
-      - request
-      - id
-      title: TestSetup2Repr
-    CallRunPayload:
-      properties:
-        call_id:
-          type: string
-          title: Call Id
+        context:
+          additionalProperties:
+            type: string
+          type: object
+          title: Context
+          default: {}
         location_id:
           type: string
           title: Location Id
-        result_id:
+          default: ''
+        run_delay:
+          type: integer
+          title: Run Delay
+          default: 0
+      type: object
+      title: RunMonitorRequest
+    _RequestRepr:
+      properties:
+        method:
           type: string
-          title: Result Id
-        context:
-          additionalProperties: true
-          type: object
-          title: Context
-        user:
+          title: Method
+        url:
+          type: string
+          title: Url
+        parameters:
           anyOf:
+          - items:
+              $ref: '#/components/schemas/_TestParameterRepr'
+            type: array
+          - type: 'null'
+          title: Parameters
+        headers:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/_TestParameterRepr'
+            type: array
+          - type: 'null'
+          title: Headers
+        auth_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Auth Id
+        token_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Token Id
+        body:
+          anyOf:
+          - type: string
           - additionalProperties: true
             type: object
           - type: 'null'
-          title: User
+          title: Body
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
       type: object
       required:
-      - call_id
-      - location_id
-      - result_id
-      - context
-      title: CallRunPayload
-    McpReadResourceStepRepr:
-      properties:
-        timeout_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Timeout Ms
-          description: Step timeout (milliseconds)
-        wait_ms:
-          type: integer
-          maximum: 120000.0
-          minimum: 0.0
-          title: Wait Ms
-          description: Time to wait after finishing step (milliseconds)
-        step_type:
-          type: string
-          const: read_resource
-          title: Step Type
-          default: read_resource
-        resource_uri:
-          type: string
-          title: Resource Uri
-          description: URI of the resource to read
-      additionalProperties: false
-      type: object
-      required:
-      - timeout_ms
-      - wait_ms
-      - resource_uri
-      title: McpReadResourceStepRepr
+      - method
+      - url
+      - parameters
+      - headers
+      - auth_id
+      - token_id
+      - body
+      title: _RequestRepr
   securitySchemes:
     OAuth2:
       type: oauth2

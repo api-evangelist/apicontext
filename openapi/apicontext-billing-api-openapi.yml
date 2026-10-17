@@ -156,142 +156,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    api3__billing__models__SubInfo:
-      properties:
-        level:
-          type: string
-          title: Level
-        name:
-          type: string
-          title: Name
-        plan:
-          type: string
-          title: Plan
-        start:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Start
-        end:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: End
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: State
-        org_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Org Id
-        backend:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Backend
-      type: object
-      required:
-      - level
-      - name
-      - plan
-      - start
-      - end
-      - state
-      - org_id
-      - backend
-      title: SubInfo
-    UsageCountsResponse:
-      properties:
-        org_id:
-          type: string
-          title: Org Id
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-        months:
-          items:
-            $ref: '#/components/schemas/MonthlyResultCounts'
-          type: array
-          title: Months
-      type: object
-      required:
-      - org_id
-      - project_id
-      - months
-      title: UsageCountsResponse
-    Usage:
-      properties:
-        project_test_run_usage:
-          type: integer
-          title: Project Test Run Usage
-        org_test_run_usage:
-          type: integer
-          title: Org Test Run Usage
-        test_setup_count:
-          type: integer
-          title: Test Setup Count
-        public_report_count:
-          type: integer
-          title: Public Report Count
-        scheduled_test_count:
-          type: integer
-          title: Scheduled Test Count
-      type: object
-      required:
-      - project_test_run_usage
-      - org_test_run_usage
-      - test_setup_count
-      - public_report_count
-      - scheduled_test_count
-      title: Usage
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Quotas:
-      properties:
-        test_run_quota:
-          type: integer
-          title: Test Run Quota
-        test_setup_quota:
-          type: integer
-          title: Test Setup Quota
-        public_report_quota:
-          type: integer
-          title: Public Report Quota
-      type: object
-      required:
-      - test_run_quota
-      - test_setup_quota
-      - public_report_quota
-      title: Quotas
     api3__billing__models__QuotaResponse:
       properties:
         sub:
@@ -350,6 +214,57 @@ components:
       - mcp_count
       - total_count
       title: MonthlyResultCounts
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Usage:
+      properties:
+        project_test_run_usage:
+          type: integer
+          title: Project Test Run Usage
+        org_test_run_usage:
+          type: integer
+          title: Org Test Run Usage
+        test_setup_count:
+          type: integer
+          title: Test Setup Count
+        public_report_count:
+          type: integer
+          title: Public Report Count
+        scheduled_test_count:
+          type: integer
+          title: Scheduled Test Count
+      type: object
+      required:
+      - project_test_run_usage
+      - org_test_run_usage
+      - test_setup_count
+      - public_report_count
+      - scheduled_test_count
+      title: Usage
     UsageWeights:
       properties:
         api:
@@ -366,6 +281,53 @@ components:
           default: 1
       type: object
       title: UsageWeights
+    api3__billing__models__SubInfo:
+      properties:
+        level:
+          type: string
+          title: Level
+        name:
+          type: string
+          title: Name
+        plan:
+          type: string
+          title: Plan
+        start:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Start
+        end:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: End
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        org_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Org Id
+        backend:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Backend
+      type: object
+      required:
+      - level
+      - name
+      - plan
+      - start
+      - end
+      - state
+      - org_id
+      - backend
+      title: SubInfo
     HTTPValidationError:
       properties:
         detail:
@@ -375,6 +337,44 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    Quotas:
+      properties:
+        test_run_quota:
+          type: integer
+          title: Test Run Quota
+        test_setup_quota:
+          type: integer
+          title: Test Setup Quota
+        public_report_quota:
+          type: integer
+          title: Public Report Quota
+      type: object
+      required:
+      - test_run_quota
+      - test_setup_quota
+      - public_report_quota
+      title: Quotas
+    UsageCountsResponse:
+      properties:
+        org_id:
+          type: string
+          title: Org Id
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+        months:
+          items:
+            $ref: '#/components/schemas/MonthlyResultCounts'
+          type: array
+          title: Months
+      type: object
+      required:
+      - org_id
+      - project_id
+      - months
+      title: UsageCountsResponse
   securitySchemes:
     OAuth2:
       type: oauth2

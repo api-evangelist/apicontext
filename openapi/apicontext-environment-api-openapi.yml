@@ -440,88 +440,52 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    CreateVariableBody:
+    WorkspaceListMeta:
       properties:
-        name:
+        next_cursor:
           anyOf:
           - type: string
           - type: 'null'
-          title: Name
-        value:
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
           anyOf:
           - type: string
           - type: 'null'
-          title: Value
+          title: Project Id
       type: object
-      title: CreateVariableBody
-      examples:
-      - name: API_KEY
-        value: secret-value
-    WorkspaceFields:
+      required:
+      - more
+      title: WorkspaceListMeta
+    VariableFields:
       properties:
         name:
           type: string
           title: Name
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Title
+        value:
+          type: string
+          title: Value
       type: object
       required:
       - name
-      title: WorkspaceFields
-    VariableResponse:
+      - value
+      title: VariableFields
+    VariableListResponse:
       properties:
-        id:
-          type: string
-          title: Id
         meta:
-          $ref: '#/components/schemas/VariableMeta'
-        workspace_variable:
-          $ref: '#/components/schemas/VariableFields'
+          $ref: '#/components/schemas/VariableListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/VariableResponse'
+          type: array
+          title: Results
       type: object
       required:
-      - id
       - meta
-      - workspace_variable
-      title: VariableResponse
-      examples:
-      - id: ahFkZXZ-YXBpbWV0cmljcy1xY3IqCxIEVXNlchieQgwLEhZVc2VyRW52aXJvbm1lbnRXb3Jrc3BhY2Ui...
-        meta:
-          created: '2026-06-19T09:06:47.046143Z'
-          last_update: '2026-06-19T09:06:47.046170Z'
-          user: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
-          workspace: staging
-        workspace_variable:
-          name: API_KEY
-          value: secret-value
-    VariableMeta:
-      properties:
-        created:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Created
-        last_update:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Update
-        user:
-          type: string
-          title: User
-        workspace:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Workspace
-      type: object
-      required:
-      - user
-      title: VariableMeta
+      - results
+      title: VariableListResponse
     ValidationError:
       properties:
         loc:
@@ -548,17 +512,101 @@ components:
       - msg
       - type
       title: ValidationError
-    UpdateVariableBody:
+    VariableResponse:
       properties:
+        id:
+          type: string
+          title: Id
+        meta:
+          $ref: '#/components/schemas/VariableMeta'
+        workspace_variable:
+          $ref: '#/components/schemas/VariableFields'
+      type: object
+      required:
+      - id
+      - meta
+      - workspace_variable
+      title: VariableResponse
+      examples:
+      - id: ahFkZXZ-YXBpbWV0cmljcy1xY3IqCxIEVXNlchieQgwLEhZVc2VyRW52aXJvbm1lbnRXb3Jrc3BhY2Ui...
+        meta:
+          created: '2026-06-19T09:06:47.046143Z'
+          last_update: '2026-06-19T09:06:47.046170Z'
+          user: ahFkZXZ-YXBpbWV0cmljcy1xY3ILCxIEVXNlchieQgw
+          workspace: staging
+        workspace_variable:
+          name: API_KEY
+          value: secret-value
+    CreateVariableBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
         value:
           anyOf:
           - type: string
           - type: 'null'
           title: Value
       type: object
-      title: UpdateVariableBody
+      title: CreateVariableBody
       examples:
-      - value: new-secret-value
+      - name: API_KEY
+        value: secret-value
+    VariableListMeta:
+      properties:
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        more:
+          type: boolean
+          title: More
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Id
+      type: object
+      required:
+      - more
+      title: VariableListMeta
+    WorkspaceFields:
+      properties:
+        name:
+          type: string
+          title: Name
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+      type: object
+      required:
+      - name
+      title: WorkspaceFields
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    CreateWorkspaceBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+      type: object
+      title: CreateWorkspaceBody
+      examples:
+      - name: staging
     WorkspaceResponse:
       properties:
         id:
@@ -583,6 +631,32 @@ components:
         workspace:
           name: staging
           title: Staging
+    VariableMeta:
+      properties:
+        created:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created
+        last_update:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Update
+        user:
+          type: string
+          title: User
+        workspace:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Workspace
+      type: object
+      required:
+      - user
+      title: VariableMeta
     WorkspaceListResponse:
       properties:
         meta:
@@ -597,89 +671,6 @@ components:
       - meta
       - results
       title: WorkspaceListResponse
-    WorkspaceListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      required:
-      - more
-      title: WorkspaceListMeta
-    VariableListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/VariableListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/VariableResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: VariableListResponse
-    UpdateWorkspaceBody:
-      properties:
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Title
-      type: object
-      title: UpdateWorkspaceBody
-      examples:
-      - title: Staging Environment
-    VariableListMeta:
-      properties:
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-        more:
-          type: boolean
-          title: More
-        project_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Project Id
-      type: object
-      required:
-      - more
-      title: VariableListMeta
-    CreateWorkspaceBody:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-      type: object
-      title: CreateWorkspaceBody
-      examples:
-      - name: staging
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     WorkspaceMeta:
       properties:
         user:
@@ -701,19 +692,28 @@ components:
       required:
       - user
       title: WorkspaceMeta
-    VariableFields:
+    UpdateWorkspaceBody:
       properties:
-        name:
-          type: string
-          title: Name
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+      type: object
+      title: UpdateWorkspaceBody
+      examples:
+      - title: Staging Environment
+    UpdateVariableBody:
+      properties:
         value:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Value
       type: object
-      required:
-      - name
-      - value
-      title: VariableFields
+      title: UpdateVariableBody
+      examples:
+      - value: new-secret-value
   securitySchemes:
     OAuth2:
       type: oauth2

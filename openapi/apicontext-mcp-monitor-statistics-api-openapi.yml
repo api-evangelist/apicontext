@@ -187,6 +187,13 @@ components:
       - from
       - to
       title: PerformanceRequest[Metric]
+    GroupByDimension:
+      type: string
+      enum:
+      - location
+      - interval
+      - monitor
+      title: GroupByDimension
     api3__monitors__common__api_models__PerformanceGroup_Metric___3:
       properties:
         key:
@@ -219,6 +226,55 @@ components:
       - sample_count
       - metrics
       title: PerformanceGroup[Metric]
+    api3__monitors__common__api_models__PerformanceResponse_Metric___3:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceGroup_Metric___3'
+          type: array
+          title: Results
+        meta:
+          $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceMeta_Metric___3'
+      type: object
+      required:
+      - results
+      - meta
+      title: PerformanceResponse[Metric]
+    Measure:
+      type: string
+      enum:
+      - mean
+      - p50
+      - p90
+      - p95
+      - p99
+      title: Measure
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     MetricAggregate:
       properties:
         sample_count:
@@ -278,59 +334,32 @@ components:
       - sample_count
       title: MetricAggregate
       description: Aggregates for one metric within one result group.
-    GroupKey:
+    api3__monitors__mcp__stats__api_models__Metric:
+      type: string
+      enum:
+      - total
+      - initialize
+      - dns
+      - tcp
+      - tls
+      title: Metric
+    HTTPValidationError:
       properties:
-        location_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Location Id
-        interval_start:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Interval Start
-          description: UTC ISO timestamp of the bucket start when interval grouping is in use
-        monitor_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Monitor Id
-          description: Monitor ID when monitor grouping is in use
-      type: object
-      title: GroupKey
-      description: 'Identifies which slice of data this group represents.
-
-
-        Fields are present only when the request asked to group by that dimension
-
-        (or, for `interval_start`, when an interval was requested).'
-    ValidationError:
-      properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: HTTPValidationError
+    ResultCategory:
+      type: string
+      enum:
+      - PASS
+      - SLOW
+      - WARNING
+      - FAIL
+      title: ResultCategory
     api3__monitors__common__api_models__PerformanceMeta_Metric___3:
       properties:
         monitor_id:
@@ -378,62 +407,33 @@ components:
       - measures
       - group_by
       title: PerformanceMeta[Metric]
-    ResultCategory:
-      type: string
-      enum:
-      - PASS
-      - SLOW
-      - WARNING
-      - FAIL
-      title: ResultCategory
-    Measure:
-      type: string
-      enum:
-      - mean
-      - p50
-      - p90
-      - p95
-      - p99
-      title: Measure
-    GroupByDimension:
-      type: string
-      enum:
-      - location
-      - interval
-      - monitor
-      title: GroupByDimension
-    api3__monitors__mcp__stats__api_models__Metric:
-      type: string
-      enum:
-      - total
-      - initialize
-      - dns
-      - tcp
-      - tls
-      title: Metric
-    HTTPValidationError:
+    GroupKey:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location Id
+        interval_start:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interval Start
+          description: UTC ISO timestamp of the bucket start when interval grouping is in use
+        monitor_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Monitor Id
+          description: Monitor ID when monitor grouping is in use
       type: object
-      title: HTTPValidationError
-    api3__monitors__common__api_models__PerformanceResponse_Metric___3:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceGroup_Metric___3'
-          type: array
-          title: Results
-        meta:
-          $ref: '#/components/schemas/api3__monitors__common__api_models__PerformanceMeta_Metric___3'
-      type: object
-      required:
-      - results
-      - meta
-      title: PerformanceResponse[Metric]
+      title: GroupKey
+      description: 'Identifies which slice of data this group represents.
+
+
+        Fields are present only when the request asked to group by that dimension
+
+        (or, for `interval_start`, when an interval was requested).'
   securitySchemes:
     OAuth2:
       type: oauth2

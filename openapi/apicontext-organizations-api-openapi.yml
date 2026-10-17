@@ -267,46 +267,21 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    UpdateOrgBody:
+    OrgAccountResponse:
       properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        tags:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Tags
-        enforce_2fa:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enforce 2Fa
-        kms_enabled:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Kms Enabled
-        password_expiry_days:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Password Expiry Days
-      type: object
-      title: UpdateOrgBody
-    OrgAccountDeleteResponse:
-      properties:
-        status:
+        id:
           type: string
-          title: Status
+          title: Id
+        permissions:
+          items:
+            type: string
+          type: array
+          title: Permissions
+      additionalProperties: true
       type: object
       required:
-      - status
-      title: OrgAccountDeleteResponse
+      - id
+      title: OrgAccountResponse
     ValidationError:
       properties:
         loc:
@@ -333,20 +308,6 @@ components:
       - msg
       - type
       title: ValidationError
-    OrgAccountListMeta:
-      properties:
-        more:
-          type: boolean
-          title: More
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-      type: object
-      required:
-      - more
-      title: OrgAccountListMeta
     OrgResponse:
       properties:
         id:
@@ -424,35 +385,6 @@ components:
       required:
       - more
       title: OrgListMeta
-    OrgAccountResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        permissions:
-          items:
-            type: string
-          type: array
-          title: Permissions
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      title: OrgAccountResponse
-    OrgAccountListResponse:
-      properties:
-        meta:
-          $ref: '#/components/schemas/OrgAccountListMeta'
-        results:
-          items:
-            $ref: '#/components/schemas/OrgAccountResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - meta
-      - results
-      title: OrgAccountListResponse
     OrgListResponse:
       properties:
         meta:
@@ -467,6 +399,29 @@ components:
       - meta
       - results
       title: OrgListResponse
+    OrgAccountListMeta:
+      properties:
+        more:
+          type: boolean
+          title: More
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      type: object
+      required:
+      - more
+      title: OrgAccountListMeta
+    OrgAccountDeleteResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: OrgAccountDeleteResponse
     HTTPValidationError:
       properties:
         detail:
@@ -476,6 +431,51 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    OrgAccountListResponse:
+      properties:
+        meta:
+          $ref: '#/components/schemas/OrgAccountListMeta'
+        results:
+          items:
+            $ref: '#/components/schemas/OrgAccountResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - meta
+      - results
+      title: OrgAccountListResponse
+    UpdateOrgBody:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        tags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tags
+        enforce_2fa:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enforce 2Fa
+        kms_enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Kms Enabled
+        password_expiry_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Password Expiry Days
+      type: object
+      title: UpdateOrgBody
   securitySchemes:
     OAuth2:
       type: oauth2
