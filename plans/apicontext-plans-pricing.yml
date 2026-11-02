@@ -1,0 +1,226 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-28'
+method: searched
+source: https://apicontext.com/pricing
+sources:
+- https://apicontext.com/pricing
+- https://apicontext.com/pricing/
+provenance:
+  tool: engine/economics/harvest_pricing.py
+  run: 20261028T161713
+  grounding: every price_text was found verbatim in the fetched page text
+audience: developer-api
+pricing_basis: tiered-subscription
+delivery:
+  delivery: managed
+  method: page
+  read: '2026-10-28'
+  managed_tier: Starter
+published: true
+note: Tiered subscription pricing for API synthetic monitoring, annual prices shown with monthly alternative;
+  numerous add-ons priced; Enterprise is contact us.
+plan_count: 13
+currency: USD
+plans:
+- name: Free tier
+  price_text: Try it free. 10,000 tests every month.
+  currency: USD
+  period: month
+  unit: tests
+  included_quota: 10,000 tests every month. API, MCP, and HTTP tests only — no simulated browser journeys.
+    Includes OTEL export.
+- name: Starter
+  price_text: from $ 29 /mo
+  price: 29
+  currency: USD
+  period: month
+  unit: plan
+  included_quota: 1 project · up to 5 collaborators; 30,000 synthetic API calls / mo; 3 endpoints · 5-min
+    uptime checks; 3 months data retention; 14 global regions
+  overage: Extra synthetic calls $0.0008 per call
+- name: Team
+  price_text: from $ 99 /mo
+  price: 99
+  currency: USD
+  period: month
+  unit: plan
+  included_quota: Unlimited projects · 20 collaborators; 100,000 synthetic API calls / mo; 10 endpoints;
+    6 months data retention
+  overage: Extra synthetic calls $0.0008 per call
+- name: Pro
+  price_text: from $ 499 /mo
+  price: 499
+  currency: USD
+  period: month
+  unit: plan
+  included_quota: Unlimited projects · unlimited collaborators; 500,000 synthetic API calls / mo; 40 endpoints
+    · 3-min uptime checks; 12 months data retention
+  overage: Extra synthetic calls $0.0008 per call
+- name: Pro (monthly billing)
+  price_text: Monthly $ 574 /mo
+  price: 574
+  currency: USD
+  period: month
+  unit: plan
+  included_quota: 500,000 calls/mo · unlimited endpoints · 12 mo retention
+- name: Enterprise
+  price_text: Contact us
+  period: none
+  included_quota: 1,000,000 synthetic API calls / mo; 100 endpoints · 60-second checks; 36 months data
+    retention; 99.99% SLA
+- name: 'Add-on: Extra synthetic calls'
+  price_text: $0.0008 per call
+  price: 0.0008
+  currency: USD
+  period: per-use
+  unit: call
+  overage: Auto-bills above plan included usage.
+- name: 'Add-on: Enterprise SSO'
+  price_text: $3,000 setup + $500 / mo
+  currency: USD
+  period: month
+  unit: license
+  included_quota: SAML single sign-on configuration and monthly license.
+- name: 'Add-on: Private nodes'
+  price_text: $199 / node / mo
+  price: 199
+  currency: USD
+  period: month
+  unit: node
+- name: 'Add-on: Extended retention'
+  price_text: $99 / mo per +12 months
+  price: 99
+  currency: USD
+  period: month
+  unit: +12 months retention
+- name: 'Add-on: Dedicated nodes'
+  price_text: Custom
+  period: none
+- name: 'Add-on: Premium support'
+  price_text: $1,499 / mo
+  price: 1499
+  currency: USD
+  period: month
+  included_quota: 1-hour response · architecture reviews · onboarding assistance.
+- name: 'Add-on: On-call rotation'
+  price_text: $299 / mo
+  price: 299
+  currency: USD
+  period: month
+rate_limit_statements:
+- 30,000 synthetic API calls / mo
+- 100,000 synthetic API calls / mo
+- 500,000 synthetic API calls / mo
+- 1,000,000 synthetic API calls / mo
+- Need more than 500,000 tests/month? Contact us for custom high-volume pricing.
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - hybrid
+  - subscription
+  units:
+  - compute
+  - request
+  - seat
+  plans:
+  - name: Free tier
+    access: other
+    model: unstated
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Starter
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Team
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Pro
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Pro (monthly billing)
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: 'Add-on: Extra synthetic calls'
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - request
+    periods:
+    - other
+  - name: 'Add-on: Enterprise SSO'
+    access: other
+    model: unstated
+    model_how: derived
+    units:
+    - seat
+    periods:
+    - month
+  - name: 'Add-on: Private nodes'
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - month
+  - name: 'Add-on: Extended retention'
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: 'Add-on: Dedicated nodes'
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: 'Add-on: Premium support'
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: 'Add-on: On-call rotation'
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - month
