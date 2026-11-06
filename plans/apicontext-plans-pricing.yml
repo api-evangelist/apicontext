@@ -114,13 +114,14 @@ rate_limit_statements:
 - 1,000,000 synthetic API calls / mo
 - Need more than 500,000 tests/month? Contact us for custom high-volume pricing.
 x-canonical:
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - hybrid
   - subscription
   units:
   - compute
+  - period
   - request
   - seat
   plans:
@@ -200,7 +201,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - period
     periods:
     - month
   - name: 'Add-on: Dedicated nodes'
